@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ZEITREISE – Mission Vergangenheit</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#09172e;color:#fff;font-family:system-ui,sans-serif;text-align:center}
+header{padding:28px 12px;background:linear-gradient(140deg,#193a70,#432770);border-bottom:3px solid #e9ac42}
+h1{font-size:clamp(32px,7vw,54px);color:#ffd36b;text-shadow:0 4px #6b3e20;margin:5px}
+.subtitle{color:#e8d8ff}
+main{max-width:650px;margin:25px auto;padding:14px}
+.panel{background:linear-gradient(145deg,#203c68,#172541);border:2px solid #5574a1;border-radius:22px;padding:25px 18px;box-shadow:0 12px 30px #0006;margin-bottom:18px}
+button{border:0;border-radius:13px;padding:13px 20px;font-size:17px;font-weight:700;cursor:pointer;background:linear-gradient(#ffd976,#dc9637);color:#34220b;margin:5px}
+button:active{transform:scale(.97)}
+button.secondary{background:#354d79;color:white}
+button.active{outline:3px solid #8bf1cb}
+input{font-size:19px;padding:15px;width:100%;border-radius:12px;border:3px solid #83b5ff;margin:12px 0;background:#fff;color:#15213d}
+small{color:#c8d6ef}
+#question{font-size:24px;line-height:1.5;margin:22px 0}
+#feedback{min-height:65px;font-size:18px}
+.good{color:#7bffb2}.bad{color:#ffb1a7}
+.stat{display:flex;justify-content:space-around;gap:8px;margin-bottom:15px}
+.stat span{background:#142744;padding:12px;border-radius:12px;flex:1}
+#progress{height:13px;background:#0d1b35;border-radius:20px;overflow:hidden;margin:15px 0}
+#bar{height:100%;width:0;background:linear-gradient(90deg,#55dca3,#ffe17b);transition:.3s}
+.hidden{display:none}
+</style>
+</head>
+<body>
+<header><div>✦ DEUTSCH A2–B1 ✦</div><h1>⏳ ZEITREISE</h1><div class="subtitle">Mission Vergangenheit · Die unregelmäßigen Verben</div></header>
+<main>
+<div class="stat"><span>⭐ <b id="score">0</b> Punkte</span><span>🎯 <b id="number">1</b>/10</span><span>🏆 <b id="best">0</b> Rekord</span></div>
+<section class="panel" id="menu">
+<h2>🗺️ Wähle deine Mission</h2>
+<p>Reise durch die Vergangenheit und sammle Sterne!</p>
+<button onclick="start('praet')">🏰 Präteritum</button>
+<button onclick="start('perf')">🚂 Perfekt</button>
+<button onclick="start('plus')">🔮 Plusquamperfekt</button>
+<button onclick="start('mix')">⚔️ Zeit-Challenge</button>
+<p><small>10 Aufgaben pro Mission · +10 Punkte pro richtiger Antwort</small></p>
+</section>
+<section class="panel hidden" id="game">
+<h2 id="mode">Mission</h2>
+<div id="progress"><div id="bar"></div></div>
+<div id="question"></div>
+<input id="answer" placeholder="Deine Antwort ..." autocomplete="off" autocapitalize="off">
+<div id="feedback"></div>
+<button id="check" onclick="check()">Antwort prüfen ✓</button>
+<button id="next" class="hidden" onclick="next()">Weiter ➜</button>
+<button class="secondary" onclick="home()">Menü</button>
+</section>
+<section class="panel hidden" id="finish">
+<h2>🏆 Mission geschafft!</h2>
+<p id="result"></p>
+<button onclick="home()">Neue Mission 🗺️</button>
+</section>
+</main>
+<script>
+const verbs=[
+["gehen","ging","ist gegangen","war gegangen"],
+["kommen","kam","ist gekommen","war gekommen"],
+["sehen","sah","hat gesehen","hatte gesehen"],
+["geben","gab","hat gegeben","hatte gegeben"],
+["nehmen","nahm","hat genommen","hatte genommen"],
+["sprechen","sprach","hat gesprochen","hatte gesprochen"],
+["finden","fand","hat gefunden","hatte gefunden"],
+["schreiben","schrieb","hat geschrieben","hatte geschrieben"],
+["lesen","las","hat gelesen","hatte gelesen"],
+["essen","aß","hat gegessen","hatte gegessen"],
+["trinken","trank","hat getrunken","hatte getrunken"],
+["fahren","fuhr","ist gefahren","war gefahren"],
+["laufen","lief","ist gelaufen","war gelaufen"],
+["bleiben","blieb","ist geblieben","war geblieben"],
+["schlafen","schlief","hat geschlafen","hatte geschlafen"],
+["helfen","half","hat geholfen","hatte geholfen"],
+["treffen","traf","hat getroffen","hatte getroffen"],
+["wissen","wusste","hat gewusst","hatte gewusst"],
+["denken","dachte","hat gedacht","hatte gedacht"],
+["bringen","brachte","hat gebracht","hatte gebracht"],
+["kennen","kannte","hat gekannt","hatte gekannt"],
+["stehen","stand","hat gestanden","hatte gestanden"],
+["sitzen","saß","hat gesessen","hatte gesessen"],
+["liegen","lag","hat gelegen","hatte gelegen"],
+["beginnen","begann","hat begonnen","hatte begonnen"],
+["gewinnen","gewann","hat gewonnen","hatte gewonnen"],
+["verlieren","verlor","hat verloren","hatte verloren"],
+["vergessen","vergaß","hat vergessen","hatte vergessen"],
+["verstehen","verstand","hat verstanden","hatte verstanden"],
+["bekommen","bekam","hat bekommen","hatte bekommen"],
+["ziehen","zog","hat gezogen","hatte gezogen"],
+["fliegen","flog","ist geflogen","war geflogen"],
+["schwimmen","schwamm","ist geschwommen","war geschwommen"],
+["singen","sang","hat gesungen","hatte gesungen"],
+["springen","sprang","ist gesprungen","war gesprungen"],
+["fallen","fiel","ist gefallen","war gefallen"],
+["halten","hielt","hat gehalten","hatte gehalten"],
+["lassen","ließ","hat gelassen","hatte gelassen"],
+["rufen","rief","hat gerufen","hatte gerufen"],
+["tragen","trug","hat getragen","hatte getragen"],
+["waschen","wusch","hat gewaschen","hatte gewaschen"],
+["werfen","warf","hat geworfen","hatte geworfen"],
+["schließen","schloss","hat geschlossen","hatte geschlossen"],
+["schneiden","schnitt","hat geschnitten","hatte geschnitten"],
+["entscheiden","entschied","hat entschieden","hatte entschieden"],
+["anrufen","rief an","hat angerufen","hatte angerufen"],
+["aufstehen","stand auf","ist aufgestanden","war aufgestanden"],
+["anfangen","fing an","hat angefangen","hatte angefangen"],
+["mitbringen","brachte mit","hat mitgebracht","hatte mitgebracht"],
+["einladen","lud ein","hat eingeladen","hatte eingeladen"]
+];
+let mode='mix',deck=[],step=0,score=0,correct='',locked=false;
+const el=id=>document.getElementById(id);
+el('best').textContent=localStorage.getItem('zeitreiseBest')||0;
+function show(id){['menu','game','finish'].forEach(x=>el(x).classList.toggle('hidden',x!==id))}
+function start(m){
+mode=m;step=0;score=0;
+deck=[...verbs].sort(()=>Math.random()-.5).slice(0,10);
+show('game');render();
+}
+function render(){
+locked=false;
+const v=deck[step];
+const forms=['Präteritum','Perfekt','Plusquamperfekt'];
+const type=mode==='mix'?1+Math.floor(Math.random()*3):({praet:1,perf:2,plus:3})[mode];
+correct=v[type];
+el('mode').textContent='✨ '+forms[type-1];
+el('question').innerHTML='Bilde das <b>'+forms[type-1]+'</b> von:<p style="color:#ffd36b;font-size:34px">'+v[0]+'</p>';
+el('answer').value='';
+el('answer').disabled=false;
+el('feedback').textContent='';
+el('check').classList.remove('hidden');
+el('next').classList.add('hidden');
+el('number').textContent=step+1;
+el('score').textContent=score;
+el('bar').style.width=step*10+'%';
+el('answer').focus();
+}
+function normalize(s){return s.trim().toLocaleLowerCase('de').replace(/\s+/g,' ')}
+function check(){
+if(locked||!el('answer').value.trim())return;
+locked=true;
+const ok=normalize(el('answer').value)===normalize(correct);
+if(ok)score+=10;
+el('score').textContent=score;
+el('feedback').innerHTML=ok?'<b class="good">✓ Richtig! +10 Punkte</b>':'<b class="bad">✗ Noch nicht richtig.</b><p>Richtig: <b>'+correct+'</b></p>';
+el('answer').disabled=true;
+el('check').classList.add('hidden');
+el('next').classList.remove('hidden');
+}
+function next(){
+step++;
+if(step===10){
+el('bar').style.width='100%';
+const best=Math.max(score,Number(localStorage.getItem('zeitreiseBest')||0));
+localStorage.setItem('zeitreiseBest',best);
+el('best').textContent=best;
+el('result').textContent='Du hast '+score+' von 100 Punkten gesammelt!';
+show('finish');
+}else render();
+}
+function home(){show('menu')}
+el('answer').addEventListener('keydown',e=>{if(e.key==='Enter'){if(locked)next();else check()}});
+</script>
+</body></html>
