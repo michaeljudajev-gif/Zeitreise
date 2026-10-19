@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0b1629"><title>ZEITREISE 6.1 – Das Dorf der Zeiten</title>
+<meta name="theme-color" content="#0b1629"><title>ZEITREISE 7.0 – Die sechs Welten der Zeit</title>
 <style>
 *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#081426;color:#fff;font-family:system-ui,-apple-system,Segoe UI,sans-serif;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
 body{display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at 50% 10%,#284b67,#091426 75%)}
@@ -67,24 +67,35 @@ canvas{display:block;width:100%;height:100%}
  #challenge .choice{width:calc(50% - 6px);margin:2px;padding:4px;font-size:12px}
  #challenge input{padding:6px;font-size:15px}
 }
-</style></head><body><main id="shell"><header><h1>✦ ZEITREISE <small>Das Dorf der Zeiten</small></h1><div class="version">MISSION 1 · DIE TORE DER ZEIT<br>ENGINE 6.2 · WOLKEN-OVERLAY</div></header>
-<div id="stage"><canvas id="game" width="1280" height="720"></canvas><div id="hud"><span class="pill" id="gateHud">🏰 Tor 0/10</span><span class="pill" id="coinHud">🪙 0</span><span class="pill" id="streakHud">🔥 Serie 0</span><span class="pill" id="scoreHud">⭐ 0</span></div><div id="toast"></div><div id="challenge"></div><button id="dragonHelp" onclick="toggleDragon()">🐉 Drache · Hilfe</button><div id="dragonPanel"></div>
+
+/* 7.0: Bossfragen ebenfalls im Himmel; die Landschaft bleibt sichtbar. */
+#veil:has(.boss) {background:transparent;backdrop-filter:none;display:block;pointer-events:none;padding:0}
+#veil:has(.boss) .panel {position:absolute;left:50%;top:7%;transform:translateX(-50%);width:min(660px,82%);max-height:47%;padding:12px 18px;pointer-events:auto;background:#102944f5}
+#veil:has(.boss) .panel h2 {font-size:20px;margin:3px 0}
+#veil:has(.boss) .panel p {font-size:15px;margin:5px 0}
+#veil:has(.boss) .choice {display:inline-block;width:calc(50% - 8px);margin:3px;padding:6px;font-size:14px}
+#veil:has(.boss) .primary {padding:7px 12px}
+@media(max-width:700px){#veil:has(.boss) .panel{width:96%;top:8%;max-height:52%;padding:7px}#veil:has(.boss) .panel p{font-size:12px}#veil:has(.boss) .choice{font-size:11px;padding:4px}}
+</style></head><body><main id="shell"><header><h1>✦ ZEITREISE <small>Das Dorf der Zeiten</small></h1><div class="version">MISSION 1 · DIE TORE DER ZEIT<br>ENGINE 7.0 · SECHS WELTEN</div></header>
+<div id="stage"><canvas id="game" width="1280" height="720"></canvas><div id="hud"><span class="pill" id="zoneHud">🗺️ Das Dorf</span><span class="pill" id="gateHud">🏰 Boss 0/6</span><span class="pill" id="coinHud">🪙 0</span><span class="pill" id="streakHud">🔥 Serie 0</span><span class="pill" id="scoreHud">⭐ 0</span></div><div id="toast"></div><div id="challenge"></div><button id="dragonHelp" onclick="toggleDragon()">🐉 Drache · Hilfe</button><div id="dragonPanel"></div>
 <div id="veil"><section class="panel" id="panel"></section></div></div>
-<div id="controls"><div class="controls-left"><button class="ctrl" id="left" aria-label="Links">◀</button><button class="ctrl" id="right" aria-label="Rechts">▶</button></div><span id="hint">A/D oder ←/→ bewegen · Leertaste springen · 40 Aufgaben · 30 Hindernisse · 10 Tore · 🐉 Drache</span><button class="ctrl" id="jump">⬆ SPRUNG</button></div></main>
+<div id="controls"><div class="controls-left"><button class="ctrl" id="left" aria-label="Links">◀</button><button class="ctrl" id="right" aria-label="Rechts">▶</button></div><span id="hint">A/D oder ←/→ bewegen · Leertaste springen · 66 Aufgaben · 60 Hindernisse · 6 Bosse · 🐉 Drache</span><button class="ctrl" id="jump">⬆ SPRUNG</button></div></main>
 <script>
 'use strict';
-const C=document.getElementById('game'),g=C.getContext('2d'),W=1280,H=720,FLOOR=594,LEVEL=7900;
+const C=document.getElementById('game'),g=C.getContext('2d'),W=1280,H=720,FLOOR=594,LEVEL=9400;
 const $=id=>document.getElementById(id), veil=$('veil'),panel=$('panel');
 const TAU=Math.PI*2, rnd=(a,b)=>a+Math.random()*(b-a), clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
 let t=0,last=0,cam=0,mode='menu',difficulty='normal',gateIndex=0,score=0,coins=0,streak=0,answers=[],toastEnd=0,particles=[],sparkles=[];
 const keys={left:false,right:false,jump:false};
 const hero={x:120,y:FLOOR-70,vx:0,vy:0,w:42,h:70,grounded:true,face:1,step:0,blink:0};
-const gates=Array.from({length:10},(_,i)=>({x:700+i*735,done:false}));
+const worlds=['Das Dorf','Der Zauberwald','Der Fluss','Die Schneewelt','Über den Wolken','Das Zeitschloss'];
+const gates=Array.from({length:6},(_,i)=>({x:1370+i*1500,done:false}));
 // Three challenges before each gate: 30 field challenges + 10 gate questions.
-const obstacles=Array.from({length:30},(_,i)=>({x:310+Math.floor(i/3)*735+(i%3)*116,kind:['river','tree','stone'][i%3],done:false,id:i}));
+const obstacles=Array.from({length:60},(_,i)=>({x:280+Math.floor(i/10)*1500+(i%10)*105,kind:['river','tree','stone','runes','snow','dragon'][Math.floor(i/10)]==='river'?'river':['river','tree','stone','runes','snow','dragon'][Math.floor(i/10)]==='snow'?'snow':['river','tree','stone','runes','snow','dragon'][Math.floor(i/10)]==='dragon'?'stone':['river','tree','stone'][i%3],done:false,id:i}));
 let activeObstacle=null,dragonOpen=false,language='de',currentTask=null,attempts=0;
-const platforms=Array.from({length:19},(_,i)=>({x:420+i*365,y:FLOOR-95-(i%3)*35,w:155}));
-const collectibles=Array.from({length:62},(_,i)=>({x:260+i*118,y:FLOOR-48-(i%5===0?145:i%3===0?100:0),got:false}));
+let outfit=0,soundOn=false,zoneSeen=-1,fieldCorrect=0;const outfits=['#28669c','#9b4f8d','#34876a','#bd6a32'];
+const platforms=Array.from({length:25},(_,i)=>({x:420+i*365,y:FLOOR-95-(i%3)*35,w:155}));
+const collectibles=Array.from({length:78},(_,i)=>({x:260+i*118,y:FLOOR-48-(i%5===0?145:i%3===0?100:0),got:false}));
 const stars=Array.from({length:80},()=>({x:rnd(0,W),y:rnd(0,310),r:rnd(.5,1.9),p:rnd(0,TAU)}));
 const dust=Array.from({length:55},()=>({x:rnd(0,LEVEL),y:rnd(120,FLOOR),r:rnd(.5,2),phase:rnd(0,TAU)}));
 const verbs=[
@@ -142,6 +153,39 @@ const fieldTasks=[
 {type:'write',q:'Schreibe das Partizip II von „vergessen“.',a:'vergessen',ex:'vergessen → vergaß → vergessen.'},
 {type:'fix',q:'Korrigiere: „Sie hatte das Lied gesingt.“',a:'Sie hatte das Lied gesungen.',ex:'singen → sang → gesungen.'}
 ];
+const extraTasks=[
+{type:'order',q:'Ordne den Satz: „gestern / ich / habe / gearbeitet“',a:'Ich habe gestern gearbeitet.',ex:'Im Hauptsatz steht das finite Verb auf Position 2.'},
+{type:'choice',q:'Welche Zeitform? „Sie hatte angerufen.“',a:'Plusquamperfekt',opts:['Perfekt','Präteritum','Plusquamperfekt','Präsens'],ex:'hatte + Partizip II = Plusquamperfekt.'},
+{type:'dialog',q:'„Was hast du gestern gemacht?“ – Antworte: (lernen)',a:'Ich habe gelernt.',ex:'Perfekt: haben + gelernt.'},
+{type:'choice',q:'___ ich klein war, spielte ich oft draußen.',a:'Als',opts:['Als','Wenn','Nachdem','Bevor'],ex:'Einmaliger Zeitraum in der Vergangenheit: als.'},
+{type:'write',q:'Ergänze: „Nachdem sie gegessen hatte, ___ sie spazieren.“ (gehen, Präteritum)',a:'ging',ex:'gehen → ging.'},
+{type:'fix',q:'Korrigiere: „Gestern ich ging ins Kino.“',a:'Gestern ging ich ins Kino.',ex:'Verbzweitstellung: Gestern ging ich ...'},
+{type:'choice',q:'„Ich hatte das Buch gelesen.“ Was geschah zuerst?',a:'Das Lesen',opts:['Das Lesen','Das Erzählen','Beides gleichzeitig','Unklar'],ex:'Plusquamperfekt bezeichnet die frühere Handlung.'},
+{type:'order',q:'Ordne: „er / bevor / ging / gegessen / hatte / er“',a:'Bevor er ging, hatte er gegessen.',ex:'Nebensatz mit bevor: Verb am Ende.'},
+{type:'write',q:'Ergänze: „Ich ___ gestern zu Hause geblieben.“',a:'bin',ex:'bleiben bildet das Perfekt mit sein.'},
+{type:'fix',q:'Korrigiere: „Nachdem ich gegessen habe, ging ich los.“ (Vorvergangenheit)',a:'Nachdem ich gegessen hatte, ging ich los.',ex:'Vorvergangenheit: hatte gegessen.'},
+{type:'choice',q:'Im Gespräch: „Ich ___ gestern lange gearbeitet.“',a:'habe',opts:['habe','bin','war','hatte'],ex:'Perfekt: ich habe gearbeitet.'},
+{type:'dialog',q:'„Warst du schon einmal in Berlin?“ Antworte mit „ja“ im Perfekt (fahren).',a:'Ja, ich bin nach Berlin gefahren.',ex:'fahren als Ortsveränderung: bin gefahren.'},
+{type:'write',q:'Präteritum von „anfangen“: „Der Film ___ um acht Uhr ___.“ (nur Verbform)',a:'fing an',ex:'anfangen → fing ... an.'},
+{type:'fix',q:'Korrigiere: „Wir hatten nach Hause gegangen.“',a:'Wir waren nach Hause gegangen.',ex:'Plusquamperfekt mit sein: waren gegangen.'},
+{type:'choice',q:'Welcher Satz ist richtig?',a:'Nachdem ich angekommen war, rief ich an.',opts:['Nachdem ich angekommen war, rief ich an.','Nachdem ich angekommen hatte, rief ich an.','Nachdem ich ankam war, rief ich an.','Nachdem ich ankommen war, rief ich an.'],ex:'ankommen → war angekommen.'},
+{type:'order',q:'Ordne: „war / sie / gegangen / schon / nach Hause“',a:'Sie war schon nach Hause gegangen.',ex:'Plusquamperfekt: war + gegangen.'},
+{type:'write',q:'Schreibe das Partizip II von „entscheiden“.',a:'entschieden',ex:'entscheiden → entschieden.'},
+{type:'fix',q:'Korrigiere: „Ich bin meine Hausaufgaben gemacht.“',a:'Ich habe meine Hausaufgaben gemacht.',ex:'machen bildet das Perfekt mit haben.'},
+{type:'choice',q:'___ ich Zeit habe, besuche ich dich.',a:'Wenn',opts:['Wenn','Als','Nachdem','Bevor'],ex:'Bedingung in Gegenwart/Zukunft: wenn.'},
+{type:'dialog',q:'„Was hattest du gemacht, bevor du losgingst?“ Antworte: (frühstücken)',a:'Ich hatte gefrühstückt.',ex:'Plusquamperfekt: hatte gefrühstückt.'},
+{type:'choice',q:'Er ___ schon eingeschlafen, als ich kam.',a:'war',opts:['war','hatte','hat','ist'],ex:'einschlafen → war eingeschlafen.'},
+{type:'write',q:'Schreibe Präteritum von „wissen“ (wir).',a:'wussten',ex:'wissen → wussten.'},
+{type:'fix',q:'Korrigiere: „Als ich war Kind, spielte ich Fußball.“',a:'Als ich ein Kind war, spielte ich Fußball.',ex:'Im Nebensatz steht das Verb am Ende.'},
+{type:'order',q:'Ordne: „nachdem / sie / hatte / gelernt / ging / sie / schlafen“',a:'Nachdem sie gelernt hatte, ging sie schlafen.',ex:'Nachdem + Plusquamperfekt; dann Präteritum.'},
+{type:'choice',q:'Welches Hilfsverb? „Er ___ den Brief geschrieben.“',a:'hat',opts:['hat','ist','war','bin'],ex:'schreiben → hat geschrieben.'},
+{type:'dialog',q:'„Wann bist du angekommen?“ Antworte mit „gestern“.',a:'Ich bin gestern angekommen.',ex:'ankommen → bin angekommen.'},
+{type:'write',q:'Ergänze: „Als er anrief, ___ ich schon geschlafen.“',a:'hatte',ex:'Plusquamperfekt: hatte geschlafen.'},
+{type:'fix',q:'Korrigiere: „Sie hat gestern einen Film geseht.“',a:'Sie hat gestern einen Film gesehen.',ex:'sehen → gesehen.'},
+{type:'choice',q:'Welcher Satz beschreibt eine Vorvergangenheit?',a:'Ich hatte gegessen.',opts:['Ich hatte gegessen.','Ich esse.','Ich aß.','Ich werde essen.'],ex:'hatte gegessen = Plusquamperfekt.'},
+{type:'order',q:'Ordne: „gestern / nach Hause / fuhr / ich“',a:'Ich fuhr gestern nach Hause.',ex:'Präteritum von fahren: fuhr.'}
+];
+fieldTasks.push(...extraTasks);
 const translations={
  de:{title:'Die drei Vergangenheitsformen',body:'Präteritum: Ich ging. Oft in Geschichten und Berichten. Perfekt: Ich bin gegangen. Oft im Gespräch. Plusquamperfekt: Ich war gegangen. Eine Handlung geschah vor einer anderen Handlung in der Vergangenheit.',tip:'Bei Bewegungsverben steht im Perfekt häufig „sein“. Schreibe bei Korrekturen den ganzen Satz.'},
  en:{title:'The three past tenses',body:'Simple past (Präteritum): Ich ging – often used in stories. Present perfect (Perfekt): Ich bin gegangen – common in speech. Past perfect (Plusquamperfekt): Ich war gegangen – an action before another past event.',tip:'Movement verbs often use sein. For correction tasks, enter the complete sentence.'},
@@ -154,16 +198,17 @@ const translations={
 function norm(s){return String(s).toLocaleLowerCase('de-DE').trim().replace(/[.!?„“"']/g,'').replace(/\s+/g,' ')}
 function toggleDragon(){dragonOpen=!dragonOpen;let p=$('dragonPanel');p.classList.toggle('show',dragonOpen);if(dragonOpen)renderDragon()}
 function renderDragon(){let tr=translations[language];$('dragonPanel').innerHTML=`<h3>🐉 Fynn, dein Grammatik-Drache</h3><p>„Keine Angst vor den Zeitformen! Ich helfe dir.“</p><label>Erklärungssprache: <select id="langSel" onchange="language=this.value;renderDragon()">${[['de','Deutsch'],['en','English'],['uk','Українська'],['ru','Русский'],['mk','Македонски'],['fr','Français'],['tr','Türkçe']].map(([code,name])=>`<option value="${code}" ${language===code?'selected':''}>${name}</option>`).join('')}</select></label><h3>${tr.title}</h3><p>${tr.body}</p><p>💡 ${tr.tip}</p>${currentTask?`<p><b>Hinweis zur aktuellen Aufgabe:</b> ${currentTask.ex}</p>`:''}<button onclick="toggleDragon()">Schließen</button>`}
-function obstacleDraw(o){if(o.done)return;let x=o.x-cam;if(x<-130||x>W+140)return;g.save();g.translate(x,FLOOR);
+function obstacleDraw(o){let x=o.x-cam;if(x<-130||x>W+140)return;if(o.done){if(o.kind==='river'){g.save();g.translate(x,FLOOR);rr(-44,-12,88,19,3,'#b28b57','#674b35',3);for(let k=-3;k<=3;k++)line(k*11,-12,k*11,6,'#644c37',2);g.restore()}return;}g.save();g.translate(x,FLOOR);
 if(o.kind==='river'){g.fillStyle='#2c8eb1';g.beginPath();g.moveTo(-37,4);g.lineTo(37,4);g.lineTo(37,125);g.lineTo(-37,125);g.fill();for(let j=0;j<6;j++){g.strokeStyle='#b8f5ffb0';g.lineWidth=3;g.beginPath();g.moveTo(-28,20+j*17);g.quadraticCurveTo(0+Math.sin(t*3+j)*12,10+j*17,28,20+j*17);g.stroke()}line(-40,3,40,3,'#f5dbaf',4)}
 if(o.kind==='tree'){line(-50,-6,45,-52,'#61402d',22);line(-50,-6,45,-52,'#a47b51',11);for(let j=0;j<6;j++)circle(20+j*9,-59+j%3*12,18,j%2?'#477d45':'#6c9b4d')}
+if(o.kind==='snow'){glow(0,-42,75,'#ddfaff77');for(let j=0;j<3;j++)circle(-18+j*18,-24-j%2*13,23,'#ecfaff');}
 if(o.kind==='stone'){poly([[-42,0],[-33,-54],[-4,-81],[30,-61],[43,-9],[27,0]],'#78818a','#48535c',6);for(let j=0;j<3;j++)circle(-17+j*15,-40+j*4,4,'#a6d9dd');glow(0,-42,75,'#9b86f533')}
-text(o.kind==='river'?'🌊 FLUSS':o.kind==='tree'?'🌳 BAUM':'🪨 FELS',0,-110,18,'#ffde95');g.restore()}
+text(o.kind==='river'?'🌊 FLUSS':o.kind==='tree'?'🌳 BAUM':o.kind==='snow'?'❄️ SCHNEE':'🪨 FELS',0,-110,18,'#ffde95');g.restore()}
 function showField(o){activeObstacle=o;currentTask=fieldTasks[o.id];attempts=0;mode='field';keys.left=keys.right=keys.jump=false;hero.vx=0;renderField()}
-function renderField(feedback=''){let q=currentTask,box=$('challenge');let typeLabel={choice:'Wähle die richtige Form',write:'Schreibe die richtige Form',fix:'Korrigiere den Fehler'}[q.type];let controls=q.type==='choice'?q.opts.map((a,i)=>`<button class="choice" onclick="submitField(${i})">${String.fromCharCode(65+i)} · ${a}</button>`).join(''):`<input id="fieldInput" type="text" autocomplete="off" spellcheck="false" placeholder="${q.type==='fix'?'Ganzen Satz eingeben':'Antwort eingeben'}" onkeydown="if(event.key==='Enter'){event.preventDefault();submitField()}"/><button class="primary" onclick="submitField()">✓ Prüfen</button>`;
-box.innerHTML=`<div class="tag">HINDERNIS ${activeObstacle.id+1}/30 · ${typeLabel}</div><h3>${activeObstacle.kind==='river'?'🌊 Brücke bauen':activeObstacle.kind==='tree'?'🌳 Weg freimachen':'🪨 Felsen verzaubern'}</h3><p>${q.q}</p>${controls}<div id="fieldFeedback">${feedback}</div><p class="small">🐉 Der Drache hilft unten rechts · Erklärungssprachen freiwillig</p>`;box.classList.add('show');if(q.type!=='choice'){$('fieldInput').focus();keys.left=keys.right=keys.jump=false} }
-function submitField(i){if(mode!=='field')return;let q=currentTask,raw=q.type==='choice'?q.opts[i]:$('fieldInput').value;let ok=norm(raw)===norm(q.a);attempts++;if(ok){score+=Math.max(25,100-(attempts-1)*25);streak++;activeObstacle.done=true;emit(activeObstacle.x,FLOOR-75,22,'#aaf8ce');$('fieldFeedback').innerHTML='<p style="color:#a7ffca"><b>✨ Richtig! Der Weg ist frei.</b></p>';mode='fieldSolved';$('challenge').querySelectorAll('button,input').forEach(el=>el.disabled=true);$('fieldFeedback').insertAdjacentHTML('beforeend','<button class="primary" onclick="resumeField()">▶ Weiterlaufen</button>');hud()}else{streak=0;hud();$('fieldFeedback').innerHTML=`<p style="color:#ffc1b7">Noch nicht richtig. Versuch es erneut! ${attempts>=2?`<br><b>Tipp:</b> ${q.ex}`:''}</p>`;if(q.type!=='choice')$('fieldInput').focus()}}
-function resumeField(){activeObstacle=null;currentTask=null;mode='play';$('challenge').classList.remove('show')}
+function renderField(feedback=''){let q=currentTask,box=$('challenge');let typeLabel={choice:'Wähle die richtige Form',write:'Schreibe die richtige Form',fix:'Korrigiere den Fehler',order:'Ordne die Wörter',dialog:'Ergänze den Dialog'}[q.type];let controls=q.type==='choice'?q.opts.map((a,i)=>`<button class="choice" onclick="submitField(${i})">${String.fromCharCode(65+i)} · ${a}</button>`).join(''):`<input id="fieldInput" type="text" autocomplete="off" spellcheck="false" placeholder="${['fix','order','dialog'].includes(q.type)?'Ganzen Satz eingeben':'Antwort eingeben'}" onkeydown="if(event.key==='Enter'){event.preventDefault();submitField()}"/><button class="primary" onclick="submitField()">✓ Prüfen</button>`;
+box.innerHTML=`<div class="tag">AUFGABE ${activeObstacle.id+1}/60 · ${worlds[Math.floor(activeObstacle.id/10)]} · ${typeLabel}</div><h3>${activeObstacle.kind==='river'?'🌊 Brücke bauen':activeObstacle.kind==='tree'?'🌳 Weg freimachen':activeObstacle.kind==='snow'?'❄️ Schneeballzauber':'🪨 Felsen verzaubern'}</h3><p>${q.q}</p>${controls}<div id="fieldFeedback">${feedback}</div><p class="small">🐉 Der Drache hilft unten rechts · Erklärungssprachen freiwillig</p>`;box.classList.add('show');if(q.type!=='choice'){$('fieldInput').focus();keys.left=keys.right=keys.jump=false} }
+function submitField(i){if(mode!=='field')return;let q=currentTask,raw=q.type==='choice'?q.opts[i]:$('fieldInput').value;let ok=norm(raw)===norm(q.a);attempts++;if(ok){score+=Math.max(25,100-(attempts-1)*25);streak++;fieldCorrect++;activeObstacle.done=true;playSound(660);saveGame();emit(activeObstacle.x,FLOOR-75,22,'#aaf8ce');$('fieldFeedback').innerHTML='<p style="color:#a7ffca"><b>✨ Richtig! Der Weg ist frei.</b></p>';mode='fieldSolved';$('challenge').querySelectorAll('button,input').forEach(el=>el.disabled=true);$('fieldFeedback').insertAdjacentHTML('beforeend','<button class="primary" onclick="resumeField()">▶ Weiterlaufen</button>');hud()}else{streak=0;hud();$('fieldFeedback').innerHTML=`<p style="color:#ffc1b7">Noch nicht richtig. Versuch es erneut! ${attempts>=2?`<br><b>Tipp:</b> ${q.ex}`:''}</p>`;if(q.type!=='choice')$('fieldInput').focus()}}
+function resumeField(){activeObstacle=null;currentTask=null;mode='play';$('challenge').classList.remove('show');saveGame()}
 function dragon(x,y){g.save();g.translate(x,y+Math.sin(t*3)*5);g.scale(.8,.8);glow(0,0,62,'#84e4b63a');poly([[-27,-9],[-58,-43],[-43,15]],'#62b89c','#255e65',4);poly([[27,-9],[58,-43],[43,15]],'#62b89c','#255e65',4);circle(0,0,32,'#3b998b');circle(14,-27,25,'#50bba2');poly([[0,-46],[12,-68],[19,-43]],'#f5d286');poly([[20,-46],[33,-62],[35,-35]],'#f5d286');circle(20,-29,5,'#fff');circle(22,-29,2.5,'#182f3b');circle(35,-17,5,'#f5d286');poly([[0,19],[12,34],[-11,31]],'#a4dfb7');g.restore()}
 function rr(x,y,w,h,r,fill,stroke=null,lw=1){g.beginPath();g.roundRect(x,y,w,h,r);if(fill){g.fillStyle=fill;g.fill()}if(stroke){g.strokeStyle=stroke;g.lineWidth=lw;g.stroke()}}
 function line(x1,y1,x2,y2,color,width=2){g.strokeStyle=color;g.lineWidth=width;g.beginPath();g.moveTo(x1,y1);g.lineTo(x2,y2);g.stroke()}
@@ -178,7 +223,15 @@ for(let s of stars){let a=(Math.sin(t*.6+s.p)+1)/2;circle(s.x,s.y,s.r,`rgba(255,
 for(let i=0;i<12;i++){let x=((i*210-cam*.11)%(W+340)+W+340)%(W+340)-170,y=115+(i%4)*39;cloud(x,y,.7+(i%3)*.25)}
 mountains(.14,370,'#779db1',165);mountains(.23,433,'#547d94',117);mountains(.32,488,'#477b79',72);
 for(let i=0;i<14;i++){let x=i*155-(cam*.4%155);pine(x,495,1+(i%3)*.2,'#315f62')}
+biomeSky();
 }
+function biome(){return clamp(Math.floor(hero.x/1500),0,5)}
+function biomeSky(){let b=biome();if(b===0)return;const tint=['','#183f2470','#1682c04d','#d5f4ff80','#c8b2e357','#261a5875'][b];g.fillStyle=tint;g.fillRect(0,0,W,H);
+if(b===1){for(let i=0;i<17;i++){let x=((i*111-cam*.22)%(W+160)+W+160)%(W+160)-80;pine(x,510,1.3+(i%3)*.3,'#1f5a49');glow(x,488,24,'#7bf0a455')}}
+if(b===2){for(let i=0;i<9;i++){let x=((i*185-cam*.3)%(W+180)+W+180)%(W+180)-90;glow(x,475,38,'#70ddff44')}}
+if(b===3){for(let i=0;i<90;i++){let x=((i*127+Math.sin(t*.4+i)*28-cam*.08)%(W+30)+W+30)%(W+30);circle(x,(i*71+t*24)%570,1.5,'#fff')};g.fillStyle='#ffffff55';g.fillRect(0,FLOOR-15,W,17)}
+if(b===4){for(let i=0;i<13;i++){let x=((i*145-cam*.25)%(W+200)+W+200)%(W+200)-100;cloud(x,470+(i%3)*22,1.3)}}
+if(b===5){glow(1030,200,250,'#bc8cff55');for(let i=0;i<8;i++){let x=((i*175-cam*.25)%(W+220)+W+220)%(W+220)-110;castle(x,520,.33)}}}
 function cloud(x,y,s){g.save();g.globalAlpha=.5;for(let j=0;j<5;j++)circle(x+(j-2)*29*s,y+Math.sin(j)*10*s,29*s,'#f8fbef');g.restore()}
 function mountains(par,base,col,height){let offset=cam*par;g.beginPath();g.moveTo(0,H);g.lineTo(0,base);for(let x=-120;x<W+180;x+=110){let wx=x+offset,peak=base-height*(.35+.65*Math.abs(Math.sin(wx*.006)));g.lineTo(x+50,peak);g.lineTo(x+110,base)}g.lineTo(W,H);g.fillStyle=col;g.fill()}
 function pine(x,y,s,col){g.fillStyle='#5b443b';g.fillRect(x-5*s,y-9*s,10*s,65*s);for(let i=0;i<3;i++)poly([[x,y-(95-i*29)*s],[x-(39-i*5)*s,y-(25-i*15)*s],[x+(39-i*5)*s,y-(25-i*15)*s]],col)}
@@ -194,7 +247,7 @@ rr(-24,-69,48,69,18,'#684333','#e0bb86',5);circle(13,-35,3,'#ffdd8a');
 for(let dx of [-63,-42,-20,21,42,64])circle(dx,-98,8,['#d47e98','#f7ca5f','#f8f2da'][Math.abs(dx)%3]);
 g.restore()}
 function lantern(x,y,s=1){g.save();g.translate(x,y);g.scale(s,s);line(0,-42,0,-9,'#403128',5);glow(0,5,45,`rgba(255,195,82,${.16+.06*Math.sin(t*4+x)})`);poly([[-14,-8],[14,-8],[11,22],[-11,22]],'#b8762b','#422d25',4);poly([[-9,-4],[9,-4],[7,17],[-7,17]],'#ffe0a1');g.restore()}
-function village(){for(let i=0;i<29;i++){let x=i*305+80-cam*.68;if(x< -320||x>W+320)continue;if(i%6===3){castle(x,440,.42)}else house(x,536,.75+(i%3)*.09,i);if(i%2===0)lantern(x+118,482,.7)}}
+function village(){if(biome()>3)return;for(let i=0;i<34;i++){let x=i*305+80-cam*.68;if(x< -320||x>W+320)continue;if(i%6===3){castle(x,440,.42)}else house(x,536,.75+(i%3)*.09,i);if(i%2===0)lantern(x+118,482,.7)}}
 function terrain(){g.fillStyle='#263f34';g.fillRect(0,FLOOR,W,H-FLOOR);rr(0,FLOOR-11,W,23,4,'#5b874e');for(let i=0;i<60;i++){let x=i*30-(cam%30);rr(x,FLOOR+12,28,37,4,['#a99a7c','#857d6a','#b3a17e'][i%3],'#4b4b42',2);for(let k=0;k<2;k++)line(x+4,FLOOR+19+k*12,x+18,FLOOR+19+k*12,'#ffffff15',1)}
 for(let i=0;i<75;i++){let x=i*22-(cam%22);line(x,FLOOR-12,x+5,FLOOR-21-(i%4)*3,i%3?'#4f9c4e':'#a4d26e',2);if(i%9===0){circle(x+4,FLOOR-21,4,'#f5e7b2');circle(x,FLOOR-18,3,'#d994b0')}}}
 function drawPlatform(p){let x=p.x-cam;if(x<-210||x>W+100)return;g.save();g.translate(x,p.y);
@@ -213,7 +266,7 @@ g.save();g.translate(x,y-bob);g.scale(hero.face,1);
 g.fillStyle='#0004';g.beginPath();g.ellipse(0,hero.h+5,24,6,0,0,TAU);g.fill();
 g.save();g.translate(-6,33);g.rotate(-arm*.25-.15);poly([[-7,-9],[-32,0],[-24,38],[4,21]],'#245e8a','#183852',3);g.restore();
 for(let i of [-1,1]){g.save();g.translate(i*10,49);g.rotate((i===1?leg:-leg)*.43+(hero.grounded?0:-.17));rr(-6,0,12,21,5,'#e6b287');rr(-8,16,16,15,4,'#563b31');rr(-10,26,23,9,3,'#42343a');g.restore()}
-rr(-17,25,34,30,8,'#28669c','#e8c38b',3);poly([[-18,45],[18,45],[23,58],[-22,58]],'#245079');rr(-15,37,30,6,2,'#e8bd5e');
+rr(-17,25,34,30,8,outfits[outfit],'#e8c38b',3);poly([[-18,45],[18,45],[23,58],[-22,58]],'#245079');rr(-15,37,30,6,2,'#e8bd5e');
 for(let i of [-1,1]){g.save();g.translate(i*18,29);g.rotate((i===1?arm:-arm)*.36);rr(-5,0,11,23,5,'#f3d7bd');circle(1,22,6,'#eec6a3');g.restore()}
 circle(0,9,21,'#edb38f');circle(-4,9,20,'#edc1a0');
 for(let i=0;i<7;i++){let a=i*.58+2.8;circle(Math.cos(a)*17,6+Math.sin(a)*15,8,'#a74d2d')}
@@ -226,40 +279,48 @@ function update(dt){t+=dt;if(mode!=='play')return;
 let axis=Number(keys.right)-Number(keys.left),acc=hero.grounded?1600:1000;
 hero.vx+=axis*acc*dt;if(!axis)hero.vx*=Math.exp(-11*dt);hero.vx=clamp(hero.vx,-275,275);
 if(axis)hero.face=axis;
+if(biome()!==zoneSeen){zoneSeen=biome();$('zoneHud').textContent='🗺️ '+worlds[zoneSeen];}
 if(keys.jump&&hero.grounded){hero.vy=-560;hero.grounded=false;emit(hero.x,hero.y+65,7,'#c3d8b6')}
 let prevFeet=hero.y+hero.h;hero.vy+=1350*dt;hero.x=clamp(hero.x+hero.vx*dt,25,LEVEL-50);hero.y+=hero.vy*dt;hero.grounded=false;
 if(hero.vy>=0){for(let p of platforms){if(prevFeet<=p.y+8&&hero.y+hero.h>=p.y&&hero.x+20>p.x&&hero.x-20<p.x+p.w){hero.y=p.y-hero.h;hero.vy=0;hero.grounded=true;break}}}
 if(hero.y+hero.h>=FLOOR){hero.y=FLOOR-hero.h;hero.vy=0;hero.grounded=true}
-for(let o of obstacles){if(o.done)continue;let stop=o.x-67;if(hero.x>=stop&&hero.x<o.x+25&&hero.vx>0){hero.x=stop;hero.vx=0;showField(o);break}}
+for(let o of obstacles){if(o.done)continue;let stop=o.x-67;if(hero.x>=stop&&hero.vx>0){hero.x=stop;hero.vx=0;showField(o);break}}
 cam+=(clamp(hero.x-W*.32,0,LEVEL-W)-cam)*Math.min(1,dt*5);
 for(let c of collectibles){if(!c.got&&Math.abs(c.x-hero.x)<31&&Math.abs(c.y-(hero.y+33))<54){c.got=true;coins++;score+=10;emit(c.x,c.y,10,'#ffe398');hud()}}
-let gate=gates[gateIndex];if(mode==='play'&&gate&&Math.abs(hero.x-gate.x)<56&&Math.abs(hero.y+hero.h-FLOOR)<80){mode='quiz';keys.left=keys.right=keys.jump=false;openQuiz()}
+let gate=gates[gateIndex];if(mode==='play'&&gate&&obstacles.slice(gateIndex*10,(gateIndex+1)*10).every(o=>o.done)&&Math.abs(hero.x-gate.x)<56&&Math.abs(hero.y+hero.h-FLOOR)<80){mode='quiz';keys.left=keys.right=keys.jump=false;openQuiz()}
 particles=particles.filter(p=>p.life>0);for(let p of particles){p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=230*dt;p.life-=dt}
 }
 function draw(){g.clearRect(0,0,W,H);sky();village();terrain();
 for(let p of platforms)drawPlatform(p);
 for(let c of collectibles)if(!c.got&&c.x>cam-50&&c.x<cam+W+50)coin(c.x-cam,c.y+Math.sin(t*3+c.x)*5,.83);
-gates.forEach(portal);for(let o of obstacles)obstacleDraw(o);
+gates.forEach(portal);let nextObstacle=obstacles.find(o=>!o.done);for(let o of obstacles){if(o.done||!nextObstacle||o.id<=nextObstacle.id+1)obstacleDraw(o)}
+if(biome()===4){g.save();g.translate(990,245+Math.sin(t)*17);g.rotate(Math.sin(t)*.05);poly([[-52,-45],[52,-45],[30,30],[-30,30]],'#e9a652','#7b4c32',5);line(-30,30,-20,76,'#e5d5a8',3);line(30,30,20,76,'#e5d5a8',3);rr(-24,70,48,22,5,'#805b3b');g.restore()}
+if(biome()===3){for(let i=0;i<4;i++){let x=160+i*310-(cam%310);circle(x,FLOOR-12,21,'#e6f6ff');circle(x,FLOOR-38,15,'#f8fdff');circle(x-5,FLOOR-41,2,'#34465b')}}
 for(let d of dust){let x=d.x-cam;if(x<0||x>W)continue;circle(x+Math.sin(t+d.phase)*6,d.y+Math.sin(t*.8+d.phase)*11,d.r,'#ffedb455')}
 for(let p of particles){g.globalAlpha=clamp(p.life/p.max,0,1);circle(p.x-cam,p.y,p.r,p.color)}g.globalAlpha=1;heroine();dragon(W-73,115);
 let vignette=g.createRadialGradient(W/2,H/2,190,W/2,H/2,830);vignette.addColorStop(0,'transparent');vignette.addColorStop(1,'#07152875');g.fillStyle=vignette;g.fillRect(0,0,W,H)}
 function frame(now){let dt=Math.min(.033,(now-last)/1000||.016);last=now;update(dt);draw();requestAnimationFrame(frame)}
-function hud(){$('gateHud').textContent=`🏰 Tor ${gateIndex}/10`;$('coinHud').textContent=`🪙 ${coins}`;$('streakHud').textContent=`🔥 Serie ${streak}`;$('scoreHud').textContent=`⭐ ${score}`}
+function hud(){$('gateHud').textContent=`🏰 Boss ${gateIndex}/6`;$('coinHud').textContent=`🪙 ${coins}`;$('streakHud').textContent=`🔥 Serie ${streak}`;$('scoreHud').textContent=`⭐ ${score}`}
 function show(html){panel.innerHTML=html;veil.classList.remove('hidden')}function hide(){veil.classList.add('hidden')}
-function menu(){mode='menu';show(`<div class="tag">ZEITREISE · ENGINE 6.2</div><h2>Das Dorf der Zeiten</h2><p>Reise durch ein lebendiges Fantasy-Dorf, überwinde 30 Hindernisse mit Aufgaben direkt im Spielfeld und öffne zehn magische Grammatik-Tore. Trainiere <b>Präteritum, Perfekt und Plusquamperfekt</b> mit Auswahl, Schreiben und Fehlerkorrektur. 🐉 Fynn erklärt dir die Grammatik in sieben Sprachen.</p><div class="row"><button class="primary" onclick="start('normal')">⚔️ Abenteuer starten</button><button class="primary" onclick="start('hard')">🔥 Schwer</button></div><p class="small">Bewegung: A/D oder Pfeiltasten · Springen: Leertaste · Mobil: Bildschirmtasten</p>`)}
-function start(diff){difficulty=diff;gateIndex=0;score=0;coins=0;streak=0;answers=[];cam=0;hero.x=120;hero.y=FLOOR-70;hero.vx=hero.vy=0;gates.forEach(x=>x.done=false);obstacles.forEach(x=>x.done=false);activeObstacle=null;currentTask=null;$('challenge').classList.remove('show');collectibles.forEach(x=>x.got=false);particles=[];hud();mode='play';hide()}
+function playSound(freq){if(!soundOn)return;try{let a=new (window.AudioContext||window.webkitAudioContext)(),o=a.createOscillator(),v=a.createGain();o.type='sine';o.frequency.value=freq;o.connect(v);v.connect(a.destination);v.gain.setValueAtTime(.08,a.currentTime);v.gain.exponentialRampToValueAtTime(.001,a.currentTime+.18);o.start();o.stop(a.currentTime+.18);o.onended=()=>a.close()}catch(e){}}
+function saveGame(){try{localStorage.setItem('zeitreise7',JSON.stringify({difficulty,gateIndex,score,coins,streak,fieldCorrect,heroX:hero.x,outfit,obstacles:obstacles.map(o=>o.done),gates:gates.map(g=>g.done),collectibles:collectibles.map(c=>c.got),answers}))}catch(e){}}
+function loadGame(){try{let v=JSON.parse(localStorage.getItem('zeitreise7')||'null');if(!v){alert('Noch kein Spielstand vorhanden.');return}start(v.difficulty||'normal');gateIndex=v.gateIndex||0;score=v.score||0;coins=v.coins||0;streak=v.streak||0;fieldCorrect=v.fieldCorrect||0;hero.x=v.heroX||120;outfit=v.outfit||0;answers=v.answers||[];obstacles.forEach((o,i)=>o.done=!!v.obstacles?.[i]);gates.forEach((g,i)=>g.done=!!v.gates?.[i]);collectibles.forEach((c,i)=>c.got=!!v.collectibles?.[i]);cam=clamp(hero.x-W*.32,0,LEVEL-W);hud();hide();mode='play'}catch(e){alert('Spielstand konnte nicht geladen werden.')}}
+function showReward(){let b=gateIndex;let cost=[0,10,20,30][Math.min(b,3)];show(`<div class="tag">WELT ${b} / 6 GESCHAFFT</div><h2>✨ ${worlds[b-1]} geschafft!</h2><p>Du hast ${fieldCorrect} Hindernisse gelöst und ${coins} Münzen gesammelt.</p><p>🎨 Kaufe eine neue Tunika: ${cost} Münzen</p><div class="row"><button class="primary" onclick="buyOutfit(${Math.min(b,3)},${cost})">🧥 Kostüm freischalten</button><button class="primary" onclick="hide();mode='play';saveGame()">▶ Weiterreisen</button></div>`);mode='reward'}
+function buyOutfit(n,cost){if(coins<cost){alert('Du brauchst noch '+(cost-coins)+' Münzen.');return}coins-=cost;outfit=n;hud();hide();mode='play';saveGame();playSound(880)}
+function menu(){mode='menu';show(`<div class="tag">ZEITREISE · ENGINE 7.0</div><h2>Die sechs Welten der Zeit</h2><p>🏡 Dorf · 🌲 Zauberwald · 🌊 Fluss · ❄️ Schnee · 🎈 Wolken · 🏰 Schloss</p><p>60 Hindernisrätsel und 6 Boss-Tore. Wähle, schreibe, korrigiere, ordne Sätze und ergänze Dialoge. 🐉 Fynn erklärt die Zeitformen in sieben Sprachen. Sammle Münzen für neue Kleidung!</p><div class="row"><button class="primary" onclick="start('normal')">⚔️ Abenteuer starten</button><button class="primary" onclick="start('hard')">🔥 Schwer</button><button class="primary" onclick="loadGame()">💾 Fortsetzen</button></div><p class="small">A/D oder ←/→ bewegen · Leertaste springen · S: Ton an/aus · 🪙 Kostüme: 10/20/30 Münzen</p>`)}
+function start(diff){difficulty=diff;gateIndex=0;score=0;coins=0;streak=0;fieldCorrect=0;answers=[];cam=0;zoneSeen=-1;hero.x=120;hero.y=FLOOR-70;hero.vx=hero.vy=0;gates.forEach(x=>x.done=false);obstacles.forEach(x=>x.done=false);activeObstacle=null;currentTask=null;$('challenge').classList.remove('show');collectibles.forEach(x=>x.got=false);particles=[];hud();mode='play';hide();saveGame()}
 function shuffle(a){return a.map(x=>({x,k:Math.random()})).sort((a,b)=>a.k-b.k).map(o=>o.x)}
 let current=null,options=[];
 function makeOptions(q){if(q.custom)return shuffle([...q.custom]);let pool=[q.a,...verbs.flatMap(v=>v.slice(1))].filter(x=>x!==q.a);pool=shuffle([...new Set(pool)]);return shuffle([q.a,...pool.slice(0,3)])}
-function openQuiz(){current=examples[gateIndex];options=makeOptions(current);let type=gateIndex%3;let controls=type===0?options.map((x,i)=>`<button class="choice" onclick="answer(${i})">${String.fromCharCode(65+i)} · ${x}</button>`).join(''):`<input id="gateInput" style="width:100%;padding:12px;border-radius:10px;font-size:18px" placeholder="${type===1?'Richtige Form eingeben':'Fehler korrigieren: richtige Form eingeben'}" onkeydown="if(event.key==='Enter')answer(-1)"/><button class="primary" onclick="answer(-1)">Antwort prüfen</button>`;
-show(`<div class="tag">MAGISCHES TOR ${gateIndex+1} / 10 · ${['AUSWÄHLEN','SCHREIBEN','KORRIGIEREN'][type]}</div><h2>🐉 Das Tor der Zeit</h2><p style="font-size:clamp(18px,2.5vw,26px);color:#fff">${current.q}</p><div id="choices">${controls}</div><p class="small">Du kannst den Drachen für eine Erklärung öffnen.</p>`)}
+function openQuiz(){current=[examples[0],examples[3],examples[5],examples[6],examples[8],examples[9]][gateIndex];options=makeOptions(current);let type=gateIndex%3;let controls=type===0?options.map((x,i)=>`<button class="choice" onclick="answer(${i})">${String.fromCharCode(65+i)} · ${x}</button>`).join(''):`<input id="gateInput" style="width:100%;padding:12px;border-radius:10px;font-size:18px" placeholder="${type===1?'Richtige Form eingeben':'Fehler korrigieren: richtige Form eingeben'}" onkeydown="if(event.key==='Enter')answer(-1)"/><button class="primary" onclick="answer(-1)">Antwort prüfen</button>`;
+show(`<div class="boss"><div class="tag">BOSS-TOR ${gateIndex+1} / 6 · ${['AUSWÄHLEN','SCHREIBEN','KORRIGIEREN'][type]}</div><h2>🐉 Das Tor der Zeit</h2><p style="font-size:clamp(18px,2.5vw,26px);color:#fff">${current.q}</p><div id="choices">${controls}</div><p class="small">Du kannst den Drachen für eine Erklärung öffnen.</p></div>`)}
 function answer(i){if(mode!=='quiz')return;let type=gateIndex%3,picked=type===0?options[i]:$('gateInput').value,ok=norm(picked)===norm(current.a);answers.push({gate:gateIndex+1,question:current.q,chosen:picked,correct:current.a,ok});score+=ok?(difficulty==='hard'?170:120)+streak*20:20;streak=ok?streak+1:0;gates[gateIndex].done=true;
-document.querySelectorAll('.choice').forEach((b,j)=>{b.disabled=true;if(options[j]===current.a)b.classList.add('correct');else if(j===i)b.classList.add('wrong')});if($('gateInput'))$('gateInput').disabled=true;
-panel.insertAdjacentHTML('beforeend',`<p style="color:${ok?'#a2f4b6':'#ffb2a7'}"><b>${ok?'✨ Richtig!':'📖 Noch nicht ganz.'}</b> Richtige Antwort: <b>${current.a}</b>.</p><button class="primary" onclick="continueGame()">${gateIndex===9?'🏆 Ergebnis ansehen':'✨ Weiterreisen'}</button>`);mode='feedback';hud();emit(gates[gateIndex].x,FLOOR-100,35,ok?'#b1ffdc':'#ffdd99')}
-function continueGame(){gateIndex++;hud();if(gateIndex>=10){finish();return}hero.x=gates[gateIndex-1].x+120;hero.y=FLOOR-hero.h;hero.vx=0;mode='play';hide()}
-function finish(){mode='finish';let correct=answers.filter(a=>a.ok).length;show(`<div class="tag">ABENTEUER ABGESCHLOSSEN</div><h2>🏆 Zeitreise geschafft!</h2><p>Du hast 30 Hindernisse und alle zehn Tore überwunden.</p><h2>${correct}/10 richtig · ⭐ ${score}</h2><p>🪙 ${coins} Münzen gesammelt</p><div style="max-height:160px;overflow:auto;text-align:left">${answers.map(a=>`<p class="small">${a.ok?'✅':'❌'} Tor ${a.gate}: ${a.correct}</p>`).join('')}</div><button class="primary" onclick="start('${difficulty}')">🔁 Noch einmal spielen</button>`)}
+document.querySelectorAll('.choice').forEach((b,j)=>{b.disabled=true;if(options[j]===current.a)b.classList.add('correct');else if(j===i)b.classList.add('wrong')});if($('gateInput'))$('gateInput').disabled=true;saveGame();playSound(ok?800:240);
+panel.insertAdjacentHTML('beforeend',`<p style="color:${ok?'#a2f4b6':'#ffb2a7'}"><b>${ok?'✨ Richtig!':'📖 Noch nicht ganz.'}</b> Richtige Antwort: <b>${current.a}</b>.</p><button class="primary" onclick="continueGame()">${gateIndex===5?'🏆 Ergebnis ansehen':'✨ Weiterreisen'}</button>`);mode='feedback';hud();emit(gates[gateIndex].x,FLOOR-100,35,ok?'#b1ffdc':'#ffdd99')}
+function continueGame(){gateIndex++;hud();if(gateIndex>=6){finish();return}hero.x=gates[gateIndex-1].x+120;hero.y=FLOOR-hero.h;hero.vx=0;mode='play';hide();saveGame();if(gateIndex>0){showReward()}}
+function finish(){mode='finish';let correct=answers.filter(a=>a.ok).length;show(`<div class="tag">ABENTEUER ABGESCHLOSSEN</div><h2>🏆 Zeitreise geschafft!</h2><p>Du hast sechs Welten mit 60 Hindernissen und sechs Boss-Toren gemeistert.</p><h2>${correct}/6 Boss-Tore richtig · ⭐ ${score}</h2><p>🪙 ${coins} Münzen gesammelt</p><div style="max-height:160px;overflow:auto;text-align:left">${answers.map(a=>`<p class="small">${a.ok?'✅':'❌'} Tor ${a.gate}: ${a.correct}</p>`).join('')}</div><button class="primary" onclick="start('${difficulty}')">🔁 Noch einmal spielen</button>`)}
 function setKey(k,on){if(k==='ArrowLeft'||k==='a'||k==='A')keys.left=on;if(k==='ArrowRight'||k==='d'||k==='D')keys.right=on;if(k===' '||k==='ArrowUp'||k==='w'||k==='W')keys.jump=on}
-document.addEventListener('keydown',e=>{if(e.target.closest('input, textarea, select, [contenteditable=true]'))return;if(['ArrowLeft','ArrowRight','ArrowUp',' '].includes(e.key))e.preventDefault();setKey(e.key,true)});
+document.addEventListener('keydown',e=>{if(e.key.toLowerCase()==='s'&&!e.target.closest('input, textarea, select, [contenteditable=true]')){soundOn=!soundOn;return}if(e.target.closest('input, textarea, select, [contenteditable=true]'))return;if(['ArrowLeft','ArrowRight','ArrowUp',' '].includes(e.key))e.preventDefault();setKey(e.key,true)});
 document.addEventListener('keyup',e=>{if(e.target.closest('input, textarea, select, [contenteditable=true]'))return;setKey(e.key,false)});window.addEventListener('blur',()=>{keys.left=keys.right=keys.jump=false});
 for(let [id,k] of [['left','left'],['right','right'],['jump','jump']]){let b=$(id);b.addEventListener('pointerdown',e=>{e.preventDefault();b.setPointerCapture(e.pointerId);keys[k]=true});for(let ev of ['pointerup','pointercancel','lostpointercapture'])b.addEventListener(ev,()=>keys[k]=false)}
 document.addEventListener('contextmenu',e=>e.preventDefault());document.addEventListener('selectstart',e=>e.preventDefault());
