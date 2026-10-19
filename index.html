@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0b1629"><title>ZEITREISE 7.0 – Die sechs Welten der Zeit</title>
+<meta name="theme-color" content="#0b1629"><title>ZEITREISE 7.2 – Die sechs Welten der Zeit</title>
 <style>
 *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#081426;color:#fff;font-family:system-ui,-apple-system,Segoe UI,sans-serif;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
 body{display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at 50% 10%,#284b67,#091426 75%)}
@@ -68,7 +68,7 @@ canvas{display:block;width:100%;height:100%}
  #challenge input{padding:6px;font-size:15px}
 }
 
-/* 7.0: Bossfragen ebenfalls im Himmel; die Landschaft bleibt sichtbar. */
+/* 7.0: Festfragen ebenfalls im Himmel; die Landschaft bleibt sichtbar. */
 #veil:has(.boss) {background:transparent;backdrop-filter:none;display:block;pointer-events:none;padding:0}
 #veil:has(.boss) .panel {position:absolute;left:50%;top:7%;transform:translateX(-50%);width:min(660px,82%);max-height:47%;padding:12px 18px;pointer-events:auto;background:#102944f5}
 #veil:has(.boss) .panel h2 {font-size:20px;margin:3px 0}
@@ -76,10 +76,10 @@ canvas{display:block;width:100%;height:100%}
 #veil:has(.boss) .choice {display:inline-block;width:calc(50% - 8px);margin:3px;padding:6px;font-size:14px}
 #veil:has(.boss) .primary {padding:7px 12px}
 @media(max-width:700px){#veil:has(.boss) .panel{width:96%;top:8%;max-height:52%;padding:7px}#veil:has(.boss) .panel p{font-size:12px}#veil:has(.boss) .choice{font-size:11px;padding:4px}}
-</style></head><body><main id="shell"><header><h1>✦ ZEITREISE <small>Das Dorf der Zeiten</small></h1><div class="version">MISSION 1 · DIE TORE DER ZEIT<br>ENGINE 7.0 · SECHS WELTEN</div></header>
-<div id="stage"><canvas id="game" width="1280" height="720"></canvas><div id="hud"><span class="pill" id="zoneHud">🗺️ Das Dorf</span><span class="pill" id="gateHud">🏰 Boss 0/6</span><span class="pill" id="coinHud">🪙 0</span><span class="pill" id="streakHud">🔥 Serie 0</span><span class="pill" id="scoreHud">⭐ 0</span></div><div id="toast"></div><div id="challenge"></div><button id="dragonHelp" onclick="toggleDragon()">🐉 Drache · Hilfe</button><div id="dragonPanel"></div>
+</style></head><body><main id="shell"><header><h1>✦ ZEITREISE <small>Das Dorf der Zeiten</small></h1><div class="version">MISSION 1 · DIE TORE DER ZEIT<br>ENGINE 7.2 · FLOW-MODUS</div></header>
+<div id="stage"><canvas id="game" width="1280" height="720"></canvas><div id="hud"><span class="pill" id="zoneHud">🗺️ Das Dorf</span><span class="pill" id="gateHud">🏅 Finale 0/6</span><span class="pill" id="coinHud">🪙 0</span><span class="pill" id="streakHud">🔥 Serie 0</span><span class="pill" id="scoreHud">⭐ 0</span></div><div id="toast"></div><div id="challenge"></div><button id="dragonHelp" onclick="toggleDragon()">🐉 Drache · Hilfe</button><div id="dragonPanel"></div>
 <div id="veil"><section class="panel" id="panel"></section></div></div>
-<div id="controls"><div class="controls-left"><button class="ctrl" id="left" aria-label="Links">◀</button><button class="ctrl" id="right" aria-label="Rechts">▶</button></div><span id="hint">A/D oder ←/→ bewegen · Leertaste springen · 66 Aufgaben · 60 Hindernisse · 6 Bosse · 🐉 Drache</span><button class="ctrl" id="jump">⬆ SPRUNG</button></div></main>
+<div id="controls"><div class="controls-left"><button class="ctrl" id="musicBtn" onclick="toggleMusic()" title="Musik an oder aus" aria-label="Musik an oder aus" style="font-size:17px;min-width:82px">♫ AUS</button><button class="ctrl" id="left" aria-label="Links">◀</button><button class="ctrl" id="right" aria-label="Rechts">▶</button></div><span id="hint">A/D oder ←/→ bewegen · Leertaste springen · 24 Hauptaufgaben · 6 Welten · flüssiges Spielen · 🐉 Drache</span><button class="ctrl" id="jump">⬆ SPRUNG</button></div></main>
 <script>
 'use strict';
 const C=document.getElementById('game'),g=C.getContext('2d'),W=1280,H=720,FLOOR=594,LEVEL=9400;
@@ -90,8 +90,10 @@ const keys={left:false,right:false,jump:false};
 const hero={x:120,y:FLOOR-70,vx:0,vy:0,w:42,h:70,grounded:true,face:1,step:0,blink:0};
 const worlds=['Das Dorf','Der Zauberwald','Der Fluss','Die Schneewelt','Über den Wolken','Das Zeitschloss'];
 const gates=Array.from({length:6},(_,i)=>({x:1370+i*1500,done:false}));
-// Three challenges before each gate: 30 field challenges + 10 gate questions.
+// Three spaced checkpoints per world; other exercises remain available as future bonus content.
 const obstacles=Array.from({length:60},(_,i)=>({x:280+Math.floor(i/10)*1500+(i%10)*105,kind:['river','tree','stone','runes','snow','dragon'][Math.floor(i/10)]==='river'?'river':['river','tree','stone','runes','snow','dragon'][Math.floor(i/10)]==='snow'?'snow':['river','tree','stone','runes','snow','dragon'][Math.floor(i/10)]==='dragon'?'stone':['river','tree','stone'][i%3],done:false,id:i}));
+const mandatoryIds=new Set(Array.from({length:6},(_,w)=>[w*10+1,w*10+5,w*10+9]).flat());
+for(const o of obstacles){if(mandatoryIds.has(o.id)){const w=Math.floor(o.id/10),slot=[1,5,9].indexOf(o.id%10);o.x=340+w*1500+slot*410;}}
 let activeObstacle=null,dragonOpen=false,language='de',currentTask=null,attempts=0;
 let outfit=0,soundOn=false,zoneSeen=-1,fieldCorrect=0;const outfits=['#28669c','#9b4f8d','#34876a','#bd6a32'];
 const platforms=Array.from({length:25},(_,i)=>({x:420+i*365,y:FLOOR-95-(i%3)*35,w:155}));
@@ -206,8 +208,8 @@ if(o.kind==='stone'){poly([[-42,0],[-33,-54],[-4,-81],[30,-61],[43,-9],[27,0]],'
 text(o.kind==='river'?'🌊 FLUSS':o.kind==='tree'?'🌳 BAUM':o.kind==='snow'?'❄️ SCHNEE':'🪨 FELS',0,-110,18,'#ffde95');g.restore()}
 function showField(o){activeObstacle=o;currentTask=fieldTasks[o.id];attempts=0;mode='field';keys.left=keys.right=keys.jump=false;hero.vx=0;renderField()}
 function renderField(feedback=''){let q=currentTask,box=$('challenge');let typeLabel={choice:'Wähle die richtige Form',write:'Schreibe die richtige Form',fix:'Korrigiere den Fehler',order:'Ordne die Wörter',dialog:'Ergänze den Dialog'}[q.type];let controls=q.type==='choice'?q.opts.map((a,i)=>`<button class="choice" onclick="submitField(${i})">${String.fromCharCode(65+i)} · ${a}</button>`).join(''):`<input id="fieldInput" type="text" autocomplete="off" spellcheck="false" placeholder="${['fix','order','dialog'].includes(q.type)?'Ganzen Satz eingeben':'Antwort eingeben'}" onkeydown="if(event.key==='Enter'){event.preventDefault();submitField()}"/><button class="primary" onclick="submitField()">✓ Prüfen</button>`;
-box.innerHTML=`<div class="tag">AUFGABE ${activeObstacle.id+1}/60 · ${worlds[Math.floor(activeObstacle.id/10)]} · ${typeLabel}</div><h3>${activeObstacle.kind==='river'?'🌊 Brücke bauen':activeObstacle.kind==='tree'?'🌳 Weg freimachen':activeObstacle.kind==='snow'?'❄️ Schneeballzauber':'🪨 Felsen verzaubern'}</h3><p>${q.q}</p>${controls}<div id="fieldFeedback">${feedback}</div><p class="small">🐉 Der Drache hilft unten rechts · Erklärungssprachen freiwillig</p>`;box.classList.add('show');if(q.type!=='choice'){$('fieldInput').focus();keys.left=keys.right=keys.jump=false} }
-function submitField(i){if(mode!=='field')return;let q=currentTask,raw=q.type==='choice'?q.opts[i]:$('fieldInput').value;let ok=norm(raw)===norm(q.a);attempts++;if(ok){score+=Math.max(25,100-(attempts-1)*25);streak++;fieldCorrect++;activeObstacle.done=true;playSound(660);saveGame();emit(activeObstacle.x,FLOOR-75,22,'#aaf8ce');$('fieldFeedback').innerHTML='<p style="color:#a7ffca"><b>✨ Richtig! Der Weg ist frei.</b></p>';mode='fieldSolved';$('challenge').querySelectorAll('button,input').forEach(el=>el.disabled=true);$('fieldFeedback').insertAdjacentHTML('beforeend','<button class="primary" onclick="resumeField()">▶ Weiterlaufen</button>');hud()}else{streak=0;hud();$('fieldFeedback').innerHTML=`<p style="color:#ffc1b7">Noch nicht richtig. Versuch es erneut! ${attempts>=2?`<br><b>Tipp:</b> ${q.ex}`:''}</p>`;if(q.type!=='choice')$('fieldInput').focus()}}
+box.innerHTML=`<div class="tag">STATION ${[...mandatoryIds].sort((a,b)=>a-b).indexOf(activeObstacle.id)+1}/18 · ${worlds[Math.floor(activeObstacle.id/10)]} · ${typeLabel}</div><h3>${activeObstacle.kind==='river'?'🌈 Regenbogenbrücke':activeObstacle.kind==='tree'?'🏃 Waldlauf':activeObstacle.kind==='snow'?'⛸️ Schneesport':'🎨 Felsen bemalen'}</h3><p>${q.q}</p>${controls}<div id="fieldFeedback">${feedback}</div><p class="small">🐉 Der Drache hilft unten rechts · Erklärungssprachen freiwillig</p>`;box.classList.add('show');if(q.type!=='choice'){$('fieldInput').focus();keys.left=keys.right=keys.jump=false} }
+function submitField(i){if(mode!=='field')return;let q=currentTask,raw=q.type==='choice'?q.opts[i]:$('fieldInput').value;let ok=norm(raw)===norm(q.a);attempts++;if(ok){score+=Math.max(25,100-(attempts-1)*25);streak++;fieldCorrect++;activeObstacle.done=true;playSound(660);celebrate(activeObstacle.x,activeObstacle.kind);saveGame();emit(activeObstacle.x,FLOOR-75,22,'#aaf8ce');$('fieldFeedback').innerHTML='<p style="color:#a7ffca"><b>✨ Richtig! Der Weg ist frei.</b></p>';mode='fieldSolved';$('challenge').querySelectorAll('button,input').forEach(el=>el.disabled=true);hud();setTimeout(()=>{if(mode==='fieldSolved')resumeField()},650)}else{streak=0;hud();$('fieldFeedback').innerHTML=`<p style="color:#ffc1b7">Noch nicht richtig. Versuch es erneut! ${attempts>=2?`<br><b>Tipp:</b> ${q.ex}`:''}</p>`;if(q.type!=='choice')$('fieldInput').focus()}}
 function resumeField(){activeObstacle=null;currentTask=null;mode='play';$('challenge').classList.remove('show');saveGame()}
 function dragon(x,y){g.save();g.translate(x,y+Math.sin(t*3)*5);g.scale(.8,.8);glow(0,0,62,'#84e4b63a');poly([[-27,-9],[-58,-43],[-43,15]],'#62b89c','#255e65',4);poly([[27,-9],[58,-43],[43,15]],'#62b89c','#255e65',4);circle(0,0,32,'#3b998b');circle(14,-27,25,'#50bba2');poly([[0,-46],[12,-68],[19,-43]],'#f5d286');poly([[20,-46],[33,-62],[35,-35]],'#f5d286');circle(20,-29,5,'#fff');circle(22,-29,2.5,'#182f3b');circle(35,-17,5,'#f5d286');poly([[0,19],[12,34],[-11,31]],'#a4dfb7');g.restore()}
 function rr(x,y,w,h,r,fill,stroke=null,lw=1){g.beginPath();g.roundRect(x,y,w,h,r);if(fill){g.fillStyle=fill;g.fill()}if(stroke){g.strokeStyle=stroke;g.lineWidth=lw;g.stroke()}}
@@ -284,45 +286,161 @@ if(keys.jump&&hero.grounded){hero.vy=-560;hero.grounded=false;emit(hero.x,hero.y
 let prevFeet=hero.y+hero.h;hero.vy+=1350*dt;hero.x=clamp(hero.x+hero.vx*dt,25,LEVEL-50);hero.y+=hero.vy*dt;hero.grounded=false;
 if(hero.vy>=0){for(let p of platforms){if(prevFeet<=p.y+8&&hero.y+hero.h>=p.y&&hero.x+20>p.x&&hero.x-20<p.x+p.w){hero.y=p.y-hero.h;hero.vy=0;hero.grounded=true;break}}}
 if(hero.y+hero.h>=FLOOR){hero.y=FLOOR-hero.h;hero.vy=0;hero.grounded=true}
-for(let o of obstacles){if(o.done)continue;let stop=o.x-67;if(hero.x>=stop&&hero.vx>0){hero.x=stop;hero.vx=0;showField(o);break}}
+// FLOW: Only three spacious checkpoints per world, never interrupt a jump.
+for(let o of obstacles){
+ if(o.done||!mandatoryIds.has(o.id)||mode!=='play')continue;
+ let stop=o.x-67;
+ if(hero.grounded && hero.vy===0 && hero.x>=stop && hero.x<o.x+10 && hero.vx>0){
+   hero.x=stop;hero.vx=0;hero.y=FLOOR-hero.h;showField(o);break;
+ }
+}
 cam+=(clamp(hero.x-W*.32,0,LEVEL-W)-cam)*Math.min(1,dt*5);
 for(let c of collectibles){if(!c.got&&Math.abs(c.x-hero.x)<31&&Math.abs(c.y-(hero.y+33))<54){c.got=true;coins++;score+=10;emit(c.x,c.y,10,'#ffe398');hud()}}
-let gate=gates[gateIndex];if(mode==='play'&&gate&&obstacles.slice(gateIndex*10,(gateIndex+1)*10).every(o=>o.done)&&Math.abs(hero.x-gate.x)<56&&Math.abs(hero.y+hero.h-FLOOR)<80){mode='quiz';keys.left=keys.right=keys.jump=false;openQuiz()}
+let gate=gates[gateIndex];
+if(mode==='play'&&gate&&hero.grounded&&hero.x>=gate.x-85){
+ const missing=obstacles.find(o=>mandatoryIds.has(o.id)&&Math.floor(o.id/10)===gateIndex&&!o.done);
+ if(missing){hero.x=gate.x-95;hero.vx=0;showField(missing)}
+}
+if(mode==='play'&&gate&&obstacles.filter(o=>mandatoryIds.has(o.id)&&Math.floor(o.id/10)===gateIndex).every(o=>o.done)&&Math.abs(hero.x-gate.x)<56&&Math.abs(hero.y+hero.h-FLOOR)<80){mode='quiz';keys.left=keys.right=keys.jump=false;openQuiz()}
 particles=particles.filter(p=>p.life>0);for(let p of particles){p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=230*dt;p.life-=dt}
 }
 function draw(){g.clearRect(0,0,W,H);sky();village();terrain();
 for(let p of platforms)drawPlatform(p);
 for(let c of collectibles)if(!c.got&&c.x>cam-50&&c.x<cam+W+50)coin(c.x-cam,c.y+Math.sin(t*3+c.x)*5,.83);
-gates.forEach(portal);let nextObstacle=obstacles.find(o=>!o.done);for(let o of obstacles){if(o.done||!nextObstacle||o.id<=nextObstacle.id+1)obstacleDraw(o)}
+gates.forEach(portal);for(let o of obstacles){if(mandatoryIds.has(o.id))obstacleDraw(o)}
 if(biome()===4){g.save();g.translate(990,245+Math.sin(t)*17);g.rotate(Math.sin(t)*.05);poly([[-52,-45],[52,-45],[30,30],[-30,30]],'#e9a652','#7b4c32',5);line(-30,30,-20,76,'#e5d5a8',3);line(30,30,20,76,'#e5d5a8',3);rr(-24,70,48,22,5,'#805b3b');g.restore()}
 if(biome()===3){for(let i=0;i<4;i++){let x=160+i*310-(cam%310);circle(x,FLOOR-12,21,'#e6f6ff');circle(x,FLOOR-38,15,'#f8fdff');circle(x-5,FLOOR-41,2,'#34465b')}}
 for(let d of dust){let x=d.x-cam;if(x<0||x>W)continue;circle(x+Math.sin(t+d.phase)*6,d.y+Math.sin(t*.8+d.phase)*11,d.r,'#ffedb455')}
-for(let p of particles){g.globalAlpha=clamp(p.life/p.max,0,1);circle(p.x-cam,p.y,p.r,p.color)}g.globalAlpha=1;heroine();dragon(W-73,115);
+for(let p of particles){g.globalAlpha=clamp(p.life/p.max,0,1);circle(p.x-cam,p.y,p.r,p.color)}g.globalAlpha=1;heroine();dragon(W-73,115);drawJoy();
 let vignette=g.createRadialGradient(W/2,H/2,190,W/2,H/2,830);vignette.addColorStop(0,'transparent');vignette.addColorStop(1,'#07152875');g.fillStyle=vignette;g.fillRect(0,0,W,H)}
-function frame(now){let dt=Math.min(.033,(now-last)/1000||.016);last=now;update(dt);draw();requestAnimationFrame(frame)}
-function hud(){$('gateHud').textContent=`🏰 Boss ${gateIndex}/6`;$('coinHud').textContent=`🪙 ${coins}`;$('streakHud').textContent=`🔥 Serie ${streak}`;$('scoreHud').textContent=`⭐ ${score}`}
+function frame(now){tickMusic();let dt=Math.min(.033,(now-last)/1000||.016);last=now;update(dt);draw();requestAnimationFrame(frame)}
+function hud(){$('gateHud').textContent=`🏅 Finale ${gateIndex}/6`;$('coinHud').textContent=`🪙 ${coins}`;$('streakHud').textContent=`🔥 Serie ${streak}`;$('scoreHud').textContent=`⭐ ${score}`}
 function show(html){panel.innerHTML=html;veil.classList.remove('hidden')}function hide(){veil.classList.add('hidden')}
 function playSound(freq){if(!soundOn)return;try{let a=new (window.AudioContext||window.webkitAudioContext)(),o=a.createOscillator(),v=a.createGain();o.type='sine';o.frequency.value=freq;o.connect(v);v.connect(a.destination);v.gain.setValueAtTime(.08,a.currentTime);v.gain.exponentialRampToValueAtTime(.001,a.currentTime+.18);o.start();o.stop(a.currentTime+.18);o.onended=()=>a.close()}catch(e){}}
-function saveGame(){try{localStorage.setItem('zeitreise7',JSON.stringify({difficulty,gateIndex,score,coins,streak,fieldCorrect,heroX:hero.x,outfit,obstacles:obstacles.map(o=>o.done),gates:gates.map(g=>g.done),collectibles:collectibles.map(c=>c.got),answers}))}catch(e){}}
-function loadGame(){try{let v=JSON.parse(localStorage.getItem('zeitreise7')||'null');if(!v){alert('Noch kein Spielstand vorhanden.');return}start(v.difficulty||'normal');gateIndex=v.gateIndex||0;score=v.score||0;coins=v.coins||0;streak=v.streak||0;fieldCorrect=v.fieldCorrect||0;hero.x=v.heroX||120;outfit=v.outfit||0;answers=v.answers||[];obstacles.forEach((o,i)=>o.done=!!v.obstacles?.[i]);gates.forEach((g,i)=>g.done=!!v.gates?.[i]);collectibles.forEach((c,i)=>c.got=!!v.collectibles?.[i]);cam=clamp(hero.x-W*.32,0,LEVEL-W);hud();hide();mode='play'}catch(e){alert('Spielstand konnte nicht geladen werden.')}}
+function saveGame(){try{localStorage.setItem('zeitreise72',JSON.stringify({difficulty,gateIndex,score,coins,streak,fieldCorrect,heroX:hero.x,outfit,obstacles:obstacles.map(o=>o.done),gates:gates.map(g=>g.done),collectibles:collectibles.map(c=>c.got),answers}))}catch(e){}}
+function loadGame(){try{let v=JSON.parse(localStorage.getItem('zeitreise72')||'null');if(!v){alert('Noch kein Spielstand vorhanden.');return}start(v.difficulty||'normal');gateIndex=v.gateIndex||0;score=v.score||0;coins=v.coins||0;streak=v.streak||0;fieldCorrect=v.fieldCorrect||0;hero.x=v.heroX||120;outfit=v.outfit||0;answers=v.answers||[];obstacles.forEach((o,i)=>o.done=!!v.obstacles?.[i]);gates.forEach((g,i)=>g.done=!!v.gates?.[i]);collectibles.forEach((c,i)=>c.got=!!v.collectibles?.[i]);cam=clamp(hero.x-W*.32,0,LEVEL-W);hud();hide();mode='play'}catch(e){alert('Spielstand konnte nicht geladen werden.')}}
 function showReward(){let b=gateIndex;let cost=[0,10,20,30][Math.min(b,3)];show(`<div class="tag">WELT ${b} / 6 GESCHAFFT</div><h2>✨ ${worlds[b-1]} geschafft!</h2><p>Du hast ${fieldCorrect} Hindernisse gelöst und ${coins} Münzen gesammelt.</p><p>🎨 Kaufe eine neue Tunika: ${cost} Münzen</p><div class="row"><button class="primary" onclick="buyOutfit(${Math.min(b,3)},${cost})">🧥 Kostüm freischalten</button><button class="primary" onclick="hide();mode='play';saveGame()">▶ Weiterreisen</button></div>`);mode='reward'}
 function buyOutfit(n,cost){if(coins<cost){alert('Du brauchst noch '+(cost-coins)+' Münzen.');return}coins-=cost;outfit=n;hud();hide();mode='play';saveGame();playSound(880)}
-function menu(){mode='menu';show(`<div class="tag">ZEITREISE · ENGINE 7.0</div><h2>Die sechs Welten der Zeit</h2><p>🏡 Dorf · 🌲 Zauberwald · 🌊 Fluss · ❄️ Schnee · 🎈 Wolken · 🏰 Schloss</p><p>60 Hindernisrätsel und 6 Boss-Tore. Wähle, schreibe, korrigiere, ordne Sätze und ergänze Dialoge. 🐉 Fynn erklärt die Zeitformen in sieben Sprachen. Sammle Münzen für neue Kleidung!</p><div class="row"><button class="primary" onclick="start('normal')">⚔️ Abenteuer starten</button><button class="primary" onclick="start('hard')">🔥 Schwer</button><button class="primary" onclick="loadGame()">💾 Fortsetzen</button></div><p class="small">A/D oder ←/→ bewegen · Leertaste springen · S: Ton an/aus · 🪙 Kostüme: 10/20/30 Münzen</p>`)}
+function menu(){mode='menu';show(`<div class="tag">ZEITREISE · ENGINE 7.1</div><h2>Die sechs Welten der Zeit</h2><p>🏡 Dorf · 🌲 Zauberwald · 🌊 Fluss · ❄️ Schnee · 🎈 Wolken · 🏰 Schloss</p><p>60 freundliche Rätsel und 6 Festspiele. Musik, Regenbogen, Sport und freundliche Rätsel! Wähle, schreibe, korrigiere, ordne Sätze und ergänze Dialoge. 🐉 Fynn erklärt die Zeitformen in sieben Sprachen. Sammle Münzen für neue Kleidung!</p><div class="row"><button class="primary" onclick="start('normal')">🌈 Abenteuer starten</button><button class="primary" onclick="start('hard')">🔥 Schwer</button><button class="primary" onclick="loadGame()">💾 Fortsetzen</button></div><p class="small">A/D oder ←/→ bewegen · Leertaste springen · M: Musik an/aus · 🪙 Kostüme: 10/20/30 Münzen</p>`)}
 function start(diff){difficulty=diff;gateIndex=0;score=0;coins=0;streak=0;fieldCorrect=0;answers=[];cam=0;zoneSeen=-1;hero.x=120;hero.y=FLOOR-70;hero.vx=hero.vy=0;gates.forEach(x=>x.done=false);obstacles.forEach(x=>x.done=false);activeObstacle=null;currentTask=null;$('challenge').classList.remove('show');collectibles.forEach(x=>x.got=false);particles=[];hud();mode='play';hide();saveGame()}
 function shuffle(a){return a.map(x=>({x,k:Math.random()})).sort((a,b)=>a.k-b.k).map(o=>o.x)}
 let current=null,options=[];
 function makeOptions(q){if(q.custom)return shuffle([...q.custom]);let pool=[q.a,...verbs.flatMap(v=>v.slice(1))].filter(x=>x!==q.a);pool=shuffle([...new Set(pool)]);return shuffle([q.a,...pool.slice(0,3)])}
 function openQuiz(){current=[examples[0],examples[3],examples[5],examples[6],examples[8],examples[9]][gateIndex];options=makeOptions(current);let type=gateIndex%3;let controls=type===0?options.map((x,i)=>`<button class="choice" onclick="answer(${i})">${String.fromCharCode(65+i)} · ${x}</button>`).join(''):`<input id="gateInput" style="width:100%;padding:12px;border-radius:10px;font-size:18px" placeholder="${type===1?'Richtige Form eingeben':'Fehler korrigieren: richtige Form eingeben'}" onkeydown="if(event.key==='Enter')answer(-1)"/><button class="primary" onclick="answer(-1)">Antwort prüfen</button>`;
-show(`<div class="boss"><div class="tag">BOSS-TOR ${gateIndex+1} / 6 · ${['AUSWÄHLEN','SCHREIBEN','KORRIGIEREN'][type]}</div><h2>🐉 Das Tor der Zeit</h2><p style="font-size:clamp(18px,2.5vw,26px);color:#fff">${current.q}</p><div id="choices">${controls}</div><p class="small">Du kannst den Drachen für eine Erklärung öffnen.</p></div>`)}
+show(`<div class="boss"><div class="tag">FESTSPIEL ${gateIndex+1} / 6 · ${['AUSWÄHLEN','SCHREIBEN','KORRIGIEREN'][type]}</div><h2>🌟 Das Fest der Zeiten</h2><p style="font-size:clamp(18px,2.5vw,26px);color:#fff">${current.q}</p><div id="choices">${controls}</div><p class="small">Du kannst den Drachen für eine Erklärung öffnen.</p></div>`)}
 function answer(i){if(mode!=='quiz')return;let type=gateIndex%3,picked=type===0?options[i]:$('gateInput').value,ok=norm(picked)===norm(current.a);answers.push({gate:gateIndex+1,question:current.q,chosen:picked,correct:current.a,ok});score+=ok?(difficulty==='hard'?170:120)+streak*20:20;streak=ok?streak+1:0;gates[gateIndex].done=true;
-document.querySelectorAll('.choice').forEach((b,j)=>{b.disabled=true;if(options[j]===current.a)b.classList.add('correct');else if(j===i)b.classList.add('wrong')});if($('gateInput'))$('gateInput').disabled=true;saveGame();playSound(ok?800:240);
+document.querySelectorAll('.choice').forEach((b,j)=>{b.disabled=true;if(options[j]===current.a)b.classList.add('correct');else if(j===i)b.classList.add('wrong')});if($('gateInput'))$('gateInput').disabled=true;saveGame();playSound(ok?800:240);if(ok)celebrate(gates[gateIndex].x,'festival');
 panel.insertAdjacentHTML('beforeend',`<p style="color:${ok?'#a2f4b6':'#ffb2a7'}"><b>${ok?'✨ Richtig!':'📖 Noch nicht ganz.'}</b> Richtige Antwort: <b>${current.a}</b>.</p><button class="primary" onclick="continueGame()">${gateIndex===5?'🏆 Ergebnis ansehen':'✨ Weiterreisen'}</button>`);mode='feedback';hud();emit(gates[gateIndex].x,FLOOR-100,35,ok?'#b1ffdc':'#ffdd99')}
 function continueGame(){gateIndex++;hud();if(gateIndex>=6){finish();return}hero.x=gates[gateIndex-1].x+120;hero.y=FLOOR-hero.h;hero.vx=0;mode='play';hide();saveGame();if(gateIndex>0){showReward()}}
-function finish(){mode='finish';let correct=answers.filter(a=>a.ok).length;show(`<div class="tag">ABENTEUER ABGESCHLOSSEN</div><h2>🏆 Zeitreise geschafft!</h2><p>Du hast sechs Welten mit 60 Hindernissen und sechs Boss-Toren gemeistert.</p><h2>${correct}/6 Boss-Tore richtig · ⭐ ${score}</h2><p>🪙 ${coins} Münzen gesammelt</p><div style="max-height:160px;overflow:auto;text-align:left">${answers.map(a=>`<p class="small">${a.ok?'✅':'❌'} Tor ${a.gate}: ${a.correct}</p>`).join('')}</div><button class="primary" onclick="start('${difficulty}')">🔁 Noch einmal spielen</button>`)}
+function finish(){mode='finish';let correct=answers.filter(a=>a.ok).length;show(`<div class="tag">ABENTEUER ABGESCHLOSSEN</div><h2>🌈 Das große Zeitfest!</h2><p>Du hast sechs Welten mit 18 Lernstationen und sechs Festspielen gemeistert.</p><h2>${correct}/6 Festspiele richtig · ⭐ ${score}</h2><p>🪙 ${coins} Münzen gesammelt</p><div style="max-height:160px;overflow:auto;text-align:left">${answers.map(a=>`<p class="small">${a.ok?'✅':'❌'} Tor ${a.gate}: ${a.correct}</p>`).join('')}</div><button class="primary" onclick="start('${difficulty}')">🔁 Noch einmal spielen</button>`)}
 function setKey(k,on){if(k==='ArrowLeft'||k==='a'||k==='A')keys.left=on;if(k==='ArrowRight'||k==='d'||k==='D')keys.right=on;if(k===' '||k==='ArrowUp'||k==='w'||k==='W')keys.jump=on}
-document.addEventListener('keydown',e=>{if(e.key.toLowerCase()==='s'&&!e.target.closest('input, textarea, select, [contenteditable=true]')){soundOn=!soundOn;return}if(e.target.closest('input, textarea, select, [contenteditable=true]'))return;if(['ArrowLeft','ArrowRight','ArrowUp',' '].includes(e.key))e.preventDefault();setKey(e.key,true)});
+document.addEventListener('keydown',e=>{if(e.key.toLowerCase()==='m'&&!e.target.closest('input, textarea, select, [contenteditable=true]')){toggleMusic();return}if(e.key.toLowerCase()==='s'&&!e.target.closest('input, textarea, select, [contenteditable=true]')){soundOn=!soundOn;return}if(e.target.closest('input, textarea, select, [contenteditable=true]'))return;if(['ArrowLeft','ArrowRight','ArrowUp',' '].includes(e.key))e.preventDefault();setKey(e.key,true)});
 document.addEventListener('keyup',e=>{if(e.target.closest('input, textarea, select, [contenteditable=true]'))return;setKey(e.key,false)});window.addEventListener('blur',()=>{keys.left=keys.right=keys.jump=false});
 for(let [id,k] of [['left','left'],['right','right'],['jump','jump']]){let b=$(id);b.addEventListener('pointerdown',e=>{e.preventDefault();b.setPointerCapture(e.pointerId);keys[k]=true});for(let ev of ['pointerup','pointercancel','lostpointercapture'])b.addEventListener(ev,()=>keys[k]=false)}
 document.addEventListener('contextmenu',e=>e.preventDefault());document.addEventListener('selectstart',e=>e.preventDefault());
+
+/* 7.1: Music is synthesized locally, no downloads, no third-party rights.
+   Browser audio starts only after a real user gesture. */
+let musicCtx=null,musicEnabled=false,musicNext=0,musicStep=0,musicWorld=-1;
+const musicScales=[
+ [60,64,67,72,69,67,64,62],[62,65,69,74,72,69,65,64],
+ [60,65,67,72,74,72,67,65],[62,66,69,74,71,69,66,64],
+ [65,69,72,77,76,72,69,67],[60,63,67,72,70,67,63,62]
+];
+function audioCtx(){if(!musicCtx)musicCtx=new (window.AudioContext||window.webkitAudioContext)();return musicCtx}
+function note(midi,when,duration,vol=.035,kind='triangle'){
+ const ac=audioCtx(),osc=ac.createOscillator(),gain=ac.createGain();
+ osc.type=kind;osc.frequency.setValueAtTime(440*Math.pow(2,(midi-69)/12),when);
+ gain.gain.setValueAtTime(.0001,when);gain.gain.exponentialRampToValueAtTime(vol,when+.018);
+ gain.gain.exponentialRampToValueAtTime(.0001,when+duration);
+ osc.connect(gain);gain.connect(ac.destination);osc.start(when);osc.stop(when+duration+.03);
+}
+function toggleMusic(){
+ musicEnabled=!musicEnabled;
+ const b=$('musicBtn');if(b)b.textContent=musicEnabled?'♫ AN':'♫ AUS';
+ if(musicEnabled){try{audioCtx().resume();musicNext=audioCtx().currentTime+.06;musicStep=0}catch(e){musicEnabled=false;b.textContent='♫ AUS'}}
+}
+function tickMusic(){
+ if(!musicEnabled||!musicCtx||musicCtx.state!=='running')return;
+ const ac=musicCtx,world=clamp(Math.floor(hero.x/1500),0,5);
+ if(world!==musicWorld){musicWorld=world;musicStep=0;musicNext=ac.currentTime+.07}
+ let safety=0;
+ while(musicNext<ac.currentTime+.25&&safety++<12){
+  const scale=musicScales[world],i=musicStep%16;
+  const n=scale[(i+(i>=8?2:0))%8];
+  const beat=world===3?.30:world===4?.40:.35;
+  if(i%4!==3)note(n+(i%8===6?12:0),musicNext,beat*.76,.032,world===4?'sine':'triangle');
+  if(i%4===0)note(scale[(Math.floor(i/4)*2)%8]-12,musicNext,beat*2.5,.017,'sine');
+  if(i%2===0)note(scale[0]-24,musicNext,beat*.35,.009,'triangle');
+  musicNext+=beat;musicStep++;
+ }
+}
+function celebrate(x,kind){
+ const colors=['#ff627f','#ffc94b','#65d9ff','#a68aff','#86f2a2'];
+ for(let i=0;i<48;i++){
+  const a=i*2.399,r=30+(i%7)*9;
+  particles.push({x:x+Math.cos(a)*r,y:FLOOR-115+Math.sin(a)*r,
+   vx:Math.cos(a)*140,vy:-95-Math.random()*150,life:1.8,max:1.8,color:colors[i%5],r:3+(i%3)});
+ }
+}
+function drawRainbow(cx,cy,r,alpha=1){
+ g.save();g.globalAlpha=alpha;
+ const colors=['#ff6a80','#ffad53','#ffe17d','#80dba2','#6cccf2','#9c92ed'];
+ for(let i=0;i<6;i++){
+  g.beginPath();g.arc(cx,cy,r-i*10,Math.PI,TAU);
+  g.lineWidth=11;g.strokeStyle=colors[i];g.stroke();
+ }
+ g.restore();
+}
+function drawJoy(){
+ const world=clamp(Math.floor(hero.x/1500),0,5);
+ // Colorful foreground, gently animated. Deliberately kept out of the question area.
+ for(let i=0;i<18;i++){
+  const wx=Math.floor(cam/125)*125+i*125+28,x=wx-cam;
+  if(x<0||x>W)continue;
+  const seed=Math.floor(wx/125),sw=Math.sin(t*1.5+seed)*3;
+  line(x,FLOOR-12,x+sw,FLOOR-35-(seed%3)*6,'#4c9954',3);
+  circle(x+sw,FLOOR-38-(seed%3)*6,6,['#ff8ab6','#ffdf69','#b6a0ff','#e5f6fb'][seed%4]);
+  circle(x+sw-3,FLOOR-40-(seed%3)*6,2,'#fff9df');
+ }
+ if(world===2||world===4){
+  drawRainbow(930,315,145,.68);
+  for(let i=0;i<8;i++){
+   let x=100+i*165-(cam*.12%165),y=250+(i%3)*45+Math.sin(t*2+i)*9;
+   glow(x,y,19,'#ffeab944');circle(x,y,2.5,'#fff6c8');
+  }
+ }
+ if(world===3){
+  // Animated friendly winter sports scene
+  for(let i=0;i<4;i++){
+   let x=180+i*300-(cam*.2%300),y=FLOOR-30;
+   line(x-28,y+11,x+29,y+11,'#86c9f2',5);
+   circle(x,y-37,10,'#f5d2ad');rr(x-9,y-27,18,27,6,['#ef7899','#67b9e9'][i%2]);
+   line(x-6,y,x-17,y+11,'#435e8b',3);line(x+6,y,x+18,y+11,'#435e8b',3);
+  }
+ }
+ if(world===0||world===1){
+  for(let i=0;i<5;i++){
+   let x=90+i*260-(cam*.35%260),y=FLOOR-120-(i%2)*35;
+   g.save();g.translate(x,y+Math.sin(t*2+i)*12);
+   circle(-5,0,5,'#ffe28b');circle(5,0,5,'#f6a4cb');circle(0,0,2,'#66544a');
+   g.restore();
+  }
+ }
+ // A completed obstacle leaves a happy visual reward.
+ for(const o of obstacles){
+  if(!o.done)continue;
+  const x=o.x-cam;if(x<-130||x>W+130)continue;
+  if(o.kind==='river')drawRainbow(x,FLOOR+2,44,.95);
+  else if(o.kind==='tree'){
+   circle(x,FLOOR-53,10,'#ffe388');circle(x-17,FLOOR-60,5,'#fda3c7');
+  }else if(o.kind==='snow'){
+   for(let i=0;i<4;i++)circle(x-30+i*20,FLOOR-16-Math.abs(Math.sin(t*2+i))*10,5,'#e8f8ff');
+  }else{
+   for(let i=0;i<4;i++)circle(x-25+i*17,FLOOR-14,5,['#f9b5d2','#b4d8ff','#ffe79e','#d2bbff'][i]);
+  }
+ }
+}
+
 menu();hud();requestAnimationFrame(frame);
 </script></body></html>
