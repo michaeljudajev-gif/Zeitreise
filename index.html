@@ -4,664 +4,785 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ZEITREISE 3.0</title>
+<title>ZEITREISE – Arcade Edition</title>
 <style>
 *{box-sizing:border-box}
-:root{
---gold:#ffdc82;--dark:#101e39;--light:#e5f4ff
-}
 body{
-margin:0;background:#081326;color:white;
-font-family:system-ui,Arial,sans-serif;text-align:center
+ margin:0;background:#09152c;color:#fff;
+ font-family:system-ui,Arial,sans-serif;text-align:center
 }
-button{font:800 15px system-ui;cursor:pointer}
-button:disabled{opacity:.55;cursor:default}
 header{
-display:flex;justify-content:space-between;
-align-items:center;padding:13px 15px;
-background:#152847;border-bottom:2px solid #d8ad60
+ display:flex;justify-content:space-between;
+ align-items:center;padding:12px 15px;
+ background:#14284b;border-bottom:2px solid #e9b85d
 }
-.logo{font:900 22px Georgia;color:var(--gold)}
-.stats{font-weight:800;font-size:13px}
-main{max-width:850px;margin:auto;padding:15px}
+.logo{font:900 22px Georgia;color:#ffdf87}
+#stats{font-weight:800;font-size:13px}
+main{max-width:850px;margin:auto;padding:12px}
 h1{
-font:900 clamp(40px,9vw,72px) Georgia;
-color:var(--gold);text-shadow:0 5px #704127
+ font:900 clamp(40px,10vw,76px) Georgia;
+ color:#ffdb83;text-shadow:0 5px #764728
 }
-h2{color:var(--gold)}
-p{line-height:1.5}
+h2{color:#ffdf91}
+button{
+ cursor:pointer;font:800 15px system-ui;
+ touch-action:manipulation
+}
 .btn{
-padding:13px 19px;margin:5px;
-border-radius:13px;border:2px solid #fff0b0;
-background:linear-gradient(#ffe8a7,#e5a43c);
-color:#34220b;box-shadow:0 4px #915c24
+ padding:13px 18px;margin:5px;border-radius:13px;
+ background:linear-gradient(#ffe7a5,#e6a63d);
+ color:#35230c;border:2px solid #fff1bb;
+ box-shadow:0 4px #865321
 }
-.btn:active{transform:translateY(3px)}
+.btn:active{transform:translateY(2px)}
 .secondary{
-background:#315a86;color:white;
-border-color:#83b6e5;box-shadow:0 4px #183b63
+ background:#305984;color:white;
+ border-color:#8bb9e9;box-shadow:0 4px #18375a
 }
 .card{
-background:linear-gradient(145deg,#244671,#112540);
-border:2px solid #739ac5;border-radius:21px;
-padding:17px;margin:14px 0;overflow:hidden
+ background:linear-gradient(145deg,#254773,#10243e);
+ border:2px solid #7199c2;border-radius:20px;
+ padding:14px;margin:12px 0
 }
-.scene{
-height:265px;position:relative;overflow:hidden;
-border:3px solid #9cc5e5;border-radius:18px;
-background:linear-gradient(#3688b5,#93cde2 65%,#6caa75 66%);
-margin:15px 0
-}
-.scene *{user-select:none}
-.cloud{
-position:absolute;font-size:37px;top:15px;
-animation:cloud 13s linear infinite
-}
-.cloud.two{top:60px;animation-duration:20s;animation-delay:-8s}
-@keyframes cloud{
-from{left:-90px}to{left:110%}
-}
-.ground{
-position:absolute;bottom:0;width:100%;height:45px;
-background:#447b53
-}
-.actor{
-position:absolute;bottom:36px;left:8%;
-font-size:52px;z-index:5;
-transition:left .8s,bottom .7s,transform .7s
-}
-.float{animation:float 2s ease-in-out infinite alternate}
-@keyframes float{to{transform:translateY(-13px)}}
-.bob{animation:bob .7s ease-in-out infinite alternate}
-@keyframes bob{to{transform:translateY(-7px)}}
-.spin{animation:spin 3s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-.shake{animation:shake .3s 3}
-@keyframes shake{
-25%{transform:rotate(12deg)}
-75%{transform:rotate(-12deg)}
-}
-.door{
-position:absolute;bottom:35px;font-size:48px;
-transition:transform .4s
-}
-.door:nth-of-type(1){left:23%}
-.door:nth-of-type(2){left:47%}
-.door:nth-of-type(3){left:73%}
-.train{
-position:absolute;bottom:42px;left:0;
-display:flex;gap:4px;font-size:57px;
-animation:train 5s ease-in-out infinite alternate
-}
-@keyframes train{
-from{transform:translateX(-8%)}
-to{transform:translateX(15%)}
-}
-.rail{
-position:absolute;bottom:35px;width:100%;
-height:8px;background:repeating-linear-gradient(
-90deg,#392d25 0 24px,#b4a6a0 24px 32px)
-}
-.building{
-position:absolute;bottom:40px;font-size:100px
-}
-.elevator{
-position:absolute;left:63%;bottom:40px;
-font-size:45px;transition:bottom 1s
-}
-.snow{
-background:linear-gradient(#265989,#8bb6e2 70%,#f3f8ff 71%)
-}
-.snow .ground{background:#edf7ff;height:55px}
-.snowman{
-position:absolute;right:16%;bottom:45px;
-font-size:85px;transition:transform .5s
-}
-.snowman.hit{animation:shake .3s 3}
-.snowflake{
-position:absolute;top:-25px;color:white;
-animation:snowfall 5s linear infinite
-}
-@keyframes snowfall{
-to{transform:translateY(300px) rotate(180deg)}
-}
-.ball{
-position:absolute;bottom:65px;left:20%;
-font-size:32px;z-index:8;
-animation:throw .75s ease-in forwards
-}
-@keyframes throw{
-0%{left:20%;bottom:65px}
-50%{left:50%;bottom:165px}
-100%{left:78%;bottom:85px}
-}
-.portal{
-background:radial-gradient(circle,#8956d5,#263e91 55%,#08142c)
-}
-.ring{
-position:absolute;left:50%;top:50%;
-width:190px;height:190px;border:12px dashed #80e8ff;
-border-radius:50%;transform:translate(-50%,-50%);
-animation:ring 5s linear infinite;
-box-shadow:0 0 35px #85e9ff
-}
-@keyframes ring{
-to{transform:translate(-50%,-50%) rotate(360deg)}
-}
-.ship{
-position:absolute;bottom:60px;left:45%;
-font-size:70px;z-index:4;
-transition:left .5s;animation:float 1s infinite alternate
-}
-.star{
-position:absolute;color:#ffdf77;font-size:28px;
-animation:twinkle 1s infinite alternate
-}
-@keyframes twinkle{to{opacity:.2;transform:scale(.6)}}
-.gear{
-position:absolute;font-size:85px;animation:spin 5s linear infinite
-}
-.gear.reverse{animation-direction:reverse}
-.machine{
-position:absolute;bottom:25px;left:40%;
-font-size:75px;animation:float 1.5s infinite alternate
+#game{
+ width:100%;display:block;border-radius:17px;
+ border:3px solid #a8cbe9;
+ background:#244a7b;touch-action:none
 }
 .map{
-background:linear-gradient(145deg,#d7e8b7,#88b8a7);
-border:5px solid #d9b56f;border-radius:24px;
-display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:14px
+ display:grid;grid-template-columns:1fr 1fr;
+ gap:12px;padding:15px;border:5px solid #dbb76e;
+ border-radius:23px;
+ background:linear-gradient(140deg,#d7e8bb,#8cb9a4)
 }
 .level{
-background:#fff0ca;color:#332718;
-border:3px solid #a77a42;border-radius:15px;
-padding:13px 5px;min-height:120px
+ min-height:125px;padding:12px 5px;
+ background:#fff0ca;color:#30251a;
+ border:3px solid #9d7440;border-radius:15px
 }
-.level .emoji{display:block;font-size:39px}
+.level span{display:block;font-size:43px}
 .level small{display:block;font-size:11px}
+.level:disabled{opacity:.55;filter:grayscale(1)}
 .paper{
-background:#fff0d0;color:#33251b;
-border:3px solid #d9aa63;border-radius:16px;
-padding:16px;margin:12px 0
+ background:#fff0d0;color:#30251a;
+ border:3px solid #d8a960;border-radius:15px;
+ padding:12px;margin:12px 0
 }
-.word{font-size:clamp(24px,6vw,36px);font-weight:900;color:#99551c}
-.answers{
-display:grid;grid-template-columns:1fr 1fr;gap:10px
+.word{font-size:clamp(23px,5vw,33px);font-weight:900;color:#91511f}
+.bar{
+ height:12px;background:#081a34;border-radius:20px;
+ overflow:hidden;margin:10px 0
 }
-.answer{
-background:linear-gradient(#d4efff,#8fc8f0);
-border:2px solid #f4fcff;border-radius:13px;
-color:#17344f;padding:13px 7px;min-height:60px;
-overflow-wrap:anywhere
+.fill{height:100%;background:linear-gradient(90deg,#6be7ac,#ffe07b)}
+#message{
+ background:#112c4e;border:1px solid #77a7d3;
+ border-radius:12px;padding:12px;margin:10px 0;
+ font-weight:800;min-height:47px
 }
-.answer.selected{background:#80e6b0}
-.answer.correct{background:#72e4a2}
-.answer.wrong{background:#ffac9d}
-.progress{
-height:12px;background:#071a34;border-radius:15px;
-overflow:hidden;margin:12px 0
-}
-.fill{
-height:100%;background:linear-gradient(90deg,#5de5a1,#ffe17d);
-transition:width .4s
-}
-.notice{
-padding:13px;background:#0b2445;
-border:2px solid #6cb9e5;border-radius:13px;
-margin:12px 0;font-weight:800
+.controls{display:flex;justify-content:center;gap:9px;flex-wrap:wrap}
+.control{
+ min-width:78px;min-height:51px;border-radius:14px;
+ background:#c6e9ff;color:#17324f;border:2px solid white;
+ font-size:22px;touch-action:none
 }
 .hidden{display:none!important}
-.tiles{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
-.tile{
-padding:11px;background:#bfe6ff;border:2px solid white;
-border-radius:12px;color:#17344f
-}
-.tile.selected{background:#75e6aa}
-.line{
-min-height:56px;border:2px dashed #8abce4;
-border-radius:12px;padding:13px;margin:10px 0
-}
-input{
-padding:14px;border:3px solid #88c5f0;
-border-radius:12px;font-size:18px;width:100%
-}
-#dialog{
-background:#fff0d0;color:#392918;
-padding:12px;border-radius:13px;font-weight:800
-}
-@media(max-width:500px){
-.scene{height:235px}
-.train{font-size:43px}
-.building{font-size:78px}
-.answer{font-size:13px}
+.badges{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.badge{
+ background:#23446c;border:1px solid #759dc6;
+ border-radius:18px;padding:8px 12px;font-size:13px
 }
 </style>
 </head>
 <body>
 <header>
 <div class="logo">⏳ ZEITREISE</div>
-<div class="stats" id="stats">⭐ 0</div>
+<div id="stats">⭐ 0</div>
 </header>
 <main id="app"></main>
+
 <script>
-const verbs=[
-["sein","war","ist gewesen","war gewesen"],
-["haben","hatte","hat gehabt","hatte gehabt"],
-["werden","wurde","ist geworden","war geworden"],
-["gehen","ging","ist gegangen","war gegangen"],
-["kommen","kam","ist gekommen","war gekommen"],
-["sehen","sah","hat gesehen","hatte gesehen"],
-["geben","gab","hat gegeben","hatte gegeben"],
-["nehmen","nahm","hat genommen","hatte genommen"],
-["finden","fand","hat gefunden","hatte gefunden"],
-["sprechen","sprach","hat gesprochen","hatte gesprochen"],
-["essen","aß","hat gegessen","hatte gegessen"],
-["trinken","trank","hat getrunken","hatte getrunken"],
-["fahren","fuhr","ist gefahren","war gefahren"],
-["laufen","lief","ist gelaufen","war gelaufen"],
-["schlafen","schlief","hat geschlafen","hatte geschlafen"],
-["lesen","las","hat gelesen","hatte gelesen"],
-["schreiben","schrieb","hat geschrieben","hatte geschrieben"],
-["bleiben","blieb","ist geblieben","war geblieben"],
-["bringen","brachte","hat gebracht","hatte gebracht"],
-["denken","dachte","hat gedacht","hatte gedacht"],
-["wissen","wusste","hat gewusst","hatte gewusst"],
-["kennen","kannte","hat gekannt","hatte gekannt"],
-["stehen","stand","hat gestanden","hatte gestanden"],
-["sitzen","saß","hat gesessen","hatte gesessen"],
-["liegen","lag","hat gelegen","hatte gelegen"],
-["helfen","half","hat geholfen","hatte geholfen"],
-["treffen","traf","hat getroffen","hatte getroffen"],
-["vergessen","vergaß","hat vergessen","hatte vergessen"],
-["verlieren","verlor","hat verloren","hatte verloren"],
-["gewinnen","gewann","hat gewonnen","hatte gewonnen"],
-["beginnen","begann","hat begonnen","hatte begonnen"],
-["anfangen","fing an","hat angefangen","hatte angefangen"],
-["verstehen","verstand","hat verstanden","hatte verstanden"],
-["bekommen","bekam","hat bekommen","hatte bekommen"],
-["halten","hielt","hat gehalten","hatte gehalten"],
-["lassen","ließ","hat gelassen","hatte gelassen"],
-["fallen","fiel","ist gefallen","war gefallen"],
-["fliegen","flog","ist geflogen","war geflogen"],
-["schwimmen","schwamm","ist geschwommen","war geschwommen"],
-["steigen","stieg","ist gestiegen","war gestiegen"],
-["aufstehen","stand auf","ist aufgestanden","war aufgestanden"],
-["ankommen","kam an","ist angekommen","war angekommen"],
-["wachsen","wuchs","ist gewachsen","war gewachsen"],
-["sterben","starb","ist gestorben","war gestorben"],
-["ziehen","zog","hat gezogen","hatte gezogen"],
-["anrufen","rief an","hat angerufen","hatte angerufen"],
-["rufen","rief","hat gerufen","hatte gerufen"],
-["tragen","trug","hat getragen","hatte getragen"],
-["waschen","wusch","hat gewaschen","hatte gewaschen"],
-["werfen","warf","hat geworfen","hatte geworfen"],
-["schließen","schloss","hat geschlossen","hatte geschlossen"],
-["schneiden","schnitt","hat geschnitten","hatte geschnitten"],
-["entscheiden","entschied","hat entschieden","hatte entschieden"],
-["singen","sang","hat gesungen","hatte gesungen"],
-["springen","sprang","ist gesprungen","war gesprungen"],
-["bitten","bat","hat gebeten","hatte gebeten"],
-["bieten","bot","hat geboten","hatte geboten"],
-["verbieten","verbot","hat verboten","hatte verboten"],
-["vergleichen","verglich","hat verglichen","hatte verglichen"],
-["unterschreiben","unterschrieb","hat unterschrieben","hatte unterschrieben"],
-["beschreiben","beschrieb","hat beschrieben","hatte beschrieben"],
-["leihen","lieh","hat geliehen","hatte geliehen"],
-["empfehlen","empfahl","hat empfohlen","hatte empfohlen"],
-["gefallen","gefiel","hat gefallen","hatte gefallen"],
-["heißen","hieß","hat geheißen","hatte geheißen"],
-["tun","tat","hat getan","hatte getan"],
-["brechen","brach","hat gebrochen","hatte gebrochen"],
-["versprechen","versprach","hat versprochen","hatte versprochen"],
-["rennen","rannte","ist gerannt","war gerannt"],
-["brennen","brannte","hat gebrannt","hatte gebrannt"],
-["nennen","nannte","hat genannt","hatte genannt"],
-["dürfen","durfte","hat gedurft","hatte gedurft"],
-["können","konnte","hat gekonnt","hatte gekonnt"],
-["müssen","musste","hat gemusst","hatte gemusst"],
-["sollen","sollte","hat gesollt","hatte gesollt"],
-["wollen","wollte","hat gewollt","hatte gewollt"],
-["mögen","mochte","hat gemocht","hatte gemocht"],
-["gelingen","gelang","ist gelungen","war gelungen"],
-["geschehen","geschah","ist geschehen","war geschehen"],
-["entstehen","entstand","ist entstanden","war entstanden"],
-["verschwinden","verschwand","ist verschwunden","war verschwunden"],
-["teilnehmen","nahm teil","hat teilgenommen","hatte teilgenommen"],
-["stattfinden","fand statt","hat stattgefunden","hatte stattgefunden"],
-["anbieten","bot an","hat angeboten","hatte angeboten"],
-["mitbringen","brachte mit","hat mitgebracht","hatte mitgebracht"],
-["aussehen","sah aus","hat ausgesehen","hatte ausgesehen"],
-["nachdenken","dachte nach","hat nachgedacht","hatte nachgedacht"],
-["vorlesen","las vor","hat vorgelesen","hatte vorgelesen"],
-["aufgeben","gab auf","hat aufgegeben","hatte aufgegeben"],
-["einladen","lud ein","hat eingeladen","hatte eingeladen"],
-["aufnehmen","nahm auf","hat aufgenommen","hatte aufgenommen"],
-["abgeben","gab ab","hat abgegeben","hatte abgegeben"],
-["einsteigen","stieg ein","ist eingestiegen","war eingestiegen"],
-["aussteigen","stieg aus","ist ausgestiegen","war ausgestiegen"],
-["umziehen","zog um","ist umgezogen","war umgezogen"],
-["anfassen","fasste an","hat angefasst","hatte angefasst"],
-["schaffen","schaffte","hat geschafft","hatte geschafft"],
-["kaufen","kaufte","hat gekauft","hatte gekauft"],
-["arbeiten","arbeitete","hat gearbeitet","hatte gearbeitet"],
-["lernen","lernte","hat gelernt","hatte gelernt"],
-["besuchen","besuchte","hat besucht","hatte besucht"],
-["erzählen","erzählte","hat erzählt","hatte erzählt"],
-["bezahlen","bezahlte","hat bezahlt","hatte bezahlt"]
-];
-const levels=[
+const raw=`
+sein|war|ist gewesen|war gewesen;
+haben|hatte|hat gehabt|hatte gehabt;
+werden|wurde|ist geworden|war geworden;
+gehen|ging|ist gegangen|war gegangen;
+kommen|kam|ist gekommen|war gekommen;
+sehen|sah|hat gesehen|hatte gesehen;
+geben|gab|hat gegeben|hatte gegeben;
+nehmen|nahm|hat genommen|hatte genommen;
+finden|fand|hat gefunden|hatte gefunden;
+sprechen|sprach|hat gesprochen|hatte gesprochen;
+essen|aß|hat gegessen|hatte gegessen;
+trinken|trank|hat getrunken|hatte getrunken;
+fahren|fuhr|ist gefahren|war gefahren;
+laufen|lief|ist gelaufen|war gelaufen;
+schlafen|schlief|hat geschlafen|hatte geschlafen;
+lesen|las|hat gelesen|hatte gelesen;
+schreiben|schrieb|hat geschrieben|hatte geschrieben;
+bleiben|blieb|ist geblieben|war geblieben;
+bringen|brachte|hat gebracht|hatte gebracht;
+denken|dachte|hat gedacht|hatte gedacht;
+wissen|wusste|hat gewusst|hatte gewusst;
+kennen|kannte|hat gekannt|hatte gekannt;
+stehen|stand|hat gestanden|hatte gestanden;
+sitzen|saß|hat gesessen|hatte gesessen;
+liegen|lag|hat gelegen|hatte gelegen;
+helfen|half|hat geholfen|hatte geholfen;
+treffen|traf|hat getroffen|hatte getroffen;
+vergessen|vergaß|hat vergessen|hatte vergessen;
+verlieren|verlor|hat verloren|hatte verloren;
+gewinnen|gewann|hat gewonnen|hatte gewonnen;
+beginnen|begann|hat begonnen|hatte begonnen;
+anfangen|fing an|hat angefangen|hatte angefangen;
+verstehen|verstand|hat verstanden|hatte verstanden;
+bekommen|bekam|hat bekommen|hatte bekommen;
+halten|hielt|hat gehalten|hatte gehalten;
+lassen|ließ|hat gelassen|hatte gelassen;
+fallen|fiel|ist gefallen|war gefallen;
+fliegen|flog|ist geflogen|war geflogen;
+schwimmen|schwamm|ist geschwommen|war geschwommen;
+steigen|stieg|ist gestiegen|war gestiegen;
+aufstehen|stand auf|ist aufgestanden|war aufgestanden;
+ankommen|kam an|ist angekommen|war angekommen;
+wachsen|wuchs|ist gewachsen|war gewachsen;
+sterben|starb|ist gestorben|war gestorben;
+ziehen|zog|hat gezogen|hatte gezogen;
+anrufen|rief an|hat angerufen|hatte angerufen;
+rufen|rief|hat gerufen|hatte gerufen;
+tragen|trug|hat getragen|hatte getragen;
+waschen|wusch|hat gewaschen|hatte gewaschen;
+werfen|warf|hat geworfen|hatte geworfen;
+schließen|schloss|hat geschlossen|hatte geschlossen;
+schneiden|schnitt|hat geschnitten|hatte geschnitten;
+entscheiden|entschied|hat entschieden|hatte entschieden;
+singen|sang|hat gesungen|hatte gesungen;
+springen|sprang|ist gesprungen|war gesprungen;
+bitten|bat|hat gebeten|hatte gebeten;
+bieten|bot|hat geboten|hatte geboten;
+verbieten|verbot|hat verboten|hatte verboten;
+vergleichen|verglich|hat verglichen|hatte verglichen;
+unterschreiben|unterschrieb|hat unterschrieben|hatte unterschrieben;
+beschreiben|beschrieb|hat beschrieben|hatte beschrieben;
+leihen|lieh|hat geliehen|hatte geliehen;
+empfehlen|empfahl|hat empfohlen|hatte empfohlen;
+gefallen|gefiel|hat gefallen|hatte gefallen;
+heißen|hieß|hat geheißen|hatte geheißen;
+tun|tat|hat getan|hatte getan;
+brechen|brach|hat gebrochen|hatte gebrochen;
+versprechen|versprach|hat versprochen|hatte versprochen;
+rennen|rannte|ist gerannt|war gerannt;
+brennen|brannte|hat gebrannt|hatte gebrannt;
+nennen|nannte|hat genannt|hatte genannt;
+dürfen|durfte|hat gedurft|hatte gedurft;
+können|konnte|hat gekonnt|hatte gekonnt;
+müssen|musste|hat gemusst|hatte gemusst;
+sollen|sollte|hat gesollt|hatte gesollt;
+wollen|wollte|hat gewollt|hatte gewollt;
+mögen|mochte|hat gemocht|hatte gemocht;
+gelingen|gelang|ist gelungen|war gelungen;
+geschehen|geschah|ist geschehen|war geschehen;
+entstehen|entstand|ist entstanden|war entstanden;
+verschwinden|verschwand|ist verschwunden|war verschwunden;
+teilnehmen|nahm teil|hat teilgenommen|hatte teilgenommen;
+stattfinden|fand statt|hat stattgefunden|hatte stattgefunden;
+anbieten|bot an|hat angeboten|hatte angeboten;
+mitbringen|brachte mit|hat mitgebracht|hatte mitgebracht;
+aussehen|sah aus|hat ausgesehen|hatte ausgesehen;
+nachdenken|dachte nach|hat nachgedacht|hatte nachgedacht;
+vorlesen|las vor|hat vorgelesen|hatte vorgelesen;
+aufgeben|gab auf|hat aufgegeben|hatte aufgegeben;
+einladen|lud ein|hat eingeladen|hatte eingeladen;
+aufnehmen|nahm auf|hat aufgenommen|hatte aufgenommen;
+abgeben|gab ab|hat abgegeben|hatte abgegeben;
+einsteigen|stieg ein|ist eingestiegen|war eingestiegen;
+aussteigen|stieg aus|ist ausgestiegen|war ausgestiegen;
+umziehen|zog um|ist umgezogen|war umgezogen;
+schaffen|schaffte|hat geschafft|hatte geschafft;
+kaufen|kaufte|hat gekauft|hatte gekauft;
+arbeiten|arbeitete|hat gearbeitet|hatte gearbeitet;
+lernen|lernte|hat gelernt|hatte gelernt;
+besuchen|besuchte|hat besucht|hatte besucht;
+erzählen|erzählte|hat erzählt|hatte erzählt;
+bezahlen|bezahlte|hat bezahlt|hatte bezahlt
+`;
+const verbs=raw.trim().split(";")
+.map(s=>s.trim().split("|"))
+.filter(v=>v.length===4);
+
+const worlds=[
 ["🏰","Das Dorf der Türen"],
 ["🚂","Der Zeitexpress"],
 ["🏙️","Die schwebende Stadt"],
 ["⛄","Die Schneeballschlacht"],
-["🌀","Der Portalflug"],
+["🚀","Der Portalflug"],
 ["⚙️","Die Zeitwerkstatt"]
 ];
+
 const app=document.getElementById("app");
 let saved;
-try{saved=JSON.parse(localStorage.getItem("zeitreise-animated"))}catch(e){}
+try{
+ saved=JSON.parse(localStorage.getItem("zeitreise-arcade"));
+}catch(e){}
 saved=saved||{stars:0,unlocked:1,errors:{}};
+
 let game=null;
+let canvas=null,ctx=null;
+let raf=0,lastTime=0;
+let keys={left:false,right:false};
+let pointer=null;
+
+const W=720,H=380;
+const names=["","Präteritum","Perfekt","Plusquamperfekt"];
+
 function persist(){
-try{localStorage.setItem("zeitreise-animated",JSON.stringify(saved))}catch(e){}
-document.getElementById("stats").textContent="⭐ "+saved.stars;
+ try{
+ localStorage.setItem("zeitreise-arcade",JSON.stringify(saved));
+ }catch(e){}
+ document.getElementById("stats").textContent="⭐ "+saved.stars;
 }
 function shuffle(a){
-let b=[...a];
-for(let i=b.length-1;i>0;i--){
-let j=Math.floor(Math.random()*(i+1));
-[b[i],b[j]]=[b[j],b[i]];
+ let b=[...a];
+ for(let i=b.length-1;i>0;i--){
+  let j=Math.floor(Math.random()*(i+1));
+  [b[i],b[j]]=[b[j],b[i]];
+ }
+ return b;
 }
-return b;
+function escapeHTML(s){
+ return String(s).replace(/[&<>"]/g,c=>({
+ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"
+ }[c]));
 }
-function safe(s){
-return String(s).replace(/[&<>"]/g,c=>({
-"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"
-}[c]));
+function stopGame(){
+ cancelAnimationFrame(raf);
+ raf=0;game=null;canvas=null;ctx=null;
+ keys.left=false;keys.right=false;
+ pointer=null;
 }
 function home(){
-app.innerHTML=`
-<h1>ZEITREISE</h1>
-<p>Mission Vergangenheit – Das animierte Abenteuer</p>
-<div class="scene">
-<div class="cloud">☁️</div>
-<div class="cloud two">☁️</div>
-<div class="ground"></div>
-<div class="actor bob" style="left:25%">🧙</div>
-<div style="position:absolute;right:14%;bottom:40px;font-size:105px" class="float">🌀</div>
-</div>
-<div class="card">
-<h2>Die Zeit ist durcheinander!</h2>
-<p>Sechs verrückte Welten warten auf dich.
-Reise durch die Vergangenheit, löse Rätsel und
-repariere die Zeitmaschine!</p>
-<button class="btn" onclick="world()">🗺️ Abenteuer starten</button>
-</div>`;
+ stopGame();
+ app.innerHTML=`
+ <h1>ZEITREISE</h1>
+ <h2>🕹️ ARCADE EDITION</h2>
+ <div class="card">
+ <div style="font-size:80px">🏰 🚂 ⛄ 🚀</div>
+ <h2>Die Zeit ist außer Kontrolle!</h2>
+ <p>Sechs verrückte Welten. Eine kaputte Zeitmaschine.
+ Und ein Schneemann mit einem ziemlich großen Mundwerk.</p>
+ <button class="btn" onclick="world()">🎮 Spielen!</button>
+ </div>
+ <div class="badges">
+ <span class="badge">📚 ${verbs.length} Verben</span>
+ <span class="badge">🕹️ 6 Arcade-Level</span>
+ <span class="badge">📱 Touch-Steuerung</span>
+ </div>`;
 }
 function world(){
-app.innerHTML=`
-<h2>🗺️ Die sechs Zeitwelten</h2>
-<p>Jede Welt hat ihre eigene Herausforderung!</p>
-<div class="map">
-${levels.map((l,i)=>`
-<button class="level"
-${i>=saved.unlocked?"disabled":""}
-onclick="startLevel(${i})">
-<span class="emoji">${i>=saved.unlocked?"🔒":l[0]}</span>
-${i+1}. ${l[1]}
-<small>${i<saved.unlocked?"Bereit":"Noch gesperrt"}</small>
-</button>`).join("")}
-</div>
-<button class="btn secondary" onclick="home()">← Start</button>`;
+ stopGame();
+ app.innerHTML=`
+ <h2>🗺️ Die Zeitwelten</h2>
+ <div class="map">
+ ${worlds.map((w,i)=>`
+ <button class="level"
+ ${i>=saved.unlocked?"disabled":""}
+ onclick="startLevel(${i})">
+ <span>${i>=saved.unlocked?"🔒":w[0]}</span>
+ ${i+1}. ${w[1]}
+ <small>${i<saved.unlocked?"Jetzt spielen":"Gesperrt"}</small>
+ </button>`).join("")}
+ </div>
+ <button class="btn secondary" onclick="home()">← Startseite</button>`;
 }
 function startLevel(i){
-let pool=i===5?
-verbs.filter(v=>saved.errors[v[0]]>0):verbs;
-if(pool.length<8)pool=verbs;
-game={
-level:i,
-deck:shuffle(pool).slice(0,8),
-step:0,points:0,locked:false,
-chosen:[],selection:-1
-};
-render();
+ stopGame();
+ let pool=i===5?
+ verbs.filter(v=>saved.errors[v[0]]>0):verbs;
+ if(pool.length<8)pool=verbs;
+ game={
+ level:i,deck:shuffle(pool).slice(0,8),
+ round:0,points:0,locked:false,
+ playerX:110,targetX:null,
+ jump:0,anim:0,drag:-1,
+ effects:[],options:[],t:0,
+ projectiles:[],snowHits:0
+ };
+ app.innerHTML=`
+ <div class="card">
+ <h2>${worlds[i][0]} ${worlds[i][1]}</h2>
+ <div>Rätsel <span id="round">1</span>/8</div>
+ <div class="bar"><div class="fill" id="progress"></div></div>
+ <canvas id="game" width="720" height="380"></canvas>
+ <div id="message">Bereit?</div>
+ <div class="paper">
+ <div id="form"></div>
+ <div class="word" id="verb"></div>
+ </div>
+ <div class="controls" id="controls"></div>
+ <button id="next" class="btn hidden" onclick="nextRound()">Weiter ➜</button>
+ <button class="btn secondary" onclick="world()">🗺️ Karte</button>
+ </div>`;
+ canvas=document.getElementById("game");
+ ctx=canvas.getContext("2d");
+ canvas.addEventListener("pointerdown",pointerDown);
+ canvas.addEventListener("pointermove",pointerMove);
+ canvas.addEventListener("pointerup",pointerUp);
+ canvas.addEventListener("pointercancel",pointerUp);
+ newRound();
+ lastTime=performance.now();
+ raf=requestAnimationFrame(loop);
 }
-function scenery(i){
-if(i===0)return `
-<div class="cloud">☁️</div>
-<div class="cloud two">☁️</div>
-<div class="ground"></div>
-<div class="door" style="left:26%">🚪</div>
-<div class="door" style="left:52%">🚪</div>
-<div class="door" style="left:76%">🚪</div>
-<div id="actor" class="actor bob">🧙</div>`;
-if(i===1)return `
-<div class="cloud">☁️</div>
-<div class="rail"></div>
-<div class="train" id="train">🚂🚃🚃🚃</div>`;
-if(i===2)return `
-<div class="cloud">☁️</div>
-<div class="building" style="left:8%">🏢</div>
-<div class="building" style="right:4%">🏛️</div>
-<div class="ground"></div>
-<div id="elevator" class="elevator">🛗</div>
-<div id="actor" class="actor bob">🧑‍🚀</div>`;
-if(i===3)return `
-<div class="ground"></div>
-<div class="snowflake" style="left:15%">❄</div>
-<div class="snowflake" style="left:40%;animation-delay:-2s">❄</div>
-<div class="snowflake" style="left:70%;animation-delay:-3s">❄</div>
-<div class="snowflake" style="left:90%;animation-delay:-1s">❄</div>
-<div id="actor" class="actor bob">🧒</div>
-<div id="snowman" class="snowman">⛄</div>`;
-if(i===4)return `
-<div class="ring"></div>
-<div class="star" style="left:15%;top:20%">⭐</div>
-<div class="star" style="left:75%;top:15%">✨</div>
-<div class="star" style="left:80%;top:75%">⭐</div>
-<div id="ship" class="ship">🚀</div>`;
-return `
-<div class="gear" style="left:10%;top:30px">⚙️</div>
-<div class="gear reverse" style="right:10%;top:85px">⚙️</div>
-<div class="gear" style="left:42%;top:0;font-size:55px">⚙️</div>
-<div class="machine">🕰️</div>`;
+function newRound(){
+ game.locked=false;
+ game.anim=0;game.drag=-1;
+ game.targetX=null;game.projectiles=[];
+ game.playerX=110;
+ let v=game.deck[game.round];
+ let form=1+Math.floor(Math.random()*3);
+ let mode=game.level===2?"identify":"form";
+ if(game.level===5)form=2+Math.floor(Math.random()*2);
+ let correct=mode==="identify"?names[form]:v[form];
+ let opts;
+ if(mode==="identify"){
+  opts=shuffle(names.slice(1));
+ }else{
+  let distract=shuffle(
+   [...new Set(verbs.map(x=>x[form]))]
+   .filter(x=>x!==correct)
+  ).slice(0,2);
+  opts=shuffle([correct,...distract]);
+ }
+ game.question={v,form,correct,mode};
+ game.options=opts;
+ game.t=0;
+ document.getElementById("round").textContent=game.round+1;
+ document.getElementById("progress").style.width=
+ (game.round/8*100)+"%";
+ document.getElementById("form").textContent=
+ mode==="identify"?"Welche Zeitform ist das?":
+ "Gesucht: "+names[form];
+ document.getElementById("verb").textContent=
+ mode==="identify"?v[form]:v[0];
+ document.getElementById("next").classList.add("hidden");
+ let tips=[
+ "🏰 Bewege dich zur richtigen Tür!",
+ "🚂 Tippe den richtigen fahrenden Waggon an!",
+ "🏙️ Tippe die richtige Plattform an und springe!",
+ "⛄ Tippe einen Schneeball an und wirf ihn!",
+ "🚀 Steuere die Rakete in den richtigen Kristall!",
+ "⚙️ Ziehe das richtige Zahnrad in die Maschine!"
+ ];
+ document.getElementById("message").textContent=tips[game.level];
+ let controls=document.getElementById("controls");
+ if(game.level===0||game.level===4){
+ controls.innerHTML=`
+ <button class="control" id="left">◀</button>
+ <button class="control" id="right">▶</button>
+ ${game.level===0?
+ '<button class="control" onclick="openDoor()">🚪 Öffnen</button>':
+ '<span style="align-self:center">Kristalle einsammeln!</span>'}`;
+ bindHold("left","left");
+ bindHold("right","right");
+ }else{
+ controls.innerHTML='<span class="badge">👆 Direkt auf dem Spielfeld spielen</span>';
+ }
 }
-function render(){
-let v=game.deck[game.step];
-let f=1+Math.floor(Math.random()*3);
-let mode=game.level===1||game.level===5?"tiles":
-game.level===2?"identify":
-game.level===4?"mixed":"choice";
-if(mode==="mixed")mode=shuffle(["choice","identify","tiles"])[0];
-if(mode==="tiles"&&f===1)f=2;
-let names=["","Präteritum","Perfekt","Plusquamperfekt"];
-let correct=mode==="identify"?names[f]:v[f];
-game.task={v,f,mode,correct};
-game.locked=false;
-game.selection=-1;
-game.chosen=[];
-let instruction={
-0:"Laufe zur richtigen Tür!",
-1:"Setze die Ladung für den Zug zusammen!",
-2:"Erkenne die Zeitform und starte den Aufzug!",
-3:"Wähle den richtigen Schneeball!",
-4:"Steuere die Rakete zur richtigen Lösung!",
-5:"Setze die Zahnräder der Zeit zusammen!"
-}[game.level];
-app.innerHTML=`
-<div class="card">
-<h2>${levels[game.level][0]} ${levels[game.level][1]}</h2>
-<p>${instruction}</p>
-<div>Rätsel ${game.step+1} von ${game.deck.length}</div>
-<div class="progress">
-<div class="fill" style="width:${100*game.step/game.deck.length}%"></div>
-</div>
-<div id="scene" class="scene ${game.level===3?"snow":""} ${game.level===4?"portal":""}">
-${scenery(game.level)}
-</div>
-<div id="dialog">
-${game.level===3?"⛄ Hihi! Du triffst mich sowieso nicht!":
-"✨ Die Zeit wartet auf deine Entscheidung!"}
-</div>
-<div class="paper">
-<div>${mode==="identify"?"Welche Zeitform ist das?":
-"Gesucht: "+names[f]}</div>
-<div class="word">${safe(mode==="identify"?v[f]:v[0])}</div>
-</div>
-<div id="answers"></div>
-<div id="feedback"></div>
-<button class="btn" id="check" onclick="check()">✨ Aktion ausführen</button>
-<button class="btn hidden" id="next" onclick="advance()">Weiter ➜</button>
-<button class="btn secondary" onclick="world()">🗺️ Karte</button>
-</div>`;
-let area=document.getElementById("answers");
-if(mode==="tiles"){
-let words=correct.split(" ");
-let extras=shuffle(["hat","ist","hatte","war","gehabt"])
-.filter(x=>!words.includes(x)).slice(0,2);
-game.tiles=shuffle([...words,...extras]);
-area.innerHTML=`
-<div id="assembled" class="line">Wörter antippen</div>
-<div class="tiles">
-${game.tiles.map((x,i)=>`
-<button class="tile" id="tile${i}" onclick="chooseTile(${i})">${safe(x)}</button>
-`).join("")}
-</div>`;
-}else{
-let options=mode==="identify"?shuffle(names.slice(1)):
-shuffle([
-correct,
-...shuffle(verbs.filter(x=>x!==v))
-.slice(0,3).map(x=>x[f])
-]);
-game.options=options;
-area.innerHTML=`
-<div class="answers">
-${options.map((x,i)=>`
-<button class="answer" id="option${i}"
-onclick="choose(${i})">${safe(x)}</button>
-`).join("")}
-</div>`;
+function bindHold(id,key){
+ let b=document.getElementById(id);
+ if(!b)return;
+ b.addEventListener("pointerdown",e=>{
+ e.preventDefault();keys[key]=true;
+ b.setPointerCapture(e.pointerId);
+ });
+ for(let ev of ["pointerup","pointercancel","lostpointercapture"]){
+ b.addEventListener(ev,()=>keys[key]=false);
+ }
 }
+function coords(e){
+ let r=canvas.getBoundingClientRect();
+ return {
+ x:(e.clientX-r.left)*W/r.width,
+ y:(e.clientY-r.top)*H/r.height
+ };
 }
-function choose(i){
-if(game.locked)return;
-game.selection=i;
-document.querySelectorAll(".answer").forEach((b,j)=>
-b.classList.toggle("selected",i===j));
-if(game.level===4){
-let ship=document.getElementById("ship");
-if(ship)ship.style.left=i%2===0?"20%":"65%";
+function pointerDown(e){
+ if(!game||game.locked)return;
+ e.preventDefault();
+ let p=coords(e);
+ pointer=p;
+ let i=game.level;
+ if(i===0){
+  game.targetX=p.x;
+ }else if(i===1){
+  let hit=trainPositions().findIndex(x=>
+   Math.abs(x-p.x)<102&&p.y>135&&p.y<300);
+  if(hit>=0)chooseAnswer(hit);
+ }else if(i===2){
+  let index=platformIndex(p.x,p.y);
+  if(index>=0){
+   game.targetX=[140,360,580][index];
+   game.jump=1;
+   game.anim=0;
+   game.pending=index;
+  }
+ }else if(i===3){
+  let index=snowballIndex(p.x,p.y);
+  if(index>=0)throwSnowball(index);
+ }else if(i===4){
+  game.playerX=p.x;
+ }else if(i===5){
+  let index=gearIndex(p.x,p.y);
+  if(index>=0){
+   game.drag=index;
+   canvas.setPointerCapture(e.pointerId);
+  }
+ }
 }
+function pointerMove(e){
+ if(!game||game.locked)return;
+ let p=coords(e);
+ pointer=p;
+ if(game.level===4&&e.buttons){
+  game.playerX=p.x;
+ }
 }
-function chooseTile(i){
-if(game.locked)return;
-let pos=game.chosen.indexOf(i);
-if(pos>=0)game.chosen.splice(pos,1);
-else game.chosen.push(i);
-document.querySelectorAll(".tile").forEach((b,j)=>
-b.classList.toggle("selected",game.chosen.includes(j)));
-document.getElementById("assembled").textContent=
-game.chosen.map(j=>game.tiles[j]).join(" ")||"Wörter antippen";
+function pointerUp(e){
+ if(!game)return;
+ if(game.level===5&&game.drag>=0&&!game.locked){
+  let p=coords(e);
+  if(Math.hypot(p.x-360,p.y-155)<100){
+   chooseAnswer(game.drag);
+  }
+  game.drag=-1;
+ }
+ pointer=null;
 }
-function check(){
-if(game.locked)return;
-let t=game.task;
-let answer=t.mode==="tiles"?
-game.chosen.map(i=>game.tiles[i]).join(" "):
-game.options[game.selection];
-if(!answer)return;
-game.locked=true;
-let normalize=s=>s.trim().toLowerCase().replace(/\s+/g," ");
-let ok=normalize(answer)===normalize(t.correct);
-if(ok){
-game.points+=10;
-saved.stars+=10;
-if(saved.errors[t.v[0]])saved.errors[t.v[0]]--;
-}else{
-saved.errors[t.v[0]]=(saved.errors[t.v[0]]||0)+1;
+function trainPositions(){
+ let t=game.t;
+ return [0,1,2].map(i=>
+  ((i*260+t*72)%(W+340))-110
+ );
 }
-persist();
-animateResult(ok);
-document.querySelectorAll(".answer,.tile").forEach(b=>b.disabled=true);
-document.getElementById("check").classList.add("hidden");
-document.getElementById("next").classList.remove("hidden");
-document.getElementById("feedback").innerHTML=`
-<div class="notice">
-${ok?"🌟 Richtig! +10 Sterne":
-"💫 Knapp daneben! Richtig ist: "+safe(t.correct)}
-</div>`;
+function platformIndex(x,y){
+ let xs=[140,360,580],ys=[225,165,215];
+ return xs.findIndex((a,i)=>
+  Math.abs(a-x)<100&&Math.abs(ys[i]-y)<70);
 }
-function animateResult(ok){
-let i=game.level;
-let dialog=document.getElementById("dialog");
-if(i===0){
-let actor=document.getElementById("actor");
-actor.style.left=ok?"77%":"42%";
-dialog.textContent=ok?
-"🧙 Sesam, öffne dich!":"🚪 Ups! Falsche Tür!";
+function snowballIndex(x,y){
+ return [140,360,580].findIndex(a=>
+  Math.abs(a-x)<100&&y>245);
 }
-if(i===1){
-let train=document.getElementById("train");
-train.style.animationDuration=ok?".8s":"9s";
-dialog.textContent=ok?
-"🚂 Tuuut! Volle Fahrt voraus!":"🚂 Der Zug hat Verspätung!";
+function gearIndex(x,y){
+ return [140,360,580].findIndex(a=>
+  Math.abs(a-x)<90&&y>245);
 }
-if(i===2){
-let lift=document.getElementById("elevator");
-lift.style.bottom=ok?"160px":"65px";
-dialog.textContent=ok?
-"🛗 Aufwärts!":"🛗 Bitte die Zeitform überprüfen!";
+function openDoor(){
+ if(!game||game.locked||game.level!==0)return;
+ let xs=[140,360,580];
+ let index=xs.findIndex(x=>Math.abs(game.playerX-x)<58);
+ if(index>=0)chooseAnswer(index);
+ else document.getElementById("message").textContent=
+ "🚪 Geh erst näher an eine Tür!";
 }
-if(i===3){
-let scene=document.getElementById("scene");
-let ball=document.createElement("div");
-ball.className="ball";
-ball.textContent="❄️";
-scene.appendChild(ball);
-let snowman=document.getElementById("snowman");
-if(ok){
-snowman.classList.add("hit");
-dialog.textContent=shuffle([
-"⛄ Hey! Meine Karottennase!",
-"⛄ Das war grammatikalisch unfair!",
-"⛄ Ich verlange einen Schneeball-Anwalt!",
-"⛄ Nicht schon wieder mein Hut!"
-])[0];
-}else{
-dialog.textContent="⛄ Hahaha! Daneben, du Frostbeule!";
+function throwSnowball(index){
+ if(game.locked)return;
+ game.projectiles.push({
+ x:[140,360,580][index],
+ y:290,index,progress:0
+ });
+ game.pending=index;
+ game.anim=0;
+ game.locked=true;
+ document.getElementById("message").textContent=
+ "❄️ Schneeball unterwegs!";
 }
+function chooseAnswer(index){
+ if(!game||game.locked||index<0)return;
+ let answer=game.options[index];
+ let correct=game.question.correct;
+ let ok=answer===correct;
+ game.locked=true;
+ if(ok){
+  game.points+=10;
+  saved.stars+=10;
+  if(saved.errors[game.question.v[0]]){
+   saved.errors[game.question.v[0]]--;
+  }
+ }else{
+  let word=game.question.v[0];
+  saved.errors[word]=(saved.errors[word]||0)+1;
+ }
+ persist();
+ let jokes=[
+ "⛄ Meine Karotte hat einen Anwalt!",
+ "⛄ Ich bin ein Schneemann, kein Grammatikbuch!",
+ "⛄ Ich fordere eine Schneeballpause!",
+ "⛄ Nicht auf den Hut! Der war teuer!",
+ "⛄ Das ist ja zum Dahinschmelzen!"
+ ];
+ let msg=ok?"🌟 Volltreffer! +10 Sterne":
+ "💫 Fast! Richtig: "+correct;
+ if(game.level===3){
+  msg+=" "+(ok?shuffle(jokes)[0]:
+  "⛄ Haha! Ich bin der König des Schnees!");
+  if(ok)game.snowHits++;
+ }
+ document.getElementById("message").textContent=msg;
+ document.getElementById("next").classList.remove("hidden");
+ game.effects.push({
+ x:360,y:150,life:1,
+ text:ok?"✨ +10":"💨"
+ });
 }
-if(i===4){
-let ship=document.getElementById("ship");
-ship.textContent=ok?"🚀":"🛸";
-dialog.textContent=ok?
-"🌀 Hyperantrieb aktiviert!":"🌀 Turbulenzen im Zeitportal!";
+function nextRound(){
+ if(!game)return;
+ game.round++;
+ if(game.round>=8){
+  finishLevel();
+ }else newRound();
 }
-if(i===5){
-let gears=document.querySelectorAll(".gear");
-gears.forEach(g=>g.style.animationDuration=ok?".5s":"10s");
-dialog.textContent=ok?
-"⚙️ Die Maschine läuft wieder!":"🔧 Da klemmt noch ein Zahnrad!";
+function finishLevel(){
+ let i=game.level,points=game.points;
+ saved.unlocked=Math.max(saved.unlocked,Math.min(6,i+2));
+ persist();
+ stopGame();
+ app.innerHTML=`
+ <div class="card">
+ <div style="font-size:95px">🏆</div>
+ <h1>Geschafft!</h1>
+ <h2>${worlds[i][1]}</h2>
+ <p>Du hast <b>${points} Sterne</b> gesammelt.</p>
+ <p>${i===3?
+ "⛄ Der Schneemann erklärt dich zum Schneeballmeister!":
+ "✨ Das nächste Zeitportal ist geöffnet!"}</p>
+ <button class="btn" onclick="world()">🗺️ Zur Weltkarte</button>
+ <button class="btn secondary" onclick="startLevel(${i})">🔁 Noch einmal</button>
+ </div>`;
 }
+function text(s,x,y,size=18,color="white"){
+ ctx.font="800 "+size+"px system-ui";
+ ctx.fillStyle=color;ctx.textAlign="center";
+ ctx.fillText(s,x,y);
 }
-function advance(){
-game.step++;
-if(game.step<game.deck.length){render();return;}
-saved.unlocked=Math.max(saved.unlocked,Math.min(6,game.level+2));
-persist();
-app.innerHTML=`
-<div class="card">
-<div style="font-size:90px" class="float">🏆</div>
-<h1>Geschafft!</h1>
-<h2>${levels[game.level][1]} abgeschlossen!</h2>
-<p>Du hast ${game.points} Sterne gesammelt.</p>
-<p>${game.level===3?
-"⛄ Der Schneemann erklärt dich zum Schneeballmeister!":
-"✨ Ein weiteres Zeitportal wurde repariert!"}</p>
-<button class="btn" onclick="world()">🗺️ Nächste Welt</button>
-<button class="btn secondary" onclick="startLevel(${game.level})">🔁 Wiederholen</button>
-</div>`;
+function emoji(s,x,y,size=52){
+ ctx.font=size+"px system-ui";
+ ctx.textAlign="center";
+ ctx.fillText(s,x,y);
 }
+function rect(x,y,w,h,color,r=12){
+ ctx.fillStyle=color;
+ ctx.beginPath();
+ ctx.roundRect(x,y,w,h,r);
+ ctx.fill();
+}
+function label(s,x,y,w=190){
+ rect(x-w/2,y-28,w,48,"#fff1d2",11);
+ ctx.fillStyle="#263247";
+ ctx.textAlign="center";
+ ctx.font="800 16px system-ui";
+ let words=s.split(" "),lines=[],line="";
+ for(let word of words){
+  let test=(line+" "+word).trim();
+  if(ctx.measureText(test).width>w-14&&line){
+   lines.push(line);line=word;
+  }else line=test;
+ }
+ if(line)lines.push(line);
+ let start=y-(lines.length-1)*10;
+ lines.forEach((a,i)=>text(a,x,start+i*19,16,"#263247"));
+}
+function background(top="#348cbb",bottom="#a4d3d4"){
+ let g=ctx.createLinearGradient(0,0,0,H);
+ g.addColorStop(0,top);g.addColorStop(1,bottom);
+ ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+}
+function clouds(){
+ emoji("☁️",(game.t*15)%850-80,75,55);
+ emoji("☁️",650-(game.t*9)%820,120,38);
+}
+function drawVillage(){
+ background();clouds();
+ rect(0,310,W,70,"#59925d",0);
+ emoji("🏰",600,210,115);
+ let xs=[140,360,580];
+ xs.forEach((x,i)=>{
+  emoji("🚪",x,295,70);
+  label(game.options[i],x,190,190);
+ });
+ if(game.targetX!==null&&!game.locked){
+  let d=game.targetX-game.playerX;
+  game.playerX+=Math.sign(d)*Math.min(Math.abs(d),3.7);
+  if(Math.abs(d)<5)game.targetX=null;
+ }
+ if(keys.left)game.playerX-=4;
+ if(keys.right)game.playerX+=4;
+ game.playerX=Math.max(20,Math.min(700,game.playerX));
+ emoji("🧙",game.playerX,316,58);
+ text("◀ ▶ bewegen · Tür öffnen",360,363,16);
+}
+function drawTrain(){
+ background("#337fa8","#a8d7c3");
+ clouds();
+ rect(0,308,W,72,"#57805b",0);
+ rect(0,318,W,8,"#47372c",0);
+ for(let x=0;x<W;x+=30)rect(x,328,15,8,"#a6a6a6",0);
+ let xs=trainPositions();
+ xs.forEach((x,i)=>{
+  rect(x-106,170,212,118,"#244b75",15);
+  rect(x-100,175,200,104,
+   ["#d37e42","#6598c7","#a779c1"][i],12);
+  emoji("🚃",x,253,64);
+  label(game.options[i],x,155,205);
+ });
+ text("👆 Tippe auf den richtigen Waggon!",360,365,17);
+}
+function drawCity(){
+ background("#4563a0","#b1a3db");
+ clouds();
+ emoji("🏙️",360,292,185);
+ let xs=[140,360,580],ys=[225,165,215];
+ xs.forEach((x,i)=>{
+  rect(x-95,ys[i],190,20,"#e5c28c",7);
+  label(game.options[i],x,ys[i]-15,180);
+ });
+ let jumpHeight=0;
+ if(game.jump){
+  game.anim+=.04;
+  let progress=Math.min(1,game.anim);
+  jumpHeight=Math.sin(progress*Math.PI)*110;
+  game.playerX+=(game.targetX-game.playerX)*.09;
+  if(progress>=1){
+   game.jump=0;
+   chooseAnswer(game.pending);
+  }
+ }
+ emoji("🧑‍🚀",game.playerX,320-jumpHeight,55);
+ text("👆 Plattform antippen = springen",360,365,17);
+}
+function drawSnow(){
+ background("#315b91","#a9c9ee");
+ for(let i=0;i<30;i++){
+  let x=(i*97)%W;
+  let y=(i*71+game.t*38*(1+i%3*.2))%H;
+  text("❄",x,y,16,"white");
+ }
+ rect(0,320,W,60,"#f1f8ff",0);
+ emoji("🧒",100,320,65);
+ let wobble=game.snowHits?
+ Math.sin(game.t*4)*6:0;
+ emoji("⛄",585+wobble,315,105);
+ let xs=[140,360,580];
+ xs.forEach((x,i)=>{
+  emoji("❄️",x,300,38);
+  label(game.options[i],x,255,190);
+ });
+ for(let p of game.projectiles){
+  p.progress=Math.min(1,p.progress+.035);
+  let x=p.x+(585-p.x)*p.progress;
+  let y=290-160*Math.sin(Math.PI*p.progress);
+  emoji("❄️",x,y,34);
+  if(p.progress>=1&&!p.done){
+   p.done=true;
+   chooseAnswer(p.index);
+  }
+ }
+ game.projectiles=game.projectiles.filter(p=>!p.done);
+}
+function drawPortal(){
+ background("#1c205e","#6238a5");
+ for(let i=0;i<30;i++){
+  let x=(i*89)%W;
+  let y=(i*113+game.t*110)%H;
+  text("✦",x,y,12+(i%3)*5,"#fce7b5");
+ }
+ ctx.save();
+ ctx.translate(360,175);
+ ctx.rotate(game.t*.8);
+ ctx.strokeStyle="#82e8fa";
+ ctx.lineWidth=14;
+ ctx.setLineDash([28,15]);
+ ctx.beginPath();ctx.arc(0,0,140,0,Math.PI*2);ctx.stroke();
+ ctx.restore();
+ let xs=[140,360,580];
+ xs.forEach((x,i)=>{
+  let y=95+(game.t*38+i*100)%220;
+  emoji("💎",x,y,45);
+  label(game.options[i],x,y-43,190);
+  if(!game.locked&&
+   Math.abs(game.playerX-x)<47&&
+   Math.abs(295-y)<40){
+   chooseAnswer(i);
+  }
+ });
+ if(keys.left)game.playerX-=4.4;
+ if(keys.right)game.playerX+=4.4;
+ game.playerX=Math.max(25,Math.min(695,game.playerX));
+ emoji("🚀",game.playerX,315,65);
+ text("◀ ▶ steuern · Kristall einsammeln",360,367,17);
+}
+function drawWorkshop(){
+ background("#5b4a76","#9e8195");
+ for(let i=0;i<4;i++){
+  let x=100+i*170;
+  ctx.save();
+  ctx.translate(x,75);
+  ctx.rotate(game.t*(i%2?-1:1));
+  emoji("⚙️",0,0,85);
+  ctx.restore();
+ }
+ rect(245,105,230,115,"#3a4568",22);
+ rect(265,120,190,83,"#c3d5d8",12);
+ text("ZEITMASCHINE",360,155,19,"#25344b");
+ text("⬇ HIER EINSETZEN",360,182,16,"#25344b");
+ let xs=[140,360,580];
+ xs.forEach((x,i)=>{
+  if(game.drag===i&&pointer){
+   emoji("⚙️",pointer.x,pointer.y,68);
+  }else{
+   emoji("⚙️",x,315,69);
+  }
+  label(game.options[i],x,258,190);
+ });
+ text("👆 Zahnrad zur Maschine ziehen",360,369,16);
+}
+function drawEffects(dt){
+ game.effects=game.effects.filter(e=>e.life>0);
+ for(let e of game.effects){
+  e.life-=dt*.8;
+  text(e.text,e.x,e.y-(1-e.life)*75,36);
+ }
+}
+function loop(now){
+ if(!game||!ctx)return;
+ let dt=Math.min(.05,(now-lastTime)/1000||.016);
+ lastTime=now;
+ game.t+=dt;
+ ctx.clearRect(0,0,W,H);
+ switch(game.level){
+  case 0:drawVillage();break;
+  case 1:drawTrain();break;
+  case 2:drawCity();break;
+  case 3:drawSnow();break;
+  case 4:drawPortal();break;
+  case 5:drawWorkshop();break;
+ }
+ drawEffects(dt);
+ raf=requestAnimationFrame(loop);
+}
+document.addEventListener("keydown",e=>{
+ if(["ArrowLeft","ArrowRight"," ","Enter"].includes(e.key)){
+  if(game)e.preventDefault();
+ }
+ if(e.key==="ArrowLeft"||e.key.toLowerCase()==="a")keys.left=true;
+ if(e.key==="ArrowRight"||e.key.toLowerCase()==="d")keys.right=true;
+ if(e.key===" "&&game?.level===0)openDoor();
+});
+document.addEventListener("keyup",e=>{
+ if(e.key==="ArrowLeft"||e.key.toLowerCase()==="a")keys.left=false;
+ if(e.key==="ArrowRight"||e.key.toLowerCase()==="d")keys.right=false;
+});
+window.addEventListener("blur",()=>{
+ keys.left=false;keys.right=false;
+});
 persist();
 home();
 </script>
