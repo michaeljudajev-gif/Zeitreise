@@ -5,327 +5,310 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#142b47">
-<title>ZEITREISE – Dorf der Zeiten · Demo 2</title>
+<title>ZEITREISE – Das Dorf der Zeiten 3.0</title>
 <style>
 :root {
   font-family: system-ui,-apple-system,sans-serif;
-  color: #fff3d5;
-  background: #102039;
+  color:#fff3d5;
+  background:#102039;
 }
 * {
-  box-sizing: border-box;
-  -webkit-tap-highlight-color: transparent;
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
 }
 html,body {
-  margin: 0;
-  min-height: 100%;
-  overscroll-behavior: none;
+  margin:0;
+  min-height:100%;
+  overscroll-behavior:none;
 }
 body {
-  background: radial-gradient(
+  background:radial-gradient(
     ellipse at top,#294b72,#0c182b 85%
   );
 }
 button {
-  font: inherit;
-  cursor: pointer;
+  font:inherit;
+  cursor:pointer;
 }
 #shell {
-  max-width: 1320px;
-  margin: auto;
-  padding: 8px;
+  max-width:1320px;
+  margin:auto;
+  padding:8px;
 }
 #head {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 4px 7px 10px;
-  font-weight: 900;
-  gap: 10px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:4px 7px 10px;
+  font-weight:900;
+  gap:10px;
 }
 #head strong {
-  font: 900 clamp(18px,3vw,29px) Georgia;
-  color: #ffe0a0;
+  font:900 clamp(18px,3vw,29px) Georgia;
+  color:#ffe0a0;
 }
 #head small {
-  font-size: 12px;
-  color: #b9d3e7;
+  font-size:12px;
+  color:#b9d3e7;
 }
 #frame {
-  position: relative;
-  overflow: hidden;
-  border: 3px solid #a87a3e;
-  border-radius: 18px;
-  background: #75bce4;
-  box-shadow: 0 16px 50px #0009;
-  touch-action: none;
-  -webkit-user-select: none;
-  user-select: none;
-  -webkit-touch-callout: none;
+  position:relative;
+  overflow:hidden;
+  border:3px solid #a87a3e;
+  border-radius:18px;
+  background:#75bce4;
+  box-shadow:0 16px 50px #0009;
+  touch-action:none;
+  -webkit-user-select:none;
+  user-select:none;
+  -webkit-touch-callout:none;
 }
 canvas {
-  display: block;
-  width: 100%;
-  height: auto;
-  aspect-ratio: 16/9;
-  touch-action: none;
-  -webkit-user-select: none;
-  user-select: none;
-  -webkit-touch-callout: none;
+  display:block;
+  width:100%;
+  height:auto;
+  aspect-ratio:16/9;
+  touch-action:none;
+  -webkit-user-select:none;
+  user-select:none;
+  -webkit-touch-callout:none;
 }
 #hud {
-  position: absolute;
-  inset: 10px 12px auto;
-  display: flex;
-  gap: 8px;
-  justify-content: space-between;
-  pointer-events: none;
+  position:absolute;
+  inset:10px 12px auto;
+  display:flex;
+  gap:8px;
+  justify-content:space-between;
+  pointer-events:none;
 }
 #hud span {
-  background: linear-gradient(#264768e8,#112d4eea);
-  border: 1px solid #dfb16b;
-  border-radius: 11px;
-  padding: 5px 10px;
-  font-size: clamp(11px,1.7vw,17px);
-  font-weight: 850;
-  text-shadow: 1px 2px #0008;
-  box-shadow: 0 3px 6px #0005;
+  background:linear-gradient(#264768e8,#112d4eea);
+  border:1px solid #dfb16b;
+  border-radius:11px;
+  padding:5px 10px;
+  font-size:clamp(11px,1.7vw,17px);
+  font-weight:850;
+  text-shadow:1px 2px #0008;
+  box-shadow:0 3px 6px #0005;
 }
 #controls {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 8px;
-  margin-top: 10px;
-  touch-action: none;
-  -webkit-user-select: none;
-  user-select: none;
-  -webkit-touch-callout: none;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:8px;
+  margin-top:10px;
+  touch-action:none;
+  -webkit-user-select:none;
+  user-select:none;
+  -webkit-touch-callout:none;
 }
 #controls .cluster {
-  display: flex;
-  gap: 10px;
+  display:flex;
+  gap:10px;
 }
 #controls button {
-  border: 2px solid #cfae6c;
-  background: linear-gradient(#28496b,#132943);
-  color: #ffe8b1;
-  box-shadow: 0 4px #0a1423;
-  border-radius: 17px;
-  min-width: 69px;
-  min-height: 57px;
-  font-size: 26px;
-  font-weight: 900;
-  touch-action: none;
-  -webkit-user-select: none;
-  user-select: none;
-  -webkit-touch-callout: none;
+  border:2px solid #cfae6c;
+  background:linear-gradient(#28496b,#132943);
+  color:#ffe8b1;
+  box-shadow:0 4px #0a1423;
+  border-radius:17px;
+  min-width:69px;
+  min-height:57px;
+  font-size:26px;
+  font-weight:900;
+  touch-action:none;
+  -webkit-user-select:none;
+  user-select:none;
+  -webkit-touch-callout:none;
 }
 #controls button:active {
-  transform: translateY(3px);
-  box-shadow: 0 1px #0a1423;
+  transform:translateY(3px);
+  box-shadow:0 1px #0a1423;
 }
 #controls #jump {
-  min-width: 104px;
+  min-width:104px;
 }
 #note {
-  font-size: 12px;
-  color: #bcd3e7;
-  text-align: center;
-  padding: 8px;
+  font-size:12px;
+  color:#bcd3e7;
+  text-align:center;
+  padding:8px;
 }
 #modal {
-  position: absolute;
-  inset: 0;
-  background: #0b2035b9;
-  display: grid;
-  place-items: center;
-  padding: 12px;
-  overflow: auto;
+  position:absolute;
+  inset:0;
+  background:#0b2035b9;
+  display:grid;
+  place-items:center;
+  padding:12px;
+  overflow:auto;
 }
 #modal[hidden] {
-  display: none;
+  display:none;
 }
 #modal .panel {
-  width: min(660px,96%);
-  max-height: 100%;
-  overflow: auto;
-  background: linear-gradient(145deg,#fff0c6,#f5d6a1);
-  border: 6px ridge #996032;
-  box-shadow: 0 12px 0 #50351f,0 20px 55px #0009;
-  border-radius: 17px;
-  color: #402913;
-  text-align: center;
-  padding: 17px;
+  width:min(660px,96%);
+  max-height:100%;
+  overflow:auto;
+  background:linear-gradient(145deg,#fff0c6,#f5d6a1);
+  border:6px ridge #996032;
+  box-shadow:0 12px 0 #50351f,0 20px 55px #0009;
+  border-radius:17px;
+  color:#402913;
+  text-align:center;
+  padding:17px;
 }
 h1,h2 {
-  font-family: Georgia;
-  margin: 7px 0 13px;
-  color: #6c3c20;
+  font-family:Georgia;
+  margin:7px 0 13px;
+  color:#6c3c20;
 }
 h1 {
-  font-size: clamp(24px,4vw,37px);
+  font-size:clamp(24px,4vw,37px);
 }
 h2 {
-  font-size: clamp(20px,3vw,27px);
+  font-size:clamp(20px,3vw,27px);
 }
 p {
-  line-height: 1.45;
+  line-height:1.45;
 }
 #modal button,.primary {
-  background: linear-gradient(#7eae66,#39783f);
-  border: 2px solid #285a31;
-  color: white;
-  border-radius: 10px;
-  padding: 12px 18px;
-  font-weight: 900;
-  box-shadow: 0 3px #22482b;
-  margin: 5px;
+  background:linear-gradient(#7eae66,#39783f);
+  border:2px solid #285a31;
+  color:white;
+  border-radius:10px;
+  padding:12px 18px;
+  font-weight:900;
+  box-shadow:0 3px #22482b;
+  margin:5px;
 }
 #modal button.secondary {
-  background: linear-gradient(#547da0,#285078);
-  border-color: #214768;
+  background:linear-gradient(#547da0,#285078);
+  border-color:#214768;
 }
 #modal .answers {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
 }
 #modal .answers button {
-  background: linear-gradient(#fff6d8,#e9c58e);
-  color: #4a2a18;
-  border: 2px solid #a57742;
-  margin: 0;
-  min-height: 48px;
-  font-size: clamp(13px,2vw,17px);
-  box-shadow: 0 3px #b38a53;
+  background:linear-gradient(#fff6d8,#e9c58e);
+  color:#4a2a18;
+  border:2px solid #a57742;
+  margin:0;
+  min-height:48px;
+  font-size:clamp(13px,2vw,17px);
+  box-shadow:0 3px #b38a53;
 }
 #modal .answers button:active {
-  background: #c4e6a7;
+  background:#c4e6a7;
 }
 #modal .sub {
-  font-size: 13px;
-  color: #795c40;
+  font-size:13px;
+  color:#795c40;
 }
 #modal .result {
-  display: grid;
-  grid-template-columns: repeat(3,1fr);
-  gap: 6px;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:6px;
 }
 #modal .result div {
-  padding: 9px 5px;
-  background: #e6c48c;
-  border-radius: 9px;
+  padding:9px 5px;
+  background:#e6c48c;
+  border-radius:9px;
 }
 #modal .result strong {
-  display: block;
-  font-size: 22px;
+  display:block;
+  font-size:22px;
 }
 #modal table {
-  width: 100%;
-  border-collapse: collapse;
-  text-align: left;
-  font-size: 12px;
+  width:100%;
+  border-collapse:collapse;
+  text-align:left;
+  font-size:12px;
 }
 #modal td,#modal th {
-  padding: 7px 4px;
-  border-bottom: 1px solid #c49c64;
+  padding:7px 4px;
+  border-bottom:1px solid #c49c64;
 }
 #modal select {
-  font: inherit;
-  max-width: 100%;
-  padding: 9px;
-  border: 1px solid #ad7b48;
-  border-radius: 8px;
+  font:inherit;
+  max-width:100%;
+  padding:9px;
+  border:1px solid #ad7b48;
+  border-radius:8px;
 }
 #modal details {
-  margin-top: 12px;
-  text-align: left;
-  background: #f9e8c5;
-  padding: 10px;
-  border-radius: 10px;
+  margin-top:12px;
+  text-align:left;
+  background:#f9e8c5;
+  padding:10px;
+  border-radius:10px;
 }
 #modal .text {
-  white-space: pre-line;
-  text-align: left;
-  font-size: 14px;
+  white-space:pre-line;
+  text-align:left;
+  font-size:14px;
 }
 #modal .bad {
-  color: #a22b25;
+  color:#a22b25;
 }
 #modal .good {
-  color: #28763c;
+  color:#28763c;
 }
 @media(max-width:600px) {
-  #shell {
-    padding: 3px;
-  }
+  #shell {padding:3px}
   #frame {
-    border-radius: 10px;
-    border-width: 2px;
+    border-radius:10px;
+    border-width:2px;
   }
   #hud {
-    inset: 5px 5px auto;
-    gap: 3px;
+    inset:5px 5px auto;
+    gap:3px;
   }
   #hud span {
-    padding: 3px 5px;
-    font-size: 10px;
+    padding:3px 5px;
+    font-size:10px;
   }
   #controls button {
-    min-width: 64px;
-    min-height: 58px;
+    min-width:64px;
+    min-height:58px;
   }
-  #modal {
-    padding: 4px;
-  }
+  #modal {padding:4px}
   #modal .panel {
-    padding: 10px;
-    border-width: 4px;
+    padding:10px;
+    border-width:4px;
   }
   #modal .answers button {
-    padding: 9px 4px;
-    min-height: 44px;
+    padding:9px 4px;
+    min-height:44px;
   }
-  #note {
-    font-size: 10px;
-  }
+  #note {font-size:10px}
 }
 @media(orientation:portrait) {
-  #frame {
-    margin-top: 3vh;
-  }
-  #controls {
-    margin-top: 15px;
-  }
+  #frame {margin-top:3vh}
+  #controls {margin-top:15px}
 }
 </style>
 </head>
 <body>
-
 <div id="shell">
   <div id="head">
     <strong>
       ✦ ZEITREISE
       <small>Das Dorf der Zeiten</small>
     </strong>
-    <small>Mission 1 · Grafikdemo 2.0</small>
+    <small>Mission 1 · Illustrationsdemo 3.0</small>
   </div>
 
   <div id="frame">
-    <canvas
-      id="game"
-      width="1120"
-      height="630">
-    </canvas>
-
+    <canvas id="game" width="1120" height="630"></canvas>
     <div id="hud">
       <span id="hGate">🏰 Tor 0/10</span>
       <span id="hCoins">🪙 0</span>
       <span id="hCombo">🔥 Serie 0</span>
       <span id="hScore">⭐ 0</span>
     </div>
-
     <div id="modal">
       <div class="panel" id="panel"></div>
     </div>
@@ -336,7 +319,6 @@ p {
       <button id="left" aria-label="Nach links">◀</button>
       <button id="right" aria-label="Nach rechts">▶</button>
     </div>
-
     <div class="cluster">
       <button id="jump" aria-label="Springen">
         ⬆ SPRUNG
@@ -354,24 +336,21 @@ p {
 <script>
 'use strict';
 
-const cv = document.getElementById('game');
-const ctx = cv.getContext('2d');
-const modal = document.getElementById('modal');
-const panel = document.getElementById('panel');
+const cv=document.getElementById('game');
+const ctx=cv.getContext('2d');
+const modal=document.getElementById('modal');
+const panel=document.getElementById('panel');
 
-const W = 1120;
-const H = 630;
-const FLOOR = 521;
-const WORLD = 7400;
-
-const GATE_X = Array.from(
-  {length:10},
-  (_,i) => 690+i*625
+const W=1120;
+const H=630;
+const FLOOR=521;
+const WORLD=7400;
+const GATE_X=Array.from(
+  {length:10},(_,i)=>690+i*625
 );
+const endX=7040;
 
-const endX = 7040;
-
-const verbs = [
+const verbs=[
   ['gehen','ging','ist gegangen','war gegangen'],
   ['machen','machte','hat gemacht','hatte gemacht'],
   ['sehen','sah','hat gesehen','hatte gesehen'],
@@ -384,14 +363,14 @@ const verbs = [
   ['sprechen','sprach','hat gesprochen','hatte gesprochen']
 ];
 
-const forms = [
+const forms=[
   '',
   'Präteritum',
   'Perfekt',
   'Plusquamperfekt'
 ];
 
-const explanations = [
+const explanations=[
   [
     'Präteritum',
     'Das Präteritum erzählt von der Vergangenheit. Man findet es oft in Geschichten: „Er ging nach Hause.“ Die Verben sein, haben und Modalverben stehen auch im Gespräch häufig im Präteritum.'
@@ -410,38 +389,38 @@ const explanations = [
   ]
 ];
 
-const translations = {
-  en: [
-    'The simple past often appears in written stories: „Er ging nach Hause.“ The verbs sein, haben and modal verbs are also common in the simple past in speech.',
+const translations={
+  en:[
+    'The simple past often appears in written stories. The verbs sein, haben and modal verbs are also common in the simple past in speech.',
     'The present perfect is common in conversation. It uses haben or sein plus the past participle. Many movement verbs use sein.',
     'The past perfect describes an event that happened before another past event. Formation: hatte or war + past participle.',
     'Learn forms together, write example sentences and review after one day, three days and one week.'
   ],
-  ru: [
+  ru:[
     'Präteritum часто встречается в рассказах о прошлом. Sein, haben и модальные глаголы нередко используются так и в разговорной речи.',
     'Perfekt часто используется в разговоре. Он образуется с haben или sein и Partizip II. Многие глаголы движения используют sein.',
     'Plusquamperfekt обозначает действие, произошедшее раньше другого события в прошлом: hatte или war + Partizip II.',
     'Учите формы вместе, составляйте примеры и повторяйте через день, три дня и неделю.'
   ],
-  uk: [
+  uk:[
     'Präteritum часто вживається в розповідях про минуле. Sein, haben і модальні дієслова також часто використовуються в цій формі в розмові.',
     'Perfekt часто використовується в розмові. Він утворюється за допомогою haben або sein та Partizip II.',
     'Plusquamperfekt описує дію, що відбулася раніше за іншу минулу подію: hatte або war + Partizip II.',
     'Вивчайте форми разом, складайте речення та повторюйте через день, три дні й тиждень.'
   ],
-  mk: [
+  mk:[
     'Präteritum често се користи во раскази за минатото. Sein, haben и модалните глаголи често се користат така и во говорот.',
     'Perfekt е чест во разговорот. Се образува со haben или sein и Partizip II.',
     'Plusquamperfekt означува дејство пред друго минато дејство: hatte или war + Partizip II.',
     'Учете ги формите заедно, пишувајте примери и повторувајте по еден ден, три дена и една недела.'
   ],
-  fr: [
+  fr:[
     'Le Präteritum est fréquent dans les récits. Sein, haben et les verbes modaux sont aussi souvent employés ainsi à l’oral.',
     'Le Perfekt est fréquent à l’oral : haben ou sein + participe passé. De nombreux verbes de déplacement utilisent sein.',
     'Le Plusquamperfekt exprime une action antérieure à une autre action passée : hatte ou war + Partizip II.',
     'Apprenez les formes ensemble, écrivez des exemples et révisez après un jour, trois jours et une semaine.'
   ],
-  tr: [
+  tr:[
     'Präteritum geçmiş olayları anlatan hikâyelerde sık görülür. Sein, haben ve modal fiiller konuşmada da bu biçimde kullanılır.',
     'Perfekt konuşmada yaygındır: haben veya sein + Partizip II. Birçok hareket fiili sein kullanır.',
     'Plusquamperfekt başka bir geçmiş olaydan daha önce gerçekleşen eylemi anlatır: hatte veya war + Partizip II.',
@@ -449,40 +428,28 @@ const translations = {
   ]
 };
 
-let state = null;
-let mode = 'easy';
-
-let keys = {
-  left:false,
-  right:false,
-  jump:false
-};
-
-let previous = 0;
-let raf = 0;
-let questionStart = 0;
-let typingTimer = 0; 
-// ==========================================
-// TEIL 2 – GRAFIK UND SPIELWELT
-// ==========================================
+let state=null;
+let mode='easy';
+let keys={left:false,right:false,jump:false};
+let previous=0;
+let raf=0;
+let questionStart=0;
+let typingTimer=0;
 
 function rnd(n) {
-  let v = Math.sin(n*127.1+41.73)*43758.5453;
+  let v=Math.sin(n*127.1+41.73)*43758.5453;
   return v-Math.floor(v);
 }
-
 function rect(x,y,w,h,c) {
   ctx.fillStyle=c;
   ctx.fillRect(x,y,w,h);
 }
-
 function circle(x,y,r,c) {
   ctx.fillStyle=c;
   ctx.beginPath();
   ctx.arc(x,y,r,0,Math.PI*2);
   ctx.fill();
 }
-
 function stroke(x,y,x2,y2,c,w=2) {
   ctx.strokeStyle=c;
   ctx.lineWidth=w;
@@ -491,7 +458,6 @@ function stroke(x,y,x2,y2,c,w=2) {
   ctx.lineTo(x2,y2);
   ctx.stroke();
 }
-
 function poly(points,c) {
   ctx.fillStyle=c;
   ctx.beginPath();
@@ -500,14 +466,12 @@ function poly(points,c) {
   ctx.closePath();
   ctx.fill();
 }
-
 function round(x,y,w,h,r,c) {
   ctx.fillStyle=c;
   ctx.beginPath();
   ctx.roundRect(x,y,w,h,r);
   ctx.fill();
 }
-
 function text(s,x,y,size=18,c='#fff',align='center') {
   ctx.textAlign=align;
   ctx.font=`900 ${size}px Georgia`;
@@ -518,14 +482,400 @@ function text(s,x,y,size=18,c='#fff',align='center') {
   ctx.fillText(s,x,y);
 }
 
-function drawCloud(x,y,s) {
+// Neue illustrierte SVG-Sprites
+const art={};
+
+function sprite(name,svg) {
+  const im=new Image();
+  im.src='data:image/svg+xml;charset=utf-8,'+
+    encodeURIComponent(svg);
+  art[name]=im;
+}
+
+const defs=`<defs>
+<linearGradient id="wall" x2=".2" y2="1">
+  <stop stop-color="#fff3d0"/>
+  <stop offset="1" stop-color="#d5a978"/>
+</linearGradient>
+<linearGradient id="roof" x2="0" y2="1">
+  <stop stop-color="#f49b68"/>
+  <stop offset=".55" stop-color="#ba5545"/>
+  <stop offset="1" stop-color="#713b42"/>
+</linearGradient>
+<linearGradient id="wood" x2="0" y2="1">
+  <stop stop-color="#b8794b"/>
+  <stop offset="1" stop-color="#523a35"/>
+</linearGradient>
+<linearGradient id="leaf" x2=".3" y2="1">
+  <stop stop-color="#b6db75"/>
+  <stop offset=".5" stop-color="#57965a"/>
+  <stop offset="1" stop-color="#2f6755"/>
+</linearGradient>
+<linearGradient id="glass" x2="0" y2="1">
+  <stop stop-color="#dbffff"/>
+  <stop offset="1" stop-color="#5b9bb2"/>
+</linearGradient>
+<linearGradient id="gold" x2="0" y2="1">
+  <stop stop-color="#fff5b7"/>
+  <stop offset=".55" stop-color="#efb84d"/>
+  <stop offset="1" stop-color="#9d5b30"/>
+</linearGradient>
+<filter id="shadow">
+  <feDropShadow dx="1" dy="6" stdDeviation="5"
+    flood-color="#2b2d31"
+    flood-opacity=".28"/>
+</filter>
+</defs>`;
+
+function wrapArt(w,h,content) {
+  return `<svg xmlns="http://www.w3.org/2000/svg"
+    width="${w}" height="${h}"
+    viewBox="0 0 ${w} ${h}">
+    ${defs}${content}
+  </svg>`;
+} 
+// ==========================================
+// TEIL 2 – ILLUSTRIERTE SPIELGRAFIKEN
+// ==========================================
+
+// Fachwerkhaus
+sprite('house',wrapArt(360,390,`
+<g filter="url(#shadow)">
+  <path d="M42 158 L180 37 L318 158 Z"
+    fill="url(#roof)" stroke="#633e39"
+    stroke-width="9" stroke-linejoin="round"/>
+
+  <path d="M65 157 L180 58 L295 157"
+    fill="none" stroke="#f8c18a"
+    stroke-width="7"/>
+
+  <rect x="65" y="155" width="230" height="208"
+    rx="5" fill="url(#wall)"
+    stroke="#674939" stroke-width="10"/>
+
+  <path d="M73 164 L287 355 M287 164 L73 355"
+    stroke="#99653e" stroke-width="13"/>
+
+  <path d="M73 259 H287 M180 162 V362"
+    stroke="#734a37" stroke-width="15"/>
+
+  <rect x="92" y="183" width="62" height="69"
+    rx="5" fill="#654a3a"/>
+  <rect x="99" y="190" width="48" height="55"
+    fill="url(#glass)"/>
+  <path d="M123 190 V245 M99 218 H147"
+    stroke="#fff1c8" stroke-width="7"/>
+
+  <rect x="208" y="183" width="62" height="69"
+    rx="5" fill="#654a3a"/>
+  <rect x="215" y="190" width="48" height="55"
+    fill="url(#glass)"/>
+  <path d="M239 190 V245 M215 218 H263"
+    stroke="#fff1c8" stroke-width="7"/>
+
+  <path d="M150 361 V284 Q180 250 210 284 V361"
+    fill="url(#wood)" stroke="#513b34"
+    stroke-width="9"/>
+  <circle cx="195" cy="320" r="5"
+    fill="#f9d486"/>
+
+  <path d="M53 161 L180 47 L307 161"
+    fill="none" stroke="#5c3a39"
+    stroke-width="11" stroke-linejoin="round"/>
+
+  <path d="M76 170 H285"
+    stroke="#f6d2a0" stroke-width="9"/>
+
+  <rect x="86" y="252" width="78" height="14"
+    rx="4" fill="#8e5939"/>
+  <rect x="198" y="252" width="78" height="14"
+    rx="4" fill="#8e5939"/>
+
+  <g fill="#e8a84b">
+    <circle cx="100" cy="252" r="9"/>
+    <circle cx="122" cy="249" r="10"/>
+    <circle cx="145" cy="252" r="8"/>
+  </g>
+  <g fill="#e66e6d">
+    <circle cx="210" cy="250" r="9"/>
+    <circle cx="232" cy="249" r="10"/>
+    <circle cx="254" cy="251" r="9"/>
+  </g>
+  <g fill="#538c52">
+    <ellipse cx="110" cy="242" rx="15" ry="7"/>
+    <ellipse cx="243" cy="240" rx="18" ry="7"/>
+  </g>
+</g>
+`));
+
+// Zweites Haus mit Turm
+sprite('tower',wrapArt(330,430,`
+<g filter="url(#shadow)">
+  <rect x="75" y="155" width="188" height="240"
+    fill="url(#wall)" stroke="#694738"
+    stroke-width="10"/>
+
+  <path d="M52 165 L169 36 L285 165 Z"
+    fill="url(#roof)" stroke="#65403d"
+    stroke-width="10"/>
+
+  <path d="M80 168 H259 M83 270 H258"
+    stroke="#79523a" stroke-width="14"/>
+
+  <path d="M83 171 L258 271 M258 171 L83 271"
+    stroke="#a36c42" stroke-width="12"/>
+
+  <rect x="117" y="182" width="95" height="71"
+    fill="#5c463b" rx="6"/>
+  <rect x="124" y="189" width="81" height="57"
+    fill="url(#glass)"/>
+  <path d="M164 189 V246 M124 217 H205"
+    stroke="#f7e5b8" stroke-width="7"/>
+
+  <path d="M139 394 V305 Q169 276 199 305 V394"
+    fill="url(#wood)" stroke="#593d33"
+    stroke-width="9"/>
+
+  <circle cx="188" cy="346" r="5"
+    fill="#f4cf79"/>
+
+  <rect x="227" y="91" width="65" height="165"
+    fill="#e4c18d" stroke="#674939"
+    stroke-width="8"/>
+
+  <path d="M215 100 L259 15 L303 100 Z"
+    fill="#ba6251" stroke="#69413f"
+    stroke-width="8"/>
+
+  <rect x="246" y="127" width="26" height="45"
+    rx="13" fill="#6b8795"/>
+  <path d="M259 127 V172"
+    stroke="#f6e0ac" stroke-width="5"/>
+</g>
+`));
+
+// Baum mit mehrschichtiger Krone
+sprite('tree',wrapArt(260,360,`
+<g filter="url(#shadow)">
+  <path d="M114 335 L105 175 L145 175 L152 335 Z"
+    fill="url(#wood)" stroke="#644a37"
+    stroke-width="8"/>
+
+  <path d="M129 259 L88 205 M131 225 L170 174"
+    stroke="#76523c" stroke-width="17"
+    stroke-linecap="round"/>
+
+  <g fill="url(#leaf)" stroke="#3b7151"
+    stroke-width="6">
+    <circle cx="74" cy="167" r="55"/>
+    <circle cx="176" cy="165" r="60"/>
+    <circle cx="120" cy="115" r="70"/>
+    <circle cx="76" cy="112" r="42"/>
+    <circle cx="187" cy="105" r="46"/>
+    <circle cx="130" cy="65" r="49"/>
+  </g>
+
+  <g fill="#c2e58b" opacity=".65">
+    <ellipse cx="84" cy="107" rx="24" ry="11"/>
+    <ellipse cx="138" cy="58" rx="29" ry="13"/>
+    <ellipse cx="176" cy="145" rx="26" ry="11"/>
+  </g>
+
+  <g fill="#f6c36b">
+    <circle cx="75" cy="158" r="7"/>
+    <circle cx="163" cy="82" r="6"/>
+    <circle cx="184" cy="171" r="6"/>
+  </g>
+</g>
+`));
+
+// Marktstand
+sprite('market',wrapArt(310,245,`
+<g filter="url(#shadow)">
+  <rect x="39" y="83" width="12" height="145"
+    fill="#75503a"/>
+  <rect x="258" y="83" width="12" height="145"
+    fill="#75503a"/>
+
+  <path d="M19 94 L55 26 H255 L291 94 Z"
+    fill="#f7e2b5" stroke="#694638"
+    stroke-width="7"/>
+
+  <path d="M19 94 L55 26 H91 L73 94 Z"
+    fill="#c95351"/>
+  <path d="M108 94 L120 26 H157 V94 Z"
+    fill="#c95351"/>
+  <path d="M189 94 L183 26 H219 L237 94 Z"
+    fill="#c95351"/>
+  <path d="M271 94 L219 26 H255 L291 94 Z"
+    fill="#c95351"/>
+
+  <rect x="28" y="177" width="254" height="28"
+    rx="5" fill="url(#wood)"
+    stroke="#654535" stroke-width="6"/>
+
+  <rect x="45" y="204" width="220" height="24"
+    fill="#8c5a3c"/>
+
+  <g>
+    <circle cx="77" cy="165" r="17"
+      fill="#e7a03b"/>
+    <circle cx="112" cy="162" r="17"
+      fill="#e7b949"/>
+    <circle cx="148" cy="165" r="17"
+      fill="#e26c47"/>
+    <circle cx="184" cy="163" r="17"
+      fill="#a9bd51"/>
+    <circle cx="219" cy="165" r="17"
+      fill="#e4ad4d"/>
+  </g>
+
+  <g fill="#5e9a50">
+    <ellipse cx="76" cy="145" rx="14" ry="6"/>
+    <ellipse cx="148" cy="146" rx="14" ry="6"/>
+    <ellipse cx="217" cy="145" rx="14" ry="6"/>
+  </g>
+</g>
+`));
+
+// Magisches Grammatik-Tor
+sprite('gate',wrapArt(200,320,`
+<g filter="url(#shadow)">
+  <path d="M22 300 V112 Q22 26 100 26
+    Q178 26 178 112 V300"
+    fill="none" stroke="#62516c"
+    stroke-width="29"/>
+
+  <path d="M35 300 V112 Q35 39 100 39
+    Q165 39 165 112 V300"
+    fill="none" stroke="#d5a46c"
+    stroke-width="13"/>
+
+  <path d="M52 299 V112 Q52 58 100 58
+    Q148 58 148 112 V299 Z"
+    fill="#584d9c" opacity=".85"/>
+
+  <path d="M100 93 L125 144 L100 194 L75 144 Z"
+    fill="#9de5fa" stroke="#fff4c3"
+    stroke-width="7"/>
+
+  <circle cx="100" cy="143" r="45"
+    fill="none" stroke="#d4c6ff"
+    stroke-width="4" stroke-dasharray="7 10"/>
+
+  <g fill="#f6d68d">
+    <circle cx="27" cy="105" r="9"/>
+    <circle cx="173" cy="105" r="9"/>
+    <circle cx="100" cy="24" r="12"/>
+  </g>
+
+  <path d="M14 300 H186"
+    stroke="#745344" stroke-width="20"
+    stroke-linecap="round"/>
+</g>
+`));
+
+// Spielfigur: kleine rothaarige Abenteurerin
+sprite('hero',wrapArt(160,205,`
+<g filter="url(#shadow)">
+  <path d="M50 122 L22 174 L62 184 L79 151 Z"
+    fill="#c74d52" stroke="#873c49"
+    stroke-width="6"/>
+
+  <path d="M59 147 L52 191"
+    stroke="#554453" stroke-width="18"
+    stroke-linecap="round"/>
+  <path d="M101 147 L110 191"
+    stroke="#554453" stroke-width="18"
+    stroke-linecap="round"/>
+
+  <path d="M50 190 H72 M99 190 H123"
+    stroke="#6d463e" stroke-width="15"
+    stroke-linecap="round"/>
+
+  <path d="M52 112 Q80 100 108 112
+    L113 157 H47 Z"
+    fill="#3977a4" stroke="#315579"
+    stroke-width="7"/>
+
+  <path d="M49 142 H112"
+    stroke="#e7bc69" stroke-width="12"/>
+
+  <path d="M50 117 L31 145 M108 117 L129 142"
+    stroke="#f2bd9c" stroke-width="15"
+    stroke-linecap="round"/>
+
+  <circle cx="80" cy="76" r="41"
+    fill="#f5c7a8" stroke="#b88066"
+    stroke-width="4"/>
+
+  <path d="M37 79 Q27 27 70 22
+    Q91 2 115 31 Q130 47 119 83
+    L111 63 L98 43 L73 56 L52 48 Z"
+    fill="#b44c42" stroke="#813e42"
+    stroke-width="6"/>
+
+  <path d="M42 59 Q25 78 38 105
+    M114 54 Q136 77 120 105"
+    fill="none" stroke="#b44c42"
+    stroke-width="17" stroke-linecap="round"/>
+
+  <circle cx="66" cy="80" r="5"
+    fill="#403843"/>
+  <circle cx="96" cy="80" r="5"
+    fill="#403843"/>
+
+  <path d="M70 100 Q80 107 91 99"
+    fill="none" stroke="#a15b55"
+    stroke-width="4" stroke-linecap="round"/>
+
+  <circle cx="53" cy="95" r="7"
+    fill="#ec9e96" opacity=".7"/>
+  <circle cx="107" cy="95" r="7"
+    fill="#ec9e96" opacity=".7"/>
+
+  <path d="M52 36 L80 12 L108 37"
+    fill="none" stroke="#d97853"
+    stroke-width="12" stroke-linecap="round"/>
+</g>
+`));
+
+// ==========================================
+// SVG-ZEICHENFUNKTION
+// ==========================================
+
+function drawArt(name,x,y,w,h,flip=false) {
+  const im=art[name];
+
+  if(!im||!im.complete||!im.naturalWidth)return;
+
+  ctx.save();
+
+  if(flip) {
+    ctx.translate(x+w,y);
+    ctx.scale(-1,1);
+    ctx.drawImage(im,0,0,w,h);
+  } else {
+    ctx.drawImage(im,x,y,w,h);
+  }
+
+  ctx.restore();
+}
+
+// ==========================================
+// HINTERGRUND
+// ==========================================
+
+function cloud(x,y,s=1) {
   ctx.save();
   ctx.translate(x,y);
   ctx.scale(s,s);
-  circle(-35,4,26,'#ffffffb8');
-  circle(-10,-12,36,'#ffffffd9');
-  circle(26,-2,30,'#ffffffce');
-  circle(50,8,21,'#ffffffb8');
+
+  circle(-40,7,27,'#ffffffa8');
+  circle(-10,-9,40,'#ffffffe0');
+  circle(28,-3,34,'#ffffffd5');
+  circle(54,10,22,'#ffffffad');
+
   ctx.restore();
 }
 
@@ -537,479 +887,314 @@ function mountain(x,y,s,c) {
   ],c);
 
   poly([
-    [x-47*s,y+55*s],
+    [x-43*s,y+52*s],
     [x,y],
     [x+55*s,y+70*s],
-    [x+15*s,y+59*s],
-    [x-13*s,y+83*s]
-  ],'#f3f8edb0');
+    [x+15*s,y+58*s],
+    [x-12*s,y+81*s]
+  ],'#f5f5e5a8');
 }
 
-function tree(x,y,s=1) {
-  ctx.save();
-  ctx.translate(x,y);
-  ctx.scale(s,s);
+function background() {
+  const cam=state?.cam||0;
 
-  rect(-9,-96,18,96,'#745038');
+  const sky=ctx.createLinearGradient(0,0,0,H);
+  sky.addColorStop(0,'#4ca9dc');
+  sky.addColorStop(.55,'#a6dff1');
+  sky.addColorStop(1,'#f8e5a7');
 
-  for(let i=0;i<8;i++) {
-    let a=i*Math.PI*2/8;
+  rect(0,0,W,H,sky);
 
-    circle(
-      Math.cos(a)*35,
-      -111+Math.sin(a)*24,
-      32,
-      i%2?'#3b965d':'#4ca96a'
+  circle(907,114,64,'#fff3c4');
+
+  for(let i=0;i<17;i++) {
+    let x=(i*265-cam*.12)%(W+500);
+    if(x< -170)x+=W+500;
+
+    cloud(
+      x,
+      88+(i%5)*32,
+      .55+rnd(i)*.65
     );
   }
 
-  circle(0,-130,40,'#63b879');
-  ctx.restore();
-}
-
-function cottage(x,y,seed=0,s=1) {
-  ctx.save();
-  ctx.translate(x,y);
-  ctx.scale(s,s);
-
-  let w=235,h=202;
-
-  rect(-w/2,-h,w,h,'#674833');
-  rect(-w/2+8,-h+8,w-16,h-16,'#f2d6a0');
-
-  for(let i=0;i<4;i++) {
-    rect(-w/2+12+i*58,-h+9,6,h-19,'#795338');
+  for(let i=0;i<13;i++) {
+    mountain(
+      i*320-cam*.18,
+      300+rnd(i)*100,
+      .85+rnd(i+3)*.35,
+      i%2?'#8bb9bf':'#a3caca'
+    );
   }
 
-  stroke(
-    -w/2+7,-h+10,
-    w/2-7,-13,
-    '#95603a',8
-  );
+  for(let i=0;i<14;i++) {
+    circle(
+      i*245-cam*.37,
+      465,
+      165,
+      i%2?'#75aa8a':'#8dbb96'
+    );
+  }
+}
 
-  stroke(
-    w/2-7,-h+10,
-    -w/2+7,-13,
-    '#95603a',8
-  );
+// ==========================================
+// DORF UND DEKORATION
+// ==========================================
 
-  poly([
-    [-143,-h+9],
-    [0,-h-95],
-    [143,-h+9]
-  ],'#713d32');
+function drawVillage() {
+  const cam=state?.cam||0;
 
-  poly([
-    [-143,-h+9],
-    [0,-h-95],
-    [143,-h+9],
-    [125,-h+9],
-    [0,-h-73],
-    [-125,-h+9]
-  ],'#ba5c40');
+  // Hintere Baumreihe
+  for(let i=0;i<33;i++) {
+    let x=i*225-cam*.67;
 
-  for(let row=0;row<5;row++) {
-    for(let j=0;j<8-row%2;j++) {
-      let px=-125+j*34+(row%2)*15;
+    if(x>-160&&x<W+160) {
+      const scale=.68+rnd(i+4)*.34;
 
-      stroke(
-        px,-h-2-row*15,
-        px+27,-h-2-row*15,
-        '#e38856',3
+      drawArt(
+        'tree',
+        x-95*scale,
+        FLOOR-320*scale,
+        190*scale,
+        320*scale
       );
     }
   }
 
-  rect(-84,-h+38,52,65,'#724b35');
-  rect(-77,-h+45,38,50,'#8ed2df');
-  stroke(-58,-h+45,-58,-h+95,'#f8e3b5',5);
+  // Fachwerkhäuser und Marktstände
+  for(let i=0;i<18;i++) {
+    const x=160+i*420-cam;
 
-  rect(35,-h+38,52,65,'#724b35');
-  rect(42,-h+45,38,50,'#8ed2df');
-  stroke(61,-h+45,61,-h+95,'#f8e3b5',5);
+    if(x>-350&&x<W+350) {
+      if(i%4===2) {
+        drawArt(
+          'tower',
+          x-130,
+          FLOOR-345,
+          260,
+          345
+        );
+      } else {
+        drawArt(
+          'house',
+          x-150,
+          FLOOR-315,
+          300,
+          315
+        );
+      }
 
-  rect(-31,-94,62,94,'#774830');
-  rect(-24,-88,48,88,'#a36743');
-  circle(14,-45,4,'#f6d28d');
-
-  rect(-w/2,-20,w,20,'#a9794c');
-
-  for(let i=0;i<9;i++) {
-    circle(
-      -95+i*24,-103,7,
-      i%2?'#f4a33b':'#f26969'
-    );
-
-    circle(-95+i*24,-114,5,'#4eab5b');
+      if(i%3===1) {
+        drawArt(
+          'market',
+          x+120,
+          FLOOR-190,
+          245,
+          190
+        );
+      }
+    }
   }
 
-  ctx.restore();
-}
+  // Boden
+  rect(0,FLOOR,W,H-FLOOR,'#6d9c59');
+  rect(0,FLOOR,W,13,'#b8ca80');
+  rect(0,FLOOR+16,W,12,'#a9875d');
 
-function market(x,y) {
-  ctx.save();
-  ctx.translate(x,y);
+  // Pflastersteine
+  for(
+    let i=Math.floor(cam/46)-1;
+    i<Math.ceil((cam+W)/46)+1;
+    i++
+  ) {
+    const x=i*46-cam;
 
-  rect(-95,-103,12,103,'#77513a');
-  rect(80,-103,12,103,'#77513a');
-
-  poly([
-    [-118,-107],
-    [-86,-157],
-    [83,-157],
-    [116,-107]
-  ],'#efcda4');
-
-  for(let i=0;i<7;i++) {
-    poly([
-      [-118+i*33,-107],
-      [-86+i*28,-157],
-      [-58+i*28,-157],
-      [-84+i*33,-107]
-    ],i%2?'#fff0c8':'#c85550');
-  }
-
-  rect(-103,-26,210,26,'#825039');
-
-  for(let i=0;i<10;i++) {
-    circle(
-      -78+i*18,-36,9,
-      i%2?'#ed7e33':'#e9bc46'
-    );
-  }
-
-  ctx.restore();
-}
-
-function platform(x,y,w) {
-  rect(x,y,w,24,'#705037');
-  rect(x,y,w,8,'#cda56b');
-
-  for(let i=0;i<w/34;i++) {
-    rect(
-      x+i*34,y+8,31,14,
-      i%2?'#8d6242':'#a47750'
+    round(
+      x+3,FLOOR+30,42,30,5,
+      i%2?'#bca07c':'#d0b48d'
     );
 
     stroke(
-      x+i*34,y+10,
-      x+i*34,y+20,
-      '#563d2c',1
+      x+3,FLOOR+60,
+      x+44,FLOOR+60,
+      '#80694f',2
+    );
+
+    if(i%3===0) {
+      circle(x+8,FLOOR-4,4,'#f5c2d5');
+      circle(x+11,FLOOR-11,3,'#fce4aa');
+    }
+  }
+}
+
+// ==========================================
+// PLATTFORMEN, MÜNZEN UND TORE
+// ==========================================
+
+function drawPlatform(x,y,w) {
+  rect(x,y,w,25,'#765239');
+  rect(x,y,w,9,'#d2ab72');
+
+  for(let i=0;i<w/32;i++) {
+    rect(
+      x+i*32,y+10,30,14,
+      i%2?'#916645':'#aa7951'
     );
   }
 
   for(let i=0;i<w/30;i++) {
     circle(
-      x+10+i*30,y-2,8,
-      i%2?'#79bb62':'#62a95d'
+      x+10+i*30,y-3,7,
+      i%2?'#8fca74':'#67ad63'
     );
   }
 }
 
-function world() {
-  let cam=state?.cam||0;
-  let t=state?.time||0;
-
-  let sky=ctx.createLinearGradient(0,0,0,H);
-  sky.addColorStop(0,'#55b9ec');
-  sky.addColorStop(.68,'#b9e6f6');
-  sky.addColorStop(1,'#f9e5a8');
-
-  rect(0,0,W,H,sky);
-  circle(880,115,58,'#fff1b2');
-
-  // Wolken: langsame Parallax-Ebene
-  for(let i=0;i<19;i++) {
-    let x=(i*235-cam*.12)%(W+450);
-    if(x< -160)x+=W+450;
-
-    drawCloud(
-      x,
-      85+(i%5)*34,
-      .6+rnd(i)*.8
-    );
-  }
-
-  // Berge
-  for(let i=0;i<12;i++) {
-    let x=i*350-cam*.18;
-
-    mountain(
-      x,
-      315+rnd(i)*90,
-      .8+rnd(i+4)*.4,
-      i%2?'#84b5c3':'#9cc8c9'
-    );
-  }
-
-  // Hügel
-  for(let i=0;i<13;i++) {
-    let x=i*240-cam*.38;
-
-    circle(
-      x,465,165,
-      i%2?'#72ac8e':'#83b99a'
-    );
-  }
-
-  // Bäume
-  for(let i=0;i<31;i++) {
-    let x=i*210-cam*.68;
-
-    if(x>-120&&x<W+120) {
-      tree(
-        x,519,
-        .65+rnd(i+6)*.45
-      );
-    }
-  }
-
-  // Dorfgebäude
-  for(let i=0;i<17;i++) {
-    let x=170+i*440-cam;
-
-    if(x>-230&&x<W+230) {
-      cottage(
-        x,507,i,
-        .76+(i%3)*.13
-      );
-
-      if(i%3===1) {
-        market(x+205,510);
-      }
-    }
-  }
-
-  // Gras und Steinweg
-  rect(0,FLOOR,W,H-FLOOR,'#6b9b57');
-  rect(0,FLOOR,W,15,'#b8c579');
-  rect(0,FLOOR+17,W,10,'#9f7a4f');
-
-  for(
-    let i=Math.floor(cam/45)-1;
-    i<Math.ceil((cam+W)/45)+1;
-    i++
-  ) {
-    let x=i*45-cam;
-
-    round(
-      x+3,FLOOR+28,41,30,4,
-      i%2?'#bca079':'#d0b48c'
-    );
-
-    stroke(
-      x+3,FLOOR+58,
-      x+42,FLOOR+58,
-      '#80674c',2
-    );
-
-    if(i%3===0) {
-      circle(x+8,FLOOR-4,4,'#f8c9da');
-      circle(x+11,FLOOR-11,3,'#fce3aa');
-    }
-  }
-}
-
-function coin(x,y,t) {
-  let xx=x-state.cam;
+function drawCoin(x,y,t) {
+  const xx=x-state.cam;
 
   if(xx<-30||xx>W+30)return;
 
-  let bob=Math.sin(t*3+x)*5;
+  const bob=Math.sin(t*3+x)*5;
 
-  circle(xx,y+bob,16,'#9b5b0e');
-  circle(xx,y+bob,13,'#ffdc4b');
-  circle(xx,y+bob,9,'#e7a72d');
+  circle(xx,y+bob,16,'#9d641c');
+  circle(xx,y+bob,13,'#ffdc59');
+  circle(xx,y+bob,9,'#e7ad34');
 
-  text('✦',xx,y+5+bob,16,'#fff2a5');
+  text('✦',xx,y+5+bob,16,'#fff3bd');
 }
 
-function gate(x,i) {
-  let xx=x-state.cam;
+function drawGate(x,i) {
+  const xx=x-state.cam;
 
-  if(xx<-90||xx>W+90)return;
+  if(xx<-120||xx>W+120)return;
 
-  let open=i<state.gate;
-  let y=FLOOR;
+  const open=i<state.gate;
 
-  rect(xx-49,y-150,17,150,'#5d5067');
-  rect(xx+32,y-150,17,150,'#5d5067');
-  rect(xx-58,y-162,116,20,'#c99a5a');
-
-  poly([
-    [xx-67,y-162],
-    [xx,y-232],
-    [xx+67,y-162]
-  ],'#8c4e48');
-
-  poly([
-    [xx-52,y-166],
-    [xx,y-215],
-    [xx+52,y-166]
-  ],'#c56b4b');
-
-  rect(
-    xx-30,y-140,60,140,
-    open?'#5fc7a2':'#353e70'
+  drawArt(
+    'gate',
+    xx-88,
+    FLOOR-280,
+    176,
+    280
   );
 
-  if(!open) {
-    circle(xx,y-73,24,'#8b80c9');
-    text('◆',xx,y-64,25,'#fce69d');
-  } else {
-    text('✓',xx,y-72,47,'#e5ffb8');
+  if(open) {
+    round(
+      xx-40,
+      FLOOR-192,
+      80,
+      177,
+      18,
+      '#63e3b08c'
+    );
+
+    text('✓',xx,FLOOR-100,47,'#e7ffbe');
   }
 
-  text('TOR '+(i+1),xx,y-177,18,'#fff3c3');
+  text(
+    'TOR '+(i+1),
+    xx,FLOOR-288,19,
+    '#fff3c5'
+  );
 }
 
-function hero(x,y,t,dir) {
-  ctx.save();
-  ctx.translate(x-state.cam,y);
-  ctx.scale(dir,1);
+function drawHero() {
+  const x=state.x-state.cam;
+  const y=state.y;
 
-  let swing=
-    Math.sin(t*12)*10*
-    (Math.abs(state.vx)>20?1:.15);
+  const moving=Math.abs(state.vx)>20;
+  const bob=moving
+    ?Math.sin(state.time*13)*3
+    :Math.sin(state.time*2)*1;
 
-  // Kopf und Gesicht
-  circle(0,-56,22,'#f6c5a2');
-  circle(-8,-61,3,'#3d2c3c');
-  circle(7,-61,3,'#3d2c3c');
-
-  // Haare
-  poly([
-    [-26,-72],
-    [-16,-93],
-    [1,-82],
-    [14,-96],
-    [23,-75],
-    [9,-82],
-    [-5,-78]
-  ],'#aa3846');
-
-  // Umhang
-  poly([
-    [-17,-32],
-    [-43,-13],
-    [-26,-4],
-    [-12,-16]
-  ],'#d44d4e');
-
-  // Kleidung
-  rect(-20,-35,40,39,'#285b96');
-  rect(-21,-10,42,10,'#c5a257');
-
-  // Beine
-  stroke(
-    -9,3,-12+swing,23,
-    '#493f49',12
+  drawArt(
+    'hero',
+    x-37,
+    y-95+bob,
+    74,
+    96,
+    state.dir<0
   );
-
-  stroke(
-    9,3,12-swing,23,
-    '#493f49',12
-  );
-
-  // Arme
-  stroke(
-    -15,-28,-23+swing*.5,-5,
-    '#f5bc95',10
-  );
-
-  stroke(
-    15,-28,22-swing*.5,-7,
-    '#f5bc95',10
-  );
-
-  ctx.restore();
 }
 
-function sceneryExtras() {
-  let cam=state.cam;
+// ==========================================
+// VORDERGRUND UND PORTAL
+// ==========================================
+
+function foreground() {
+  const cam=state.cam;
 
   // Zäune
   for(let i=0;i<12;i++) {
-    let x=420+i*590-cam;
+    const x=430+i*600-cam;
 
     if(x>-100&&x<W+100) {
       rect(
-        x-70,FLOOR-42,
-        140,10,'#6f5239'
+        x-70,FLOOR-43,
+        140,10,'#78543b'
       );
 
       for(let j=0;j<6;j++) {
         rect(
           x-64+j*24,
-          FLOOR-63,
-          8,28,
-          '#8b6440'
+          FLOOR-64,
+          9,30,
+          '#9c7049'
         );
       }
     }
   }
 
   // Plattformen
-  for(let p of state.platforms) {
-    let x=p.x-cam;
+  for(const p of state.platforms) {
+    const x=p.x-cam;
 
     if(x>-p.w&&x<W) {
-      platform(x,p.y,p.w);
+      drawPlatform(x,p.y,p.w);
     }
   }
 
   // Grammatik-Tore
   for(let i=0;i<GATE_X.length;i++) {
-    gate(GATE_X[i],i);
+    drawGate(GATE_X[i],i);
   }
 
   // Zielportal
-  let ex=endX-cam;
+  const ex=endX-cam;
 
-  if(ex>-130&&ex<W+130) {
-    circle(
-      ex,FLOOR-114,95,
-      '#6549c6aa'
-    );
-
-    circle(
-      ex,FLOOR-114,72,
-      '#7bdbf3b8'
-    );
-
-    circle(
-      ex,FLOOR-114,53,
-      '#b6a7ff'
-    );
+  if(ex>-140&&ex<W+140) {
+    circle(ex,FLOOR-114,96,'#6549c6a6');
+    circle(ex,FLOOR-114,74,'#7bdbf3b8');
+    circle(ex,FLOOR-114,53,'#b6a7ff');
 
     text(
       'ZEITPORTAL',
-      ex,FLOOR-222,23,
-      '#fff5ba'
+      ex,FLOOR-224,24,
+      '#fff4bb'
     );
   }
 
-  // Sammelmünzen
-  for(let c of state.coins) {
+  // Münzen
+  for(const c of state.coins) {
     if(!c.taken) {
-      coin(c.x,c.y,state.time);
+      drawCoin(c.x,c.y,state.time);
     }
   }
 }
 
+// ==========================================
+// GESAMTE SZENE ZEICHNEN
+// ==========================================
+
 function render() {
-  world();
+  background();
 
   if(!state)return;
 
-  sceneryExtras();
-
-  hero(
-    state.x,
-    state.y,
-    state.time,
-    state.dir
-  );
+  drawVillage();
+  foreground();
+  drawHero();
 
   if(
     state.notice &&
@@ -1028,7 +1213,7 @@ function render() {
   }
 } 
 // ==========================================
-// TEIL 3 – STEUERUNG UND SPIELLOGIK
+// TEIL 3 – SPIELLOGIK
 // ==========================================
 
 function escapeHTML(s) {
@@ -1082,6 +1267,7 @@ function menu() {
   clearInterval(typingTimer);
 
   state=null;
+
   keys.left=false;
   keys.right=false;
   keys.jump=false;
@@ -1147,11 +1333,8 @@ function startGame() {
   const platforms=[];
 
   for(let i=0;i<12;i++) {
-    const x=950+i*520;
-
-    // Plattformen bewusst zwischen den Toren.
     platforms.push({
-      x,
+      x:950+i*520,
       y:420-(i%2)*48,
       w:165
     });
@@ -1211,7 +1394,7 @@ function makeQuestion(n) {
   if(mode==='easy') {
     wrong=shuffle(
       verbs.filter(v=>v!==verb)
-    ).map(v=>v[(form%3)+1]);
+    ).map(v=>v[form]);
   } else {
     // Andere Zeitformen desselben Verbs
     wrong=[
@@ -1220,7 +1403,7 @@ function makeQuestion(n) {
       verb[3]
     ].filter(x=>x!==correct);
 
-    // Zusätzlich bewusst falsche Formen
+    // Zusätzliche falsche Verbformen
     const stem=verb[0].replace(/en$/,'');
 
     wrong.push(
@@ -1234,13 +1417,16 @@ function makeQuestion(n) {
   wrong=[...new Set(wrong)]
     .filter(x=>x!==correct);
 
-  // Immer vier Antwortmöglichkeiten.
-  for(let v of shuffle(verbs)) {
+  // Immer vier Antwortmöglichkeiten
+  for(const v of shuffle(verbs)) {
     if(wrong.length>=3)break;
 
     const candidate=v[form];
 
-    if(candidate!==correct&&!wrong.includes(candidate)) {
+    if(
+      candidate!==correct &&
+      !wrong.includes(candidate)
+    ) {
       wrong.push(candidate);
     }
   }
@@ -1395,7 +1581,7 @@ function submitAnswer(index) {
 }
 
 // ==========================================
-// PHYSIK, KOLLISIONEN UND SPIELSCHLEIFE
+// PHYSIK UND SPIELSCHLEIFE
 // ==========================================
 
 function tick(now) {
@@ -1428,7 +1614,6 @@ function tick(now) {
     const oldFeet=state.y+24;
 
     state.vy+=1500*dt;
-
     state.x+=state.vx*dt;
     state.y+=state.vy*dt;
 
@@ -1445,7 +1630,7 @@ function tick(now) {
     } else {
       state.grounded=false;
 
-      // Landen auf Plattformen
+      // Plattformkollision
       for(const p of state.platforms) {
         const feet=state.y+24;
 
@@ -1464,7 +1649,7 @@ function tick(now) {
       }
     }
 
-    // Münzen einsammeln
+    // Münzen
     for(const coin of state.coins) {
       if(coin.taken)continue;
 
@@ -1483,8 +1668,7 @@ function tick(now) {
       }
     }
 
-    // Ein Tor kann erst nach Beantwortung
-    // der aktuellen Frage passiert werden.
+    // Grammatik-Tore
     if(state.gate<GATE_X.length) {
       const limit=GATE_X[state.gate]-62;
 
@@ -1496,7 +1680,7 @@ function tick(now) {
       }
     }
 
-    // Kamera folgt der Spielfigur.
+    // Kamera
     const desired=Math.max(
       0,
       Math.min(WORLD-W,state.x-W*.34)
@@ -1505,6 +1689,7 @@ function tick(now) {
     state.cam+=(desired-state.cam)*
       Math.min(1,dt*7);
 
+    // Missionsende
     if(
       state.gate===10 &&
       state.x>=endX-50
@@ -1519,7 +1704,7 @@ function tick(now) {
 }
 
 // ==========================================
-// TOUCH-STEUERUNG UND IPHONE-FIX
+// IPHONE-STEUERUNG
 // ==========================================
 
 function bindControl(id,key) {
@@ -1541,6 +1726,7 @@ function bindControl(id,key) {
 
   b.addEventListener('pointerup',release);
   b.addEventListener('pointercancel',release);
+
   b.addEventListener('lostpointercapture',()=>{
     keys[key]=false;
   });
@@ -1561,7 +1747,10 @@ bindControl('jump','jump');
 document.addEventListener('keydown',e=>{
   const k=e.key.toLowerCase();
 
-  if(['arrowleft','arrowright',' ','arrowup'].includes(k)) {
+  if(
+    ['arrowleft','arrowright',' ','arrowup']
+      .includes(k)
+  ) {
     e.preventDefault();
   }
 
@@ -1600,29 +1789,18 @@ window.addEventListener('blur',()=>{
   keys.jump=false;
 });
 
-// Verhindert das iOS-Kontextmenü und die
-// Textauswahl auf der Spieloberfläche.
-// Die Textauswahl außerhalb des Spiels
-// bleibt weiterhin möglich.
-document.getElementById('frame')
-  .addEventListener('contextmenu',e=>{
+// iOS-Kontextmenü unterdrücken
+for(const id of ['frame','controls']) {
+  const el=document.getElementById(id);
+
+  el.addEventListener('contextmenu',e=>{
     e.preventDefault();
   });
 
-document.getElementById('frame')
-  .addEventListener('selectstart',e=>{
+  el.addEventListener('selectstart',e=>{
     e.preventDefault();
   });
-
-document.getElementById('controls')
-  .addEventListener('contextmenu',e=>{
-    e.preventDefault();
-  });
-
-document.getElementById('controls')
-  .addEventListener('selectstart',e=>{
-    e.preventDefault();
-  });
+}
 
 // ==========================================
 // MISSIONSENDE UND AUSWERTUNG
@@ -1643,13 +1821,23 @@ function finishGame() {
   const correct=data.filter(r=>r.right).length;
   const wrong=data.length-correct;
 
-  const base=data.reduce((s,r)=>s+r.base,0);
-  const speed=data.reduce((s,r)=>s+r.speed,0);
-  const combo=data.reduce((s,r)=>s+r.comboBonus,0);
+  const base=data.reduce(
+    (s,r)=>s+r.base,0
+  );
+
+  const speed=data.reduce(
+    (s,r)=>s+r.speed,0
+  );
+
+  const combo=data.reduce(
+    (s,r)=>s+r.comboBonus,0
+  );
 
   const average=data.length
-    ? data.reduce((s,r)=>s+r.seconds,0)/data.length
-    : 0;
+    ?data.reduce(
+      (s,r)=>s+r.seconds,0
+    )/data.length
+    :0;
 
   state.paused=true;
 
@@ -1751,7 +1939,7 @@ function finishGame() {
 
     <details>
       <summary>
-        🌐 Übersetzung benötigt? Hier klicken
+        🌐 Übersetzung benötigt?
       </summary>
 
       <p class="sub">
@@ -1783,14 +1971,17 @@ function finishGame() {
     </p>
   `);
 
-  document.getElementById('restart').onclick=startGame;
-  document.getElementById('home').onclick=menu;
+  document.getElementById('restart')
+    .onclick=startGame;
+
+  document.getElementById('home')
+    .onclick=menu;
 
   setupLessons();
 }
 
 // ==========================================
-// GRAMMATIKDRACHE UND ÜBERSETZUNGEN
+// GRAMMATIKDRACHE
 // ==========================================
 
 let lesson=0;
@@ -1798,21 +1989,22 @@ let lesson=0;
 function setupLessons() {
   lesson=0;
 
-  document.getElementById('nextTip').onclick=()=>{
-    lesson=(lesson+1)%explanations.length;
-    displayLesson();
-  };
+  document.getElementById('nextTip')
+    .onclick=()=>{
+      lesson=(lesson+1)%explanations.length;
+      displayLesson();
+    };
 
-  document.getElementById('showAll').onclick=()=>{
-    clearInterval(typingTimer);
+  document.getElementById('showAll')
+    .onclick=()=>{
+      clearInterval(typingTimer);
 
-    document.getElementById('lessonText')
-      .textContent=explanations[lesson][1];
-  };
+      document.getElementById('lessonText')
+        .textContent=explanations[lesson][1];
+    };
 
-  document.getElementById('language').onchange=()=>{
-    displayTranslation();
-  };
+  document.getElementById('language')
+    .onchange=displayTranslation;
 
   displayLesson();
 }
@@ -1826,7 +2018,6 @@ function displayLesson() {
     .textContent='🐉 '+title;
 
   const el=document.getElementById('lessonText');
-
   el.textContent='';
 
   let index=0;
@@ -1858,12 +2049,12 @@ function displayTranslation() {
 
   target.textContent=
     lang&&translations[lang]
-      ? translations[lang][lesson]
-      : '';
+      ?translations[lang][lesson]
+      :'';
 }
 
 // ==========================================
-// ERSTER BILDSCHIRM
+// SPIEL STARTEN
 // ==========================================
 
 menu();
