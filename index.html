@@ -1,299 +1,2074 @@
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="de">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ZEITREISE – Mission Vergangenheit</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ZEITREISE – Das Dorf der Zeiten</title>
 <style>
-*{box-sizing:border-box}
-body{margin:0;background:#09172e;color:white;font-family:system-ui,sans-serif;text-align:center}
-header{padding:16px;background:#101e3a;border-bottom:2px solid #e6b95f;display:flex;justify-content:space-between;align-items:center}
-.logo{font:bold 24px Georgia;color:#ffda82}
-#score{background:#263e64;padding:9px;border-radius:12px}
-main{max-width:750px;margin:auto;padding:18px}
-h1{font:900 clamp(42px,10vw,75px) Georgia;color:#ffda82;text-shadow:0 5px #784825}
-h2{color:#ffe09a}
-button{font:800 16px system-ui;cursor:pointer}
-.btn{background:linear-gradient(#ffe69d,#e7a341);color:#34240b;border:2px solid #fff0b4;border-radius:14px;padding:14px 20px;margin:6px;box-shadow:0 5px #86511d}
-.btn:active{transform:translateY(3px)}
-.blue{background:linear-gradient(#c2eeff,#6bb5e9);box-shadow:0 5px #305a8b}
-.card{background:linear-gradient(145deg,#254875,#142743);border:2px solid #7297be;border-radius:22px;padding:20px;margin:15px 0;box-shadow:0 12px 25px #0006}
-.scene{background:linear-gradient(#478bb6,#f1bd83 65%,#315b70);border:3px solid #d7b572;border-radius:20px;padding:35px 10px;font-size:75px;margin:15px 0}
-.map{background:linear-gradient(145deg,#c9e5c1,#8ebba6);border:5px solid #e5bc70;border-radius:25px;padding:20px;display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.level{background:#fff0cb;color:#302719;border:3px solid #aa7b40;border-radius:17px;padding:15px 5px;min-height:115px}
-.level span{display:block;font-size:40px}
-.level small{display:block}
-.level:disabled{filter:grayscale(1);opacity:.6}
-.paper{background:#fff0ce;color:#33271d;border:3px solid #dfb46e;border-radius:18px;padding:20px;margin:15px 0}
-.word{font-size:32px;font-weight:900;color:#90521f}
-.choices{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.choice{background:#b8e1fa;color:#15334c;border:2px solid white;border-radius:12px;padding:14px 8px;min-height:55px;font-weight:800}
-.selected{background:#79e9af!important;color:#133b29!important}
-input{width:100%;padding:15px;font-size:19px;border:3px solid #82c5f1;border-radius:12px}
-.bar{height:13px;background:#0c1b34;border-radius:20px;overflow:hidden}
-.fill{height:100%;background:linear-gradient(90deg,#5ce0a0,#ffe17e)}
-.feedback{background:#0c2343;border:2px solid #80c9f0;padding:15px;border-radius:13px;margin:12px 0}
-.hidden{display:none}
-#tiles{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
-.tile{background:#c2e7ff;color:#173653;padding:12px;border-radius:10px}
-#assembled{padding:16px;border:2px dashed #8cb5db;border-radius:12px;min-height:60px;margin:12px 0}
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #101a36;
+  color: #f8f0dc;
+  font: 16px system-ui, Arial;
+}
+
+button, select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 14px;
+  background: #152546;
+  border-bottom: 2px solid #c59a50;
+}
+
+header b {
+  font: 900 22px Georgia;
+  color: #ffe1a2;
+}
+
+.pill {
+  border: 1px solid #8aa2bf;
+  background: #223c62;
+  border-radius: 25px;
+  padding: 7px 12px;
+  font-size: 13px;
+}
+
+main {
+  max-width: 1100px;
+  margin: auto;
+  padding: 12px;
+}
+
+h1, h2 {
+  font-family: Georgia;
+  color: #ffe1a2;
+}
+
+h1 {
+  font-size: clamp(30px, 6vw, 52px);
+  margin: 10px 0;
+}
+
+p {
+  line-height: 1.5;
+}
+
+.panel {
+  background: linear-gradient(150deg, #2c4569, #172745);
+  border: 1px solid #8ba4c3;
+  border-radius: 18px;
+  padding: 17px;
+  margin: 12px 0;
+  box-shadow: 0 8px 24px #0004;
+}
+
+.btn {
+  background: linear-gradient(#ffecba, #e8ad54);
+  color: #39260c;
+  border: 2px solid #fff3c6;
+  border-radius: 12px;
+  padding: 11px 17px;
+  font-weight: 800;
+  margin: 4px;
+  box-shadow: 0 3px #90622a;
+}
+
+.btn.alt {
+  background: #315477;
+  color: #fff;
+  border-color: #9bb9d4;
+  box-shadow: 0 3px #193754;
+}
+
+.btn:disabled {
+  opacity: .5;
+}
+
+#stage {
+  position: relative;
+  overflow: hidden;
+  border: 3px solid #c8a46b;
+  border-radius: 16px;
+  box-shadow: 0 8px 25px #0008;
+}
+
+canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  touch-action: none;
+  background: #75c7eb;
+}
+
+.hud {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  display: flex;
+  justify-content: space-between;
+  gap: 5px;
+  pointer-events: none;
+}
+
+.hud span {
+  background: #152b50d9;
+  padding: 7px 10px;
+  border-radius: 14px;
+  font-size: clamp(10px, 2.5vw, 14px);
+  font-weight: 800;
+  box-shadow: 0 2px 6px #0005;
+}
+
+.controlbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin: 12px 0;
+}
+
+.pad {
+  display: flex;
+  gap: 8px;
+}
+
+.pad button {
+  font-size: 24px;
+  min-width: 70px;
+  min-height: 56px;
+  background: #244b7c;
+  color: #fff;
+  border: 2px solid #9bc4eb;
+  border-radius: 15px;
+  touch-action: none;
+}
+
+.tip {
+  font-size: 13px;
+  color: #c8d7e9;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: #0c1938c9;
+  display: grid;
+  place-items: center;
+  padding: 12px;
+}
+
+.question {
+  width: min(96%, 680px);
+  background: #fff2d5;
+  color: #32291e;
+  border: 4px solid #a86d37;
+  border-radius: 20px;
+  padding: 16px;
+  box-shadow: 0 14px 40px #0009;
+  text-align: center;
+}
+
+.question h2 {
+  color: #794519;
+  margin: 6px;
+}
+
+.choices {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 9px;
+}
+
+.choices button {
+  background: #d7e9f7;
+  border: 2px solid #6699c0;
+  color: #183a5a;
+  border-radius: 12px;
+  padding: 13px 7px;
+  font-weight: 800;
+  overflow-wrap: anywhere;
+  min-height: 54px;
+}
+
+.choices button:active {
+  background: #a3d8ec;
+}
+
+.tiny {
+  font-size: 12px;
+  opacity: .8;
+}
+
+.scoregrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.scoregrid div {
+  background: #1b3455;
+  border-radius: 13px;
+  padding: 12px;
+  text-align: center;
+}
+
+.scoregrid strong {
+  display: block;
+  font-size: 27px;
+  color: #ffe1a2;
+}
+
+.review {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.review td, .review th {
+  border-bottom: 1px solid #547194;
+  padding: 9px 5px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.bad {
+  color: #ffb6ae;
+}
+
+.good {
+  color: #9ff0bc;
+}
+
+.bubble {
+  background: #fff1d4;
+  color: #322a21;
+  border-radius: 17px;
+  padding: 16px;
+  min-height: 112px;
+  line-height: 1.6;
+  white-space: pre-line;
+}
+
+.mentor {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.mentor .avatar {
+  font-size: 64px;
+}
+
+.translate {
+  margin-top: 12px;
+  padding: 12px;
+  border: 1px solid #8ea8c9;
+  border-radius: 12px;
+}
+
+.translate summary {
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.translate select {
+  margin: 10px 0;
+  padding: 10px;
+  max-width: 100%;
+  border-radius: 8px;
+}
+
+.translate article {
+  white-space: pre-line;
+  line-height: 1.55;
+}
+
+.hidden {
+  display: none !important;
+}
+
+@media (max-width: 540px) {
+  main {
+    padding: 7px;
+  }
+
+  .panel {
+    padding: 12px;
+  }
+
+  .hud span {
+    padding: 5px;
+  }
+
+  .mentor .avatar {
+    font-size: 42px;
+  }
+
+  .choices button {
+    font-size: 13px;
+  }
+}
 </style>
 </head>
 <body>
+
 <header>
-<div class="logo">⏳ ZEITREISE</div>
-<div id="score">⭐ 0</div>
+  <b>⏳ ZEITREISE</b>
+  <span class="pill" id="topScore">⭐ 0</span>
 </header>
+
 <main id="app"></main>
+
 <script>
-const data=[
-["sein","war","ist gewesen","war gewesen"],
-["haben","hatte","hat gehabt","hatte gehabt"],
-["werden","wurde","ist geworden","war geworden"],
-["gehen","ging","ist gegangen","war gegangen"],
-["kommen","kam","ist gekommen","war gekommen"],
-["sehen","sah","hat gesehen","hatte gesehen"],
-["geben","gab","hat gegeben","hatte gegeben"],
-["nehmen","nahm","hat genommen","hatte genommen"],
-["finden","fand","hat gefunden","hatte gefunden"],
-["sprechen","sprach","hat gesprochen","hatte gesprochen"],
-["essen","aß","hat gegessen","hatte gegessen"],
-["trinken","trank","hat getrunken","hatte getrunken"],
-["fahren","fuhr","ist gefahren","war gefahren"],
-["laufen","lief","ist gelaufen","war gelaufen"],
-["schlafen","schlief","hat geschlafen","hatte geschlafen"],
-["lesen","las","hat gelesen","hatte gelesen"],
-["schreiben","schrieb","hat geschrieben","hatte geschrieben"],
-["bleiben","blieb","ist geblieben","war geblieben"],
-["bringen","brachte","hat gebracht","hatte gebracht"],
-["denken","dachte","hat gedacht","hatte gedacht"],
-["wissen","wusste","hat gewusst","hatte gewusst"],
-["kennen","kannte","hat gekannt","hatte gekannt"],
-["stehen","stand","hat gestanden","hatte gestanden"],
-["sitzen","saß","hat gesessen","hatte gesessen"],
-["liegen","lag","hat gelegen","hatte gelegen"],
-["helfen","half","hat geholfen","hatte geholfen"],
-["treffen","traf","hat getroffen","hatte getroffen"],
-["vergessen","vergaß","hat vergessen","hatte vergessen"],
-["verlieren","verlor","hat verloren","hatte verloren"],
-["gewinnen","gewann","hat gewonnen","hatte gewonnen"],
-["beginnen","begann","hat begonnen","hatte begonnen"],
-["anfangen","fing an","hat angefangen","hatte angefangen"],
-["verstehen","verstand","hat verstanden","hatte verstanden"],
-["bekommen","bekam","hat bekommen","hatte bekommen"],
-["halten","hielt","hat gehalten","hatte gehalten"],
-["lassen","ließ","hat gelassen","hatte gelassen"],
-["fallen","fiel","ist gefallen","war gefallen"],
-["fliegen","flog","ist geflogen","war geflogen"],
-["schwimmen","schwamm","ist geschwommen","war geschwommen"],
-["steigen","stieg","ist gestiegen","war gestiegen"],
-["aufstehen","stand auf","ist aufgestanden","war aufgestanden"],
-["ankommen","kam an","ist angekommen","war angekommen"],
-["wachsen","wuchs","ist gewachsen","war gewachsen"],
-["sterben","starb","ist gestorben","war gestorben"],
-["ziehen","zog","hat gezogen","hatte gezogen"],
-["anrufen","rief an","hat angerufen","hatte angerufen"],
-["rufen","rief","hat gerufen","hatte gerufen"],
-["tragen","trug","hat getragen","hatte getragen"],
-["waschen","wusch","hat gewaschen","hatte gewaschen"],
-["werfen","warf","hat geworfen","hatte geworfen"],
-["schließen","schloss","hat geschlossen","hatte geschlossen"],
-["schneiden","schnitt","hat geschnitten","hatte geschnitten"],
-["entscheiden","entschied","hat entschieden","hatte entschieden"],
-["singen","sang","hat gesungen","hatte gesungen"],
-["springen","sprang","ist gesprungen","war gesprungen"],
-["bitten","bat","hat gebeten","hatte gebeten"],
-["bieten","bot","hat geboten","hatte geboten"],
-["verbieten","verbot","hat verboten","hatte verboten"],
-["verglichen","verglich","hat verglichen","hatte verglichen"],
-["unterschreiben","unterschrieb","hat unterschrieben","hatte unterschrieben"],
-["beschreiben","beschrieb","hat beschrieben","hatte beschrieben"],
-["leihen","lieh","hat geliehen","hatte geliehen"],
-["empfehlen","empfahl","hat empfohlen","hatte empfohlen"],
-["gefallen","gefiel","hat gefallen","hatte gefallen"],
-["heißen","hieß","hat geheißen","hatte geheißen"],
-["tun","tat","hat getan","hatte getan"],
-["brechen","brach","hat gebrochen","hatte gebrochen"],
-["versprechen","versprach","hat versprochen","hatte versprochen"],
-["rennen","rannte","ist gerannt","war gerannt"],
-["brennen","brannte","hat gebrannt","hatte gebrannt"],
-["nennen","nannte","hat genannt","hatte genannt"],
-["dürfen","durfte","hat gedurft","hatte gedurft"],
-["können","konnte","hat gekonnt","hatte gekonnt"],
-["müssen","musste","hat gemusst","hatte gemusst"],
-["sollen","sollte","hat gesollt","hatte gesollt"],
-["wollen","wollte","hat gewollt","hatte gewollt"],
-["mögen","mochte","hat gemocht","hatte gemocht"],
-["gelingen","gelang","ist gelungen","war gelungen"],
-["geschehen","geschah","ist geschehen","war geschehen"],
-["entstehen","entstand","ist entstanden","war entstanden"],
-["verschwinden","verschwand","ist verschwunden","war verschwunden"],
-["teilnehmen","nahm teil","hat teilgenommen","hatte teilgenommen"],
-["stattfinden","fand statt","hat stattgefunden","hatte stattgefunden"],
-["anbieten","bot an","hat angeboten","hatte angeboten"],
-["mitbringen","brachte mit","hat mitgebracht","hatte mitgebracht"],
-["aussehen","sah aus","hat ausgesehen","hatte ausgesehen"],
-["nachdenken","dachte nach","hat nachgedacht","hatte nachgedacht"],
-["vorlesen","las vor","hat vorgelesen","hatte vorgelesen"],
-["aufgeben","gab auf","hat aufgegeben","hatte aufgegeben"],
-["einladen","lud ein","hat eingeladen","hatte eingeladen"]
+  
+const V = [
+  ['machen','machte','hat gemacht','hatte gemacht'],
+  ['gehen','ging','ist gegangen','war gegangen'],
+  ['sehen','sah','hat gesehen','hatte gesehen'],
+  ['kommen','kam','ist gekommen','war gekommen'],
+  ['schreiben','schrieb','hat geschrieben','hatte geschrieben'],
+  ['lernen','lernte','hat gelernt','hatte gelernt'],
+  ['fahren','fuhr','ist gefahren','war gefahren'],
+  ['essen','aß','hat gegessen','hatte gegessen'],
+  ['sprechen','sprach','hat gesprochen','hatte gesprochen'],
+  ['bringen','brachte','hat gebracht','hatte gebracht'],
+  ['finden','fand','hat gefunden','hatte gefunden'],
+  ['arbeiten','arbeitete','hat gearbeitet','hatte gearbeitet'],
+  ['bleiben','blieb','ist geblieben','war geblieben'],
+  ['nehmen','nahm','hat genommen','hatte genommen'],
+  ['trinken','trank','hat getrunken','hatte getrunken'],
+  ['denken','dachte','hat gedacht','hatte gedacht'],
+  ['kaufen','kaufte','hat gekauft','hatte gekauft'],
+  ['lesen','las','hat gelesen','hatte gelesen'],
+  ['schlafen','schlief','hat geschlafen','hatte geschlafen'],
+  ['helfen','half','hat geholfen','hatte geholfen']
 ];
-const levels=[
-["🏰","Das Dorf der Verben","choice"],
-["🚂","Der Zeitexpress","tiles"],
-["🏙️","Die verlorene Stadt","identify"],
-["📜","Die Chroniken","write"],
-["🐉","Der Portalsturm","mixed"],
-["🛠️","Die Fehlerwerkstatt","review"]
+
+const FORMS = [
+  '',
+  'Präteritum',
+  'Perfekt',
+  'Plusquamperfekt'
 ];
-const app=document.getElementById("app");
-let save;
-try{save=JSON.parse(localStorage.getItem("zeitreise3"))}catch{}
-save=save||{score:0,unlocked:1,errors:{}};
-let game=null;
-function persist(){
-localStorage.setItem("zeitreise3",JSON.stringify(save));
-document.getElementById("score").textContent="⭐ "+save.score;
+
+const app = document.getElementById('app');
+
+let mode = 'easy';
+let g = null;
+let raf = 0;
+let keys = {left:false,right:false};
+let last = 0;
+let typeTimer = null;
+
+const WIDTH = 960;
+const HEIGHT = 500;
+const WORLD = 5200;
+
+const gates = [
+  540,1020,1500,1980,2460,
+  2940,3420,3900,4380,4850
+];
+
+let stored = {best:0};
+
+try {
+  stored = JSON.parse(
+    localStorage.getItem('zeitreise_dorf_v1')
+  ) || stored;
+} catch(e) {}
+
+document.getElementById('topScore').textContent =
+  '🏆 Rekord ' + (stored.best || 0);
+
+const R = (a,b) => Math.random()*(b-a)+a;
+
+function shuffle(a) {
+  a = [...a];
+  for(let i=a.length-1;i>0;i--) {
+    let j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
 }
-function shuffle(a){
-let b=[...a];
-for(let i=b.length-1;i>0;i--){
-let j=Math.floor(Math.random()*(i+1));
-[b[i],b[j]]=[b[j],b[i]];
+
+function esc(s) {
+  return String(s).replace(/[&<>"']/g,c=>({
+    '&':'&amp;',
+    '<':'&lt;',
+    '>':'&gt;',
+    '"':'&quot;',
+    "'":'&#39;'
+  }[c]));
 }
-return b;
+
+function stop() {
+  cancelAnimationFrame(raf);
+  clearInterval(typeTimer);
+  raf = 0;
+  g = null;
+  keys.left = false;
+  keys.right = false;
 }
-function startScreen(){
-app.innerHTML=`
-<h1>ZEITREISE</h1>
-<p>⚔️ Mission Vergangenheit</p>
-<div class="scene">🏰 🧙 🌀</div>
-<div class="card">
-<h2>Die Zeitmaschine ist kaputt!</h2>
-<p>Sechs Zeitportale sind außer Kontrolle geraten.
-Löse die Rätsel und rette die Vergangenheit!</p>
-<button class="btn" onclick="world()">🗺️ Abenteuer starten</button>
-</div>`;
+
+function home() {
+  stop();
+
+  app.innerHTML = `
+  <section class="panel">
+    <h1>🏰 Das Dorf der Zeiten</h1>
+
+    <p>
+      Eine zusammenhängende, scrollende Fantasy-Mission.
+      Laufe durch das Dorf, öffne zehn magische Tore
+      und erreiche das Zeitportal.
+    </p>
+
+    <p>
+      🎮 <b>Steuerung:</b> ◀ ▶ oder A/D.
+      Auf dem Smartphone die Pfeiltasten gedrückt halten.
+      Vor einem Tor erscheint die Aufgabe direkt
+      über der Spielwelt.
+    </p>
+
+    <p><b>Schwierigkeitsgrad</b></p>
+
+    <label>
+      <input type="radio" name="mode"
+        value="easy" checked>
+      Einfach – deutlich verschiedene Antworten
+    </label>
+
+    <p>
+      <label>
+        <input type="radio" name="mode"
+          value="hard">
+        Schwierig – ähnliche Zeitformen
+        und erfundene Verbformen
+      </label>
+    </p>
+
+    <button class="btn" id="begin">
+      ▶ Mission beginnen
+    </button>
+
+    <p class="tip">
+      Keine harte Zeitbegrenzung.
+      Schnelle Antworten und Serien geben Bonuspunkte.
+      Nach der Mission gibt es eine Fehleranalyse
+      und freiwillige Übersetzungen ohne Flaggen.
+    </p>
+  </section>`;
+
+  document.getElementById('begin').onclick = () => {
+    mode = document.querySelector(
+      'input[name="mode"]:checked'
+    ).value;
+    start();
+  };
 }
-function world(){
-app.innerHTML=`
-<h2>🗺️ Die Welt der Zeitportale</h2>
-<p>Schalte neue Orte frei!</p>
-<div class="map">
-${levels.map((l,i)=>`
-<button class="level" ${i>=save.unlocked&&i!==5?"disabled":""}
-onclick="startLevel(${i})">
-<span>${i>=save.unlocked&&i!==5?"🔒":l[0]}</span>
-${i+1}. ${l[1]}
-<small>${i<save.unlocked?"Bereit":"Gesperrt"}</small>
-</button>`).join("")}
-</div>
-<button class="btn" onclick="startScreen()">← Zurück</button>`;
+
+function fake(v,form) {
+  let s = v[form];
+  let opts = [];
+
+  if(form===3) {
+    opts.push(v[2],v[1]);
+    opts.push(
+      s.replace(/^hatte /,'hat ')
+       .replace(/^war /,'ist ')
+    );
+  } else if(form===2) {
+    opts.push(v[1],v[3]);
+    opts.push(
+      s.replace(/^hat /,'ist ')
+       .replace(/^ist /,'hat ')
+    );
+  } else {
+    opts.push(v[2],v[3]);
+    opts.push(
+      v[1].replace(/a/g,'ä').replace(/i/g,'ie')
+    );
+  }
+
+  let stem = v[0].replace(/en$/,'');
+
+  opts.push(
+    'hat ge'+stem+'t',
+    'ist ge'+stem+'en',
+    v[1]+'te'
+  );
+
+  return [...new Set(opts)].filter(x=>x!==s);
 }
-function startLevel(n){
-let pool=n===5?data.filter(v=>save.errors[v[0]]):data;
-if(!pool.length)pool=data;
-game={level:n,deck:shuffle(pool).slice(0,8),step:0,points:0};
-render();
+
+function task(n) {
+  let v = V[(n*7+3)%V.length];
+  let f = 1+(n%3);
+  let correct = v[f];
+  let pool;
+
+  if(mode==='hard') {
+    pool = [
+      ...fake(v,f),
+      ...shuffle(V.filter(x=>x!==v)).map(x=>x[f])
+    ];
+  } else {
+    pool = shuffle(V.filter(x=>x!==v))
+      .map(x=>x[1+(n+1)%3]);
+
+    pool.push(v[(f%3)+1]);
+  }
+
+  pool = [...new Set(pool)]
+    .filter(x=>x!==correct);
+
+  let options = shuffle([
+    correct,
+    ...pool.slice(0,3)
+  ]);
+
+  return {v,f,correct,options};
 }
-function render(){
-let v=game.deck[game.step];
-let mode=levels[game.level][2];
-if(mode==="mixed"||mode==="review")
-mode=shuffle(["choice","tiles","identify","write"])[0];
-let form=Math.floor(Math.random()*3)+1;
-if(mode==="tiles"&&form===1)form=2;
-let names=["","Präteritum","Perfekt","Plusquamperfekt"];
-let correct=mode==="identify"?names[form]:v[form];
-game.task={v,mode,form,correct,selection:"",locked:false};
-let scene=["🧙🏰","🚂💨","🏙️🦉","📜🕯️","🐉⚡","🛠️🦊"][game.level];
-app.innerHTML=`
-<div class="card">
-<h2>${levels[game.level][0]} ${levels[game.level][1]}</h2>
-<p>Rätsel ${game.step+1} von ${game.deck.length}</p>
-<div class="bar"><div class="fill" style="width:${game.step/game.deck.length*100}%"></div></div>
-<div class="scene">${scene}</div>
-<div class="paper">
-<p>${mode==="identify"?"Welche Zeitform ist das?":"Bilde das "+names[form]+"!"}</p>
-<div class="word">${mode==="identify"?v[form]:v[0]}</div>
-</div>
-<div id="task"></div>
-<div id="feedback"></div>
-<button id="check" class="btn" onclick="check()">✨ Portal aktivieren</button>
-<button id="next" class="btn hidden" onclick="advance()">Weiter ➜</button>
-<button class="btn blue" onclick="world()">🗺️ Karte</button>
-</div>`;
-let area=document.getElementById("task");
-if(mode==="write"){
-area.innerHTML='<input id="typed" placeholder="Verbform eingeben …">';
-}else if(mode==="tiles"){
-let words=correct.split(" ");
-let extras=shuffle(["hat","ist","hatte","war","gehabt"]).filter(w=>!words.includes(w)).slice(0,2);
-let tiles=shuffle([...words,...extras]);
-game.task.tiles=tiles;
-game.task.chosen=[];
-area.innerHTML='<div id="assembled">Wörter antippen</div><div id="tiles">'+tiles.map((w,i)=>`<button class="tile" id="tile${i}" onclick="chooseTile(${i})">${w}</button>`).join("")+'</div>';
-}else{
-let opts=mode==="identify"?shuffle(names.slice(1)):
-shuffle([correct,...shuffle(data.filter(x=>x!==v)).slice(0,3).map(x=>x[form])]);
-game.task.options=opts;
-area.innerHTML='<div class="choices">'+opts.map((o,i)=>`<button class="choice" id="opt${i}" onclick="choose(${i})">${o}</button>`).join("")+'</div>';
+
+function start() {
+  stop();
+
+  g = {
+    x:70,
+    y:0,
+    cam:0,
+    step:0,
+    score:0,
+    streak:0,
+    bestStreak:0,
+    results:[],
+    paused:false,
+    question:null,
+    qStart:0,
+    particles:[],
+    walk:0,
+    elapsed:0
+  };
+
+  app.innerHTML = `
+  <div id="stage">
+    <canvas
+      id="scene"
+      width="960"
+      height="500"
+      aria-label="Seitlich scrollendes Fantasy-Dorf">
+    </canvas>
+
+    <div class="hud">
+      <span id="progress">🏰 Tor 0/10</span>
+      <span id="streak">🔥 Serie 0</span>
+      <span id="score">⭐ 0</span>
+    </div>
+
+    <div id="overlay" class="overlay hidden"></div>
+  </div>
+
+  <div class="controlbar">
+    <div class="pad">
+      <button id="left" aria-label="Links">◀</button>
+      <button id="right" aria-label="Rechts">▶</button>
+    </div>
+
+    <span class="tip">
+      Halte ▶ gedrückt · Tastatur: A / D
+    </span>
+
+    <button class="btn alt" id="exit">
+      Beenden
+    </button>
+  </div>`;
+
+  let canvas = document.getElementById('scene');
+
+  g.c = canvas;
+  g.ctx = canvas.getContext('2d');
+
+  canvas.addEventListener('pointerdown',e=>{
+    if(!g||g.paused)return;
+
+    let b = canvas.getBoundingClientRect();
+    let x = (e.clientX-b.left)*WIDTH/b.width;
+
+    keys.left = x<WIDTH/2;
+    keys.right = !keys.left;
+
+    canvas.setPointerCapture(e.pointerId);
+  });
+
+  ['pointerup','pointercancel','lostpointercapture']
+    .forEach(ev=>canvas.addEventListener(ev,()=>{
+      keys.left = keys.right = false;
+    }));
+
+  ['left','right'].forEach(k=>{
+    let b = document.getElementById(k);
+
+    b.addEventListener('pointerdown',e=>{
+      e.preventDefault();
+      keys[k] = true;
+      b.setPointerCapture(e.pointerId);
+    });
+
+    ['pointerup','pointercancel','lostpointercapture']
+      .forEach(ev=>b.addEventListener(ev,()=>{
+        keys[k] = false;
+      }));
+  });
+
+  document.getElementById('exit').onclick = home;
+
+  last = performance.now();
+  raf = requestAnimationFrame(loop);
 }
+
+function path(fn) {
+  let c = g.ctx;
+  c.beginPath();
+  fn(c);
+  c.fill();
 }
-function choose(i){
-if(game.task.locked)return;
-game.task.selection=game.task.options[i];
-document.querySelectorAll(".choice").forEach((b,j)=>b.classList.toggle("selected",i===j));
+
+function fill(color) {
+  g.ctx.fillStyle = color;
 }
-function chooseTile(i){
-let t=game.task;
-if(t.locked)return;
-let pos=t.chosen.indexOf(i);
-if(pos>=0)t.chosen.splice(pos,1);
-else t.chosen.push(i);
-document.querySelectorAll(".tile").forEach((b,j)=>b.classList.toggle("selected",t.chosen.includes(j)));
-document.getElementById("assembled").textContent=t.chosen.map(j=>t.tiles[j]).join(" ")||"Wörter antippen";
+
+function box(x,y,w,h,color) {
+  fill(color);
+  g.ctx.fillRect(x,y,w,h);
 }
-function check(){
-let t=game.task;
-if(t.locked)return;
-let answer=t.mode==="write"?document.getElementById("typed").value:
-t.mode==="tiles"?t.chosen.map(i=>t.tiles[i]).join(" "):t.selection;
-if(!answer.trim())return;
-t.locked=true;
-let clean=s=>s.trim().toLowerCase().replace(/\s+/g," ");
-let ok=clean(answer)===clean(t.correct);
-if(ok){
-save.score+=10;
-game.points+=10;
-if(save.errors[t.v[0]])save.errors[t.v[0]]--;
-}else{
-save.errors[t.v[0]]=(save.errors[t.v[0]]||0)+1;
+
+function circle(x,y,r,color) {
+  fill(color);
+  g.ctx.beginPath();
+  g.ctx.arc(x,y,r,0,Math.PI*2);
+  g.ctx.fill();
 }
-persist();
-document.getElementById("feedback").innerHTML=
-'<div class="feedback">'+(ok?"🌟 Richtig! +10 Sterne":"💥 Zeitriss! Richtig: "+t.correct)+'</div>';
-document.getElementById("check").classList.add("hidden");
-document.getElementById("next").classList.remove("hidden");
+
+function poly(points,color) {
+  fill(color);
+  path(c=>{
+    c.moveTo(...points[0]);
+    for(let p of points.slice(1)) {
+      c.lineTo(...p);
+    }
+    c.closePath();
+  });
 }
-function advance(){
-game.step++;
-if(game.step<game.deck.length){render();return;}
-if(game.level<4)save.unlocked=Math.max(save.unlocked,game.level+2);
-persist();
-app.innerHTML=`
-<div class="card">
-<div class="scene">🏆✨🎉</div>
-<h1>Geschafft!</h1>
-<h2>Portal repariert!</h2>
-<p>Du hast ${game.points} Sterne gesammelt.</p>
-<button class="btn" onclick="world()">🗺️ Weiter zur Weltkarte</button>
-<button class="btn blue" onclick="startLevel(${game.level})">🔁 Noch einmal</button>
-</div>`;
+
+function line(x,y,x2,y2,color,width=2) {
+  let c = g.ctx;
+  c.strokeStyle = color;
+  c.lineWidth = width;
+  c.beginPath();
+  c.moveTo(x,y);
+  c.lineTo(x2,y2);
+  c.stroke();
 }
-persist();
-startScreen();
+
+function label(s,x,y,size=20,color='#fff') {
+  let c = g.ctx;
+  c.fillStyle = color;
+  c.font = `bold ${size}px system-ui`;
+  c.textAlign = 'center';
+  c.fillText(s,x,y);
+}
+
+function scenery() {
+  let c = g.ctx;
+  let t = g.elapsed;
+  let cam = g.cam;
+
+  let sky = c.createLinearGradient(0,0,0,500);
+  sky.addColorStop(0,'#5cb8e7');
+  sky.addColorStop(.7,'#b7e7ef');
+  sky.addColorStop(1,'#e8f1c4');
+
+  box(0,0,WIDTH,HEIGHT,sky);
+
+  circle(790,83,48,'#ffe9a1');
+
+  for(let i=0;i<12;i++) {
+    let x = (i*220-cam*.15+2500)%2500-150;
+    let y = 75+(i%4)*30;
+
+    circle(x,y,25,'#ffffffb5');
+    circle(x+30,y-10,34,'#ffffffb5');
+    circle(x+62,y,25,'#ffffffb5');
+  }
+
+  for(let i=0;i<16;i++) {
+    let x = i*170-(cam*.28%170);
+
+    poly([
+      [x-150,350],
+      [x+20,170+(i%3)*24],
+      [x+190,350]
+    ],'#7cbbba');
+  }
+
+  for(let i=0;i<20;i++) {
+    let x = i*110-(cam*.55%110);
+
+    circle(x,357,72,'#5eaa7c');
+    circle(x+45,357,53,'#4d986f');
+  }
+
+  box(0,400,WIDTH,100,'#65934f');
+  box(0,407,WIDTH,15,'#a6b86b');
+
+  for(let i=0;i<70;i++) {
+    let x = (i*87-cam%87+WIDTH)%WIDTH;
+    let y = 430+(i%4)*16;
+
+    circle(x,y,3,'#d8c889');
+  }
+
+  for(let i=0;i<15;i++) {
+    let x = i*400-cam*.8;
+
+    if(x>-100&&x<WIDTH+100) {
+      box(x,335,12,70,'#805a39');
+      circle(x+6,315,39,'#377d53');
+      circle(x-17,328,29,'#438d5a');
+      circle(x+28,327,27,'#4b985f');
+    }
+  }
+}
+
+function house(x,n) {
+  let c = g.ctx;
+
+  x -= g.cam;
+
+  if(x<-230||x>WIDTH+220)return;
+
+  let y = 402;
+  let w = 170;
+  let h = 145+(n%3)*17;
+
+  box(x-w/2,y-h,w,h,'#f5d5a0');
+
+  poly([
+    [x-w/2-20,y-h],
+    [x,y-h-88],
+    [x+w/2+20,y-h]
+  ],'#a84c39');
+
+  box(x-w/2+15,y-h+18,34,48,'#795338');
+  box(x+w/2-49,y-h+18,34,48,'#795338');
+
+  box(x-w/2+21,y-h+24,22,36,'#a8dff2');
+  box(x+w/2-43,y-h+24,22,36,'#a8dff2');
+
+  box(x-24,y-77,48,77,'#74472f');
+
+  line(x-w/2,y-h,x+w/2,y,'#8b5a38',8);
+  line(x+w/2,y-h,x-w/2,y,'#8b5a38',8);
+
+  box(x-w/2,y-15,w,15,'#bb8b59');
+}
+
+function gate(x,n) {
+  x -= g.cam;
+
+  if(x<-130||x>WIDTH+140)return;
+
+  let locked = n>=g.step;
+
+  box(x-46,255,92,150,'#6c4d63');
+  box(x-35,267,70,138,locked?'#423b62':'#63bca7');
+
+  poly([
+    [x-62,255],
+    [x,194],
+    [x+62,255]
+  ],'#a45a5a');
+
+  box(x-50,252,100,13,'#e8bf79');
+
+  label(
+    locked?'🔒':'✓',
+    x,325,31,
+    locked?'#ffdf83':'#c6ffe1'
+  );
+
+  label('TOR '+(n+1),x,233,17,'#fff1ba');
+}
+
+function player() {
+  let x = g.x-g.cam;
+  let y = 392;
+  let bounce = Math.sin(g.walk*12)*3;
+
+  circle(x,y-105+bounce,21,'#efb886');
+
+  poly([
+    [x-28,y-126+bounce],
+    [x,y-175+bounce],
+    [x+28,y-126+bounce]
+  ],'#6545a6');
+
+  box(x-26,y-85+bounce,52,69,'#7253b6');
+
+  line(x-15,y-15,x-20,y+13,'#45345b',9);
+  line(x+15,y-15,x+20,y+13,'#45345b',9);
+
+  circle(x-7,y-109+bounce,2,'#362b3d');
+  circle(x+7,y-109+bounce,2,'#362b3d');
+
+  line(x+28,y-68,x+43,y-40,'#efb886',9);
+}
+
+function render() {
+  scenery();
+
+  for(let i=0;i<11;i++) {
+    house(180+i*450,i);
+  }
+
+  for(let i=0;i<gates.length;i++) {
+    gate(gates[i],i);
+  }
+
+  player();
+
+  if(g.step===10) {
+    let x = 5090-g.cam;
+
+    circle(x,295,80,'#8a5ce888');
+    circle(x,295,58,'#d5b8ff');
+    circle(x,295,39,'#6e54c9');
+
+    label('ZEITPORTAL',x,185,20);
+  }
+}
+
+function loop(now) {
+  if(!g)return;
+
+  let dt = Math.min(.04,(now-last)/1000||.016);
+  last = now;
+
+  g.elapsed += dt;
+
+  if(!g.paused) {
+    let move =
+      (keys.right?1:0)-(keys.left?1:0);
+
+    let nextX = g.x+move*245*dt;
+
+    if(g.step<gates.length) {
+      nextX = Math.min(nextX,gates[g.step]-55);
+    }
+
+    g.x = Math.max(45,Math.min(WORLD-60,nextX));
+
+    if(move)g.walk += dt;
+
+    g.cam = Math.max(
+      0,
+      Math.min(WORLD-WIDTH,g.x-300)
+    );
+
+    if(g.step<gates.length &&
+       g.x>=gates[g.step]-56) {
+      showQuestion();
+    }
+
+    if(g.step===10&&g.x>=5040) {
+      finish();
+      return;
+    }
+  }
+
+  render();
+  raf = requestAnimationFrame(loop);
+} 
+// ===========================================
+// TEIL 3 – TORE, PUNKTE UND GRAMMATIKDRACHE
+// ===========================================
+
+// Tastatursteuerung
+document.addEventListener('keydown', e => {
+  if (!g || g.paused) return;
+
+  const k = e.key.toLowerCase();
+
+  if (k === 'arrowleft' || k === 'a') {
+    keys.left = true;
+    e.preventDefault();
+  }
+
+  if (k === 'arrowright' || k === 'd') {
+    keys.right = true;
+    e.preventDefault();
+  }
+});
+
+document.addEventListener('keyup', e => {
+  const k = e.key.toLowerCase();
+
+  if (k === 'arrowleft' || k === 'a') {
+    keys.left = false;
+  }
+
+  if (k === 'arrowright' || k === 'd') {
+    keys.right = false;
+  }
+});
+
+window.addEventListener('blur', () => {
+  keys.left = false;
+  keys.right = false;
+});
+
+// ===========================================
+// GRAMMATIKAUFGABEN
+// ===========================================
+
+function showQuestion() {
+  if (!g || g.paused) return;
+
+  g.paused = true;
+  keys.left = false;
+  keys.right = false;
+
+  const q = task(g.step);
+
+  g.question = q;
+  g.qStart = performance.now();
+
+  const overlay = document.getElementById('overlay');
+
+  overlay.classList.remove('hidden');
+
+  overlay.innerHTML = `
+    <div class="question">
+      <div class="tiny">
+        🗝️ MAGISCHES TOR ${g.step + 1} VON 10
+      </div>
+
+      <h2>Welche Form ist richtig?</h2>
+
+      <p>
+        Gesucht:
+        <b>${FORMS[q.f]}</b>
+      </p>
+
+      <h2 style="font-size:32px">
+        ${esc(q.v[0])}
+      </h2>
+
+      <div class="choices">
+        ${q.options.map((a,i) => `
+          <button data-answer="${i}">
+            ${esc(a)}
+          </button>
+        `).join('')}
+      </div>
+
+      <p class="tiny">
+        ⚡ Schnell antworten = mehr Punkte.
+        Keine Zeitbegrenzung!
+      </p>
+    </div>
+  `;
+
+  overlay.querySelectorAll('[data-answer]')
+    .forEach(b => {
+      b.onclick = () => {
+        answer(Number(b.dataset.answer));
+      };
+    });
+}
+
+function answer(index) {
+  if (!g || !g.paused || !g.question) return;
+
+  const q = g.question;
+
+  const chosen = q.options[index];
+  const correct = chosen === q.correct;
+
+  const seconds =
+    (performance.now() - g.qStart) / 1000;
+
+  let base = 0;
+  let speed = 0;
+  let combo = 0;
+
+  if (correct) {
+    base = 100;
+
+    // Maximal 1000 Geschwindigkeitspunkte.
+    // Nach 20 Sekunden gibt es keinen
+    // Geschwindigkeitsbonus mehr.
+    speed = Math.max(
+      0,
+      Math.round(1000 * (1 - seconds / 20))
+    );
+
+    g.streak++;
+
+    // Jede richtige Antwort in Folge
+    // erhöht den Serienbonus.
+    combo = Math.min(
+      500,
+      Math.max(0, (g.streak - 1) * 75)
+    );
+
+    g.bestStreak = Math.max(
+      g.bestStreak,
+      g.streak
+    );
+
+    g.score += base + speed + combo;
+  } else {
+    g.streak = 0;
+  }
+
+  g.results.push({
+    verb: q.v[0],
+    form: FORMS[q.f],
+    chosen,
+    correctAnswer: q.correct,
+    correct,
+    seconds,
+    base,
+    speed,
+    combo,
+    points: base + speed + combo
+  });
+
+  g.step++;
+  g.question = null;
+
+  document.getElementById('progress').textContent =
+    '🏰 Tor ' + g.step + '/10';
+
+  document.getElementById('streak').textContent =
+    '🔥 Serie ' + g.streak;
+
+  document.getElementById('score').textContent =
+    '⭐ ' + g.score.toLocaleString('de-DE');
+
+  const overlay = document.getElementById('overlay');
+
+  overlay.innerHTML = `
+    <div class="question">
+      <h2>${correct ? '🌟 RICHTIG!' : '💫 KNAPP DANEBEN!'}</h2>
+
+      <p>
+        ${correct
+          ? 'Das magische Tor öffnet sich!'
+          : 'Die richtige Form lautet:'}
+      </p>
+
+      <h2>${esc(q.correct)}</h2>
+
+      <p>
+        ${correct
+          ? `+${base} Grundpunkte<br>
+             +${speed} Tempobonus<br>
+             +${combo} Serienbonus`
+          : 'Beim nächsten Tor klappt es bestimmt!'}
+      </p>
+
+      <button class="btn" id="continue">
+        Weiterlaufen ➜
+      </button>
+    </div>
+  `;
+
+  document.getElementById('continue').onclick = () => {
+    overlay.classList.add('hidden');
+    g.paused = false;
+  };
+}
+
+// ===========================================
+// GRAMMATIKERKLÄRUNGEN
+// ===========================================
+
+const LESSONS = [
+  {
+    title: 'Präteritum und Perfekt',
+    de:
+`Das Präteritum und das Perfekt beschreiben Ereignisse in der Vergangenheit.
+
+Das Perfekt verwendet man besonders häufig beim Sprechen:
+„Gestern habe ich Deutsch gelernt.“
+
+Das Präteritum kommt häufig in geschriebenen Erzählungen vor:
+„Der Mann ging nach Hause.“
+
+Wichtig: Die Verben sein, haben und die Modalverben benutzt man auch beim Sprechen oft im Präteritum:
+„Ich war müde.“
+„Ich hatte keine Zeit.“
+„Ich musste arbeiten.“`
+  },
+  {
+    title: 'Das Plusquamperfekt',
+    de:
+`Das Plusquamperfekt beschreibt etwas, das vor einem anderen Ereignis in der Vergangenheit passiert war.
+
+Beispiel:
+„Nachdem ich gegessen hatte, ging ich schlafen.“
+
+Zuerst: Ich hatte gegessen.
+Danach: Ich ging schlafen.
+
+Die Bildung:
+hatte oder war + Partizip II.
+
+Beispiele:
+„Ich hatte gelernt.“
+„Sie war nach Hause gegangen.“
+
+Merke dir: Das Plusquamperfekt ist die Vorvergangenheit.`
+  },
+  {
+    title: 'Regelmäßige Verben',
+    de:
+`Regelmäßige Verben folgen meist einem festen Muster.
+
+Beispiel:
+machen – machte – hat gemacht – hatte gemacht.
+
+Im Präteritum erhält der Stamm normalerweise die Endung -te.
+
+Das Partizip II wird häufig mit ge- und -t gebildet.
+
+Beispiel:
+lernen – lernte – hat gelernt.
+
+Bei Verben auf -ieren steht kein ge-:
+studieren – studierte – hat studiert.
+
+Lerntipp: Schreibe die vier Formen nebeneinander und markiere die gemeinsamen Teile.`
+  },
+  {
+    title: 'Unregelmäßige Verben und Stammvokal',
+    de:
+`Viele unregelmäßige Verben verändern ihren Stammvokal.
+
+Der Stammvokal ist der Vokal im Wortstamm des Verbs.
+
+Beispiel:
+sprechen – sprach – gesprochen.
+
+Hier verändert sich der Stammvokal:
+e – a – o.
+
+Weitere Beispiele:
+finden – fand – gefunden.
+schreiben – schrieb – geschrieben.
+gehen – ging – gegangen.
+
+Lerntipp: Lerne unregelmäßige Verben in Dreiergruppen:
+Infinitiv, Präteritum und Partizip II.
+
+Ergänze anschließend die Hilfsverben für Perfekt und Plusquamperfekt.`
+  },
+  {
+    title: 'Haben oder sein?',
+    de:
+`Das Perfekt bildet man mit haben oder sein und dem Partizip II.
+
+Die meisten Verben verwenden haben:
+„Ich habe gelesen.“
+„Er hat gearbeitet.“
+
+Viele Verben, die eine Ortsveränderung oder Zustandsänderung ausdrücken, verwenden sein:
+„Ich bin gegangen.“
+„Sie ist eingeschlafen.“
+
+Im Plusquamperfekt werden daraus hatte oder war:
+„Ich hatte gelesen.“
+„Ich war gegangen.“
+
+Lerntipp: Lerne das Hilfsverb immer zusammen mit dem Partizip II.`
+  },
+  {
+    title: 'So lernst du die Verbformen',
+    de:
+`1. Schreibe Karteikarten. Vorne steht der Infinitiv, hinten stehen die Vergangenheitsformen.
+
+2. Schreibe zu jedem Verb einen eigenen Beispielsatz.
+
+3. Wiederhole die Karten regelmäßig: heute, morgen, in drei Tagen und nächste Woche.
+
+4. Sortiere Verben nach ähnlichen Mustern:
+finden – fand – gefunden.
+trinken – trank – getrunken.
+
+5. Sprich die Formen laut aus.
+
+6. Wiederhole besonders die Verben, bei denen du Fehler gemacht hast.
+
+Wichtig: Lieber jeden Tag zehn Minuten lernen als einmal pro Woche zwei Stunden.`
+  }
+];
+
+// ===========================================
+// ÜBERSETZUNGEN DER LERNHILFEN
+// ===========================================
+
+const LANGUAGES = {
+  uk: 'Українська',
+  ru: 'Русский',
+  mk: 'Македонски',
+  en: 'English',
+  fr: 'Français',
+  tr: 'Türkçe'
+};
+
+// Jeweils dieselben sechs Themen wie in LESSONS.
+// Die Übersetzungen erscheinen nur auf Wunsch.
+
+const TRANSLATIONS = {
+  en: [
+`The simple past (Präteritum) and present perfect (Perfekt) both describe past events.
+
+The Perfekt is especially common in spoken German:
+"Gestern habe ich Deutsch gelernt."
+
+The Präteritum is common in written narratives:
+"Der Mann ging nach Hause."
+
+The verbs sein, haben and modal verbs are often used in the Präteritum even in everyday speech:
+"Ich war müde."
+"Ich hatte keine Zeit."
+"Ich musste arbeiten."`,
+
+`The past perfect (Plusquamperfekt) describes an event that happened before another past event.
+
+Example:
+"Nachdem ich gegessen hatte, ging ich schlafen."
+
+First, I had eaten. Then I went to sleep.
+
+Formation: hatte or war + past participle.
+
+Examples:
+"Ich hatte gelernt."
+"Sie war nach Hause gegangen."`,
+
+`Regular verbs usually follow a fixed pattern.
+
+Example:
+machen – machte – hat gemacht – hatte gemacht.
+
+The simple past usually adds -te to the verb stem.
+
+The past participle is often formed with ge- and -t.
+
+Example:
+lernen – lernte – hat gelernt.
+
+Verbs ending in -ieren do not use ge-:
+studieren – studierte – hat studiert.
+
+Learning tip: Write the four forms next to each other and highlight their shared parts.`,
+
+`Many irregular verbs change their stem vowel.
+
+The stem vowel is the vowel inside the verb stem.
+
+Example:
+sprechen – sprach – gesprochen.
+
+The vowel pattern is e – a – o.
+
+Further examples:
+finden – fand – gefunden.
+schreiben – schrieb – geschrieben.
+gehen – ging – gegangen.
+
+Learning tip: Learn the infinitive, simple past and past participle together. Then add the auxiliary verbs.`,
+
+`The Perfekt uses haben or sein plus the past participle.
+
+Most verbs use haben:
+"Ich habe gelesen."
+
+Many verbs describing movement to another place or a change of state use sein:
+"Ich bin gegangen."
+"Sie ist eingeschlafen."
+
+In the Plusquamperfekt, haben becomes hatte and sein becomes war.
+
+Learning tip: Always learn the auxiliary verb together with the past participle.`,
+
+`1. Use flashcards: infinitive on the front, past forms on the back.
+
+2. Write your own example sentences.
+
+3. Review regularly: today, tomorrow, in three days and next week.
+
+4. Group verbs with similar patterns.
+
+5. Say the forms aloud.
+
+6. Review verbs you answered incorrectly.
+
+Ten minutes of daily practice is often more useful than one long weekly session.`
+  ],
+
+  ru: [
+`Präteritum и Perfekt описывают события в прошлом.
+
+Perfekt особенно часто используется в разговорной речи:
+«Gestern habe ich Deutsch gelernt.»
+
+Präteritum часто встречается в письменных рассказах:
+«Der Mann ging nach Hause.»
+
+Глаголы sein, haben и модальные глаголы нередко употребляются в Präteritum и в разговорной речи:
+«Ich war müde.»
+«Ich hatte keine Zeit.»
+«Ich musste arbeiten.»`,
+
+`Plusquamperfekt обозначает действие, которое произошло раньше другого события в прошлом.
+
+Пример:
+«Nachdem ich gegessen hatte, ging ich schlafen.»
+
+Сначала я поел, затем пошёл спать.
+
+Образование:
+hatte или war + Partizip II.
+
+Примеры:
+«Ich hatte gelernt.»
+«Sie war nach Hause gegangen.»`,
+
+`Правильные глаголы обычно образуют формы по определённому правилу.
+
+Пример:
+machen – machte – hat gemacht – hatte gemacht.
+
+В Präteritum к основе обычно добавляется -te.
+
+Partizip II часто образуется с помощью ge- и -t.
+
+Пример:
+lernen – lernte – hat gelernt.
+
+Глаголы на -ieren не получают приставку ge-:
+studieren – studierte – hat studiert.
+
+Совет: записывайте четыре формы рядом и выделяйте общие части.`,
+
+`Многие неправильные глаголы изменяют корневую гласную.
+
+Корневая гласная — это гласная в основе глагола.
+
+Пример:
+sprechen – sprach – gesprochen.
+
+Изменение: e – a – o.
+
+Другие примеры:
+finden – fand – gefunden.
+schreiben – schrieb – geschrieben.
+
+Совет: учите вместе инфинитив, Präteritum и Partizip II, а затем добавляйте вспомогательные глаголы.`,
+
+`Perfekt образуется с помощью haben или sein и Partizip II.
+
+Большинство глаголов употребляется с haben:
+«Ich habe gelesen.»
+
+Многие глаголы перемещения или изменения состояния употребляются с sein:
+«Ich bin gegangen.»
+«Sie ist eingeschlafen.»
+
+В Plusquamperfekt используются hatte и war.
+
+Совет: учите вспомогательный глагол вместе с Partizip II.`,
+
+`1. Используйте карточки: на одной стороне инфинитив, на другой — формы прошедшего времени.
+
+2. Составляйте собственные примеры.
+
+3. Повторяйте регулярно: сегодня, завтра, через три дня и через неделю.
+
+4. Группируйте глаголы с похожими формами.
+
+5. Произносите формы вслух.
+
+6. Особенно повторяйте глаголы, в которых ошиблись.
+
+Лучше заниматься по десять минут ежедневно, чем один раз в неделю очень долго.`
+  ],
+
+  uk: [
+`Präteritum і Perfekt описують події в минулому.
+
+Perfekt особливо часто використовується в розмовній німецькій мові:
+«Gestern habe ich Deutsch gelernt.»
+
+Präteritum часто зустрічається в письмових розповідях:
+«Der Mann ging nach Hause.»
+
+Дієслова sein, haben і модальні дієслова часто вживаються в Präteritum також у розмовній мові:
+«Ich war müde.»
+«Ich hatte keine Zeit.»
+«Ich musste arbeiten.»`,
+
+`Plusquamperfekt позначає дію, яка відбулася раніше за іншу подію в минулому.
+
+Приклад:
+«Nachdem ich gegessen hatte, ging ich schlafen.»
+
+Спочатку я поїв, а потім пішов спати.
+
+Утворення:
+hatte або war + Partizip II.
+
+Приклади:
+«Ich hatte gelernt.»
+«Sie war nach Hause gegangen.»`,
+
+`Правильні дієслова зазвичай утворюють форми за певним правилом.
+
+Приклад:
+machen – machte – hat gemacht – hatte gemacht.
+
+У Präteritum до основи зазвичай додається -te.
+
+Partizip II часто утворюється за допомогою ge- та -t.
+
+Приклад:
+lernen – lernte – hat gelernt.
+
+Дієслова на -ieren не мають префікса ge-:
+studieren – studierte – hat studiert.
+
+Порада: записуйте чотири форми поруч і виділяйте спільні частини.`,
+
+`Багато неправильних дієслів змінюють кореневий голосний.
+
+Кореневий голосний — це голосний звук в основі дієслова.
+
+Приклад:
+sprechen – sprach – gesprochen.
+
+Зміна: e – a – o.
+
+Інші приклади:
+finden – fand – gefunden.
+schreiben – schrieb – geschrieben.
+
+Порада: вивчайте разом інфінітив, Präteritum і Partizip II, а потім додавайте допоміжні дієслова.`,
+
+`Perfekt утворюється за допомогою haben або sein і Partizip II.
+
+Більшість дієслів використовує haben:
+«Ich habe gelesen.»
+
+Багато дієслів переміщення або зміни стану використовують sein:
+«Ich bin gegangen.»
+«Sie ist eingeschlafen.»
+
+У Plusquamperfekt використовуються hatte і war.
+
+Порада: завжди вивчайте допоміжне дієслово разом із Partizip II.`,
+
+`1. Використовуйте картки: з одного боку інфінітив, з іншого — форми минулого часу.
+
+2. Складайте власні речення.
+
+3. Повторюйте регулярно: сьогодні, завтра, через три дні та наступного тижня.
+
+4. Групуйте дієслова зі схожими формами.
+
+5. Вимовляйте форми вголос.
+
+6. Особливо повторюйте дієслова, у яких зробили помилки.
+
+Краще займатися по десять хвилин щодня, ніж один раз на тиждень дуже довго.`
+  ],
+
+  mk: [
+`Präteritum и Perfekt опишуваат настани во минатото.
+
+Perfekt особено често се користи во говорниот германски јазик:
+„Gestern habe ich Deutsch gelernt.“
+
+Präteritum често се користи во пишани раскази:
+„Der Mann ging nach Hause.“
+
+Глаголите sein, haben и модалните глаголи често се користат во Präteritum и во секојдневниот говор:
+„Ich war müde.“
+„Ich hatte keine Zeit.“
+„Ich musste arbeiten.“`,
+
+`Plusquamperfekt означува дејство што се случило пред друго дејство во минатото.
+
+Пример:
+„Nachdem ich gegessen hatte, ging ich schlafen.“
+
+Прво јадев, а потоа отидов да спијам.
+
+Образување:
+hatte или war + Partizip II.
+
+Примери:
+„Ich hatte gelernt.“
+„Sie war nach Hause gegangen.“`,
+
+`Правилните глаголи обично следат одредено правило.
+
+Пример:
+machen – machte – hat gemacht – hatte gemacht.
+
+Во Präteritum обично се додава наставката -te.
+
+Partizip II често се образува со ge- и -t.
+
+Пример:
+lernen – lernte – hat gelernt.
+
+Глаголите што завршуваат на -ieren немаат ge-:
+studieren – studierte – hat studiert.
+
+Совет: запишете ги четирите форми една до друга и означете ги заедничките делови.`,
+
+`Многу неправилни глаголи ја менуваат самогласката во основата.
+
+Самогласката во основата е самогласката во коренот на глаголот.
+
+Пример:
+sprechen – sprach – gesprochen.
+
+Промена: e – a – o.
+
+Други примери:
+finden – fand – gefunden.
+schreiben – schrieb – geschrieben.
+
+Совет: учете ги заедно инфинитивот, Präteritum и Partizip II, а потоа додајте ги помошните глаголи.`,
+
+`Perfekt се образува со haben или sein и Partizip II.
+
+Повеќето глаголи користат haben:
+„Ich habe gelesen.“
+
+Многу глаголи што означуваат движење или промена на состојбата користат sein:
+„Ich bin gegangen.“
+„Sie ist eingeschlafen.“
+
+Во Plusquamperfekt се користат hatte и war.
+
+Совет: секогаш учете го помошниот глагол заедно со Partizip II.`,
+
+`1. Користете картички: на предната страна инфинитив, а на задната формите за минато време.
+
+2. Пишувајте сопствени пример-реченици.
+
+3. Повторувајте редовно: денес, утре, по три дена и следната недела.
+
+4. Групирајте глаголи со слични форми.
+
+5. Изговарајте ги формите наглас.
+
+6. Повторувајте ги особено глаголите кај кои сте направиле грешки.
+
+Подобро е да учите по десет минути секој ден отколку многу долго само еднаш неделно.`
+  ],
+
+  fr: [
+`Le Präteritum et le Perfekt servent à parler du passé.
+
+Le Perfekt est particulièrement fréquent à l'oral :
+« Gestern habe ich Deutsch gelernt. »
+
+Le Präteritum est fréquent dans les récits écrits :
+« Der Mann ging nach Hause. »
+
+Les verbes sein, haben et les verbes modaux sont aussi souvent employés au Präteritum à l'oral :
+« Ich war müde. »
+« Ich hatte keine Zeit. »
+« Ich musste arbeiten. »`,
+
+`Le Plusquamperfekt exprime une action qui s'est produite avant une autre action passée.
+
+Exemple :
+« Nachdem ich gegessen hatte, ging ich schlafen. »
+
+D'abord, j'avais mangé. Ensuite, je suis allé dormir.
+
+Formation :
+hatte ou war + participe passé (Partizip II).
+
+Exemples :
+« Ich hatte gelernt. »
+« Sie war nach Hause gegangen. »`,
+
+`Les verbes réguliers suivent généralement un modèle fixe.
+
+Exemple :
+machen – machte – hat gemacht – hatte gemacht.
+
+Au Präteritum, on ajoute généralement -te au radical.
+
+Le participe passé se forme souvent avec ge- et -t.
+
+Exemple :
+lernen – lernte – hat gelernt.
+
+Les verbes en -ieren ne prennent pas ge- :
+studieren – studierte – hat studiert.
+
+Conseil : écrivez les quatre formes côte à côte et soulignez les parties communes.`,
+
+`De nombreux verbes irréguliers changent de voyelle dans leur radical.
+
+La voyelle du radical est la voyelle présente dans la base du verbe.
+
+Exemple :
+sprechen – sprach – gesprochen.
+
+Changement : e – a – o.
+
+Autres exemples :
+finden – fand – gefunden.
+schreiben – schrieb – geschrieben.
+
+Conseil : apprenez ensemble l'infinitif, le Präteritum et le Partizip II, puis ajoutez les auxiliaires.`,
+
+`Le Perfekt se forme avec haben ou sein et le participe passé.
+
+La plupart des verbes utilisent haben :
+« Ich habe gelesen. »
+
+De nombreux verbes de déplacement ou de changement d'état utilisent sein :
+« Ich bin gegangen. »
+« Sie ist eingeschlafen. »
+
+Au Plusquamperfekt, on utilise hatte ou war.
+
+Conseil : apprenez toujours l'auxiliaire avec le participe passé.`,
+
+`1. Utilisez des fiches : l'infinitif au recto et les formes du passé au verso.
+
+2. Écrivez vos propres phrases d'exemple.
+
+3. Révisez régulièrement : aujourd'hui, demain, dans trois jours et la semaine prochaine.
+
+4. Regroupez les verbes qui suivent des modèles similaires.
+
+5. Prononcez les formes à voix haute.
+
+6. Révisez surtout les verbes avec lesquels vous avez fait des erreurs.
+
+Mieux vaut étudier dix minutes chaque jour qu'une seule longue séance par semaine.`
+  ],
+
+  tr: [
+`Präteritum ve Perfekt geçmişteki olayları anlatır.
+
+Perfekt özellikle konuşma dilinde sık kullanılır:
+"Gestern habe ich Deutsch gelernt."
+
+Präteritum yazılı hikâyelerde sık görülür:
+"Der Mann ging nach Hause."
+
+sein, haben ve modal fiiller günlük konuşmada da sıklıkla Präteritum biçiminde kullanılır:
+"Ich war müde."
+"Ich hatte keine Zeit."
+"Ich musste arbeiten."`,
+
+`Plusquamperfekt, geçmişteki başka bir olaydan daha önce gerçekleşmiş bir eylemi anlatır.
+
+Örnek:
+"Nachdem ich gegessen hatte, ging ich schlafen."
+
+Önce yemek yemiştim, sonra uyumaya gittim.
+
+Kuruluş:
+hatte veya war + Partizip II.
+
+Örnekler:
+"Ich hatte gelernt."
+"Sie war nach Hause gegangen."`,
+
+`Düzenli fiiller genellikle belirli bir kurala uyar.
+
+Örnek:
+machen – machte – hat gemacht – hatte gemacht.
+
+Präteritum biçiminde fiil köküne genellikle -te eklenir.
+
+Partizip II çoğu zaman ge- ve -t ile oluşturulur.
+
+Örnek:
+lernen – lernte – hat gelernt.
+
+-ieren ile biten fiiller ge- almaz:
+studieren – studierte – hat studiert.
+
+Öğrenme önerisi: Dört biçimi yan yana yazın ve ortak bölümleri işaretleyin.`,
+
+`Birçok düzensiz fiilin kök ünlüsü değişir.
+
+Kök ünlüsü, fiilin kökündeki ünlü harftir.
+
+Örnek:
+sprechen – sprach – gesprochen.
+
+Değişim: e – a – o.
+
+Diğer örnekler:
+finden – fand – gefunden.
+schreiben – schrieb – geschrieben.
+
+Öneri: Mastar, Präteritum ve Partizip II biçimlerini birlikte öğrenin. Sonra yardımcı fiilleri ekleyin.`,
+
+`Perfekt, haben veya sein yardımcı fiili ve Partizip II ile oluşturulur.
+
+Fiillerin çoğu haben kullanır:
+"Ich habe gelesen."
+
+Yer değiştirme veya durum değişikliği bildiren birçok fiil sein kullanır:
+"Ich bin gegangen."
+"Sie ist eingeschlafen."
+
+Plusquamperfekt biçiminde hatte ve war kullanılır.
+
+Öneri: Yardımcı fiili her zaman Partizip II ile birlikte öğrenin.`,
+
+`1. Kelime kartları kullanın: ön tarafa mastarı, arka tarafa geçmiş zaman biçimlerini yazın.
+
+2. Kendi örnek cümlelerinizi oluşturun.
+
+3. Düzenli tekrar yapın: bugün, yarın, üç gün sonra ve gelecek hafta.
+
+4. Benzer biçimlere sahip fiilleri gruplandırın.
+
+5. Fiil biçimlerini yüksek sesle söyleyin.
+
+6. Özellikle yanlış cevapladığınız fiilleri tekrar edin.
+
+Her gün on dakika çalışmak, haftada bir kez uzun süre çalışmaktan genellikle daha yararlıdır.`
+  ]
+};
+
+// ===========================================
+// MISSIONSENDE UND AUSWERTUNG
+// ===========================================
+
+function finish() {
+  if (!g) return;
+
+  const results = [...g.results];
+  const score = g.score;
+  const bestStreak = g.bestStreak;
+
+  const right = results.filter(x => x.correct).length;
+  const wrong = results.length - right;
+
+  const base = results.reduce((s,x) => s+x.base,0);
+  const speed = results.reduce((s,x) => s+x.speed,0);
+  const combo = results.reduce((s,x) => s+x.combo,0);
+
+  const avg = results.length
+    ? results.reduce((s,x) => s+x.seconds,0)/results.length
+    : 0;
+
+  if (score > (stored.best || 0)) {
+    stored.best = score;
+
+    try {
+      localStorage.setItem(
+        'zeitreise_dorf_v1',
+        JSON.stringify(stored)
+      );
+    } catch(e) {}
+  }
+
+  stop();
+
+  document.getElementById('topScore').textContent =
+    '🏆 Rekord ' + stored.best.toLocaleString('de-DE');
+
+  const accuracy = results.length
+    ? Math.round(right/results.length*100)
+    : 0;
+
+  const rows = results.map((r,i) => `
+    <tr>
+      <td>${i+1}. ${esc(r.verb)}<br>
+        <small>${esc(r.form)}</small>
+      </td>
+      <td class="${r.correct?'good':'bad'}">
+        ${esc(r.chosen)}
+      </td>
+      <td class="good">
+        ${esc(r.correctAnswer)}
+      </td>
+      <td>
+        ${r.correct?'✓':'✗'}<br>
+        +${r.points}
+      </td>
+    </tr>
+  `).join('');
+
+  app.innerHTML = `
+  <section class="panel">
+    <h1>🏆 Mission geschafft!</h1>
+
+    <p>
+      Du hast das Dorf durchquert und alle zehn
+      magischen Tore geöffnet!
+    </p>
+
+    <div class="scoregrid">
+      <div>
+        <strong>${score.toLocaleString('de-DE')}</strong>
+        Punkte
+      </div>
+
+      <div>
+        <strong>${right}/10</strong>
+        Richtig
+      </div>
+
+      <div>
+        <strong>${accuracy}%</strong>
+        Trefferquote
+      </div>
+
+      <div>
+        <strong>${wrong}</strong>
+        Fehler
+      </div>
+
+      <div>
+        <strong>${bestStreak}</strong>
+        Beste Serie
+      </div>
+
+      <div>
+        <strong>${avg.toFixed(1)} s</strong>
+        Ø Antwortzeit
+      </div>
+    </div>
+
+    <h2>⭐ Deine Punkte im Detail</h2>
+
+    <p>Grundpunkte: <b>${base}</b></p>
+    <p>Geschwindigkeitsbonus: <b>${speed}</b></p>
+    <p>Serienbonus: <b>${combo}</b></p>
+
+    <h2>📋 Alle Antworten</h2>
+
+    <div style="overflow-x:auto">
+      <table class="review">
+        <thead>
+          <tr>
+            <th>Aufgabe</th>
+            <th>Deine Antwort</th>
+            <th>Richtige Lösung</th>
+            <th>Punkte</th>
+          </tr>
+        </thead>
+
+        <tbody>${rows}</tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>🐉 Professor Flämmchen erklärt</h2>
+
+    <div class="mentor">
+      <div class="avatar">🐉</div>
+
+      <div style="flex:1;min-width:0">
+        <h3 id="lessonTitle"></h3>
+
+        <div class="bubble" id="bubble"></div>
+
+        <button class="btn alt" id="skipText">
+          Text vollständig zeigen
+        </button>
+
+        <button class="btn" id="nextLesson">
+          Nächster Tipp ➜
+        </button>
+      </div>
+    </div>
+
+    <details class="translate">
+      <summary>
+        🌐 Möchtest du die Erklärung übersetzen?
+        Hier klicken.
+      </summary>
+
+      <p class="tiny">
+        Die Übersetzung ist freiwillig.
+        Die Grammatikaufgaben bleiben auf Deutsch.
+      </p>
+
+      <select id="language">
+        <option value="">Sprache wählen</option>
+        ${Object.entries(LANGUAGES).map(([id,name])=>`
+          <option value="${id}">${name}</option>
+        `).join('')}
+      </select>
+
+      <article id="translated"></article>
+    </details>
+  </section>
+
+  <section class="panel">
+    <h2>🗺️ Deine nächste Zeitreise</h2>
+
+    <p>
+      Die erste Mission ist abgeschlossen.
+      Die nächsten Welten werden später ergänzt.
+    </p>
+
+    <button class="btn" id="replay">
+      🔁 Dorf erneut spielen
+    </button>
+
+    <button class="btn alt" id="menu">
+      🏠 Zum Hauptmenü
+    </button>
+  </section>
+  `;
+
+  document.getElementById('replay').onclick = start;
+  document.getElementById('menu').onclick = home;
+
+  initMentor();
+}
+
+// ===========================================
+// ANIMIERTER GRAMMATIKDRACHE
+// ===========================================
+
+let lessonIndex = 0;
+let charIndex = 0;
+let typing = false;
+
+function initMentor() {
+  lessonIndex = 0;
+
+  document.getElementById('skipText').onclick = () => {
+    showAllText();
+  };
+
+  document.getElementById('nextLesson').onclick = () => {
+    lessonIndex = (lessonIndex+1)%LESSONS.length;
+    displayLesson();
+  };
+
+  document.getElementById('language').onchange = () => {
+    showTranslation();
+  };
+
+  displayLesson();
+}
+
+function displayLesson() {
+  clearInterval(typeTimer);
+
+  const lesson = LESSONS[lessonIndex];
+
+  document.getElementById('lessonTitle').textContent =
+    lesson.title;
+
+  document.getElementById('bubble').textContent = '';
+
+  charIndex = 0;
+  typing = true;
+
+  showTranslation();
+
+  typeTimer = setInterval(() => {
+    const bubble = document.getElementById('bubble');
+
+    if (!bubble) {
+      clearInterval(typeTimer);
+      return;
+    }
+
+    // Zwei Zeichen pro Durchlauf.
+    charIndex = Math.min(
+      lesson.de.length,
+      charIndex+2
+    );
+
+    bubble.textContent =
+      lesson.de.slice(0,charIndex);
+
+    if (charIndex >= lesson.de.length) {
+      clearInterval(typeTimer);
+      typing = false;
+    }
+  },25);
+}
+
+function showAllText() {
+  clearInterval(typeTimer);
+  typing = false;
+
+  const bubble = document.getElementById('bubble');
+
+  if (bubble) {
+    bubble.textContent = LESSONS[lessonIndex].de;
+  }
+}
+
+function showTranslation() {
+  const select = document.getElementById('language');
+  const article = document.getElementById('translated');
+
+  if (!select || !article) return;
+
+  const lang = select.value;
+
+  if (!lang || !TRANSLATIONS[lang]) {
+    article.textContent = '';
+    return;
+  }
+
+  article.textContent =
+    TRANSLATIONS[lang][lessonIndex] || '';
+}
+
+// ===========================================
+// SPIEL STARTEN
+// ===========================================
+
+home();
+
 </script>
 </body>
 </html>
