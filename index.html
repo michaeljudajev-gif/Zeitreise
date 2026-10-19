@@ -3,51 +3,247 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ZEITREISE – Mission Vergangenheit</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ZEITREISE 3.0</title>
 <style>
 *{box-sizing:border-box}
-body{margin:0;background:#09172e;color:white;font-family:system-ui,sans-serif;text-align:center}
-header{padding:16px;background:#101e3a;border-bottom:2px solid #e6b95f;display:flex;justify-content:space-between;align-items:center}
-.logo{font:bold 24px Georgia;color:#ffda82}
-#score{background:#263e64;padding:9px;border-radius:12px}
-main{max-width:750px;margin:auto;padding:18px}
-h1{font:900 clamp(42px,10vw,75px) Georgia;color:#ffda82;text-shadow:0 5px #784825}
-h2{color:#ffe09a}
-button{font:800 16px system-ui;cursor:pointer}
-.btn{background:linear-gradient(#ffe69d,#e7a341);color:#34240b;border:2px solid #fff0b4;border-radius:14px;padding:14px 20px;margin:6px;box-shadow:0 5px #86511d}
+:root{
+--gold:#ffdc82;--dark:#101e39;--light:#e5f4ff
+}
+body{
+margin:0;background:#081326;color:white;
+font-family:system-ui,Arial,sans-serif;text-align:center
+}
+button{font:800 15px system-ui;cursor:pointer}
+button:disabled{opacity:.55;cursor:default}
+header{
+display:flex;justify-content:space-between;
+align-items:center;padding:13px 15px;
+background:#152847;border-bottom:2px solid #d8ad60
+}
+.logo{font:900 22px Georgia;color:var(--gold)}
+.stats{font-weight:800;font-size:13px}
+main{max-width:850px;margin:auto;padding:15px}
+h1{
+font:900 clamp(40px,9vw,72px) Georgia;
+color:var(--gold);text-shadow:0 5px #704127
+}
+h2{color:var(--gold)}
+p{line-height:1.5}
+.btn{
+padding:13px 19px;margin:5px;
+border-radius:13px;border:2px solid #fff0b0;
+background:linear-gradient(#ffe8a7,#e5a43c);
+color:#34220b;box-shadow:0 4px #915c24
+}
 .btn:active{transform:translateY(3px)}
-.blue{background:linear-gradient(#c2eeff,#6bb5e9);box-shadow:0 5px #305a8b}
-.card{background:linear-gradient(145deg,#254875,#142743);border:2px solid #7297be;border-radius:22px;padding:20px;margin:15px 0;box-shadow:0 12px 25px #0006}
-.scene{background:linear-gradient(#478bb6,#f1bd83 65%,#315b70);border:3px solid #d7b572;border-radius:20px;padding:35px 10px;font-size:75px;margin:15px 0}
-.map{background:linear-gradient(145deg,#c9e5c1,#8ebba6);border:5px solid #e5bc70;border-radius:25px;padding:20px;display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.level{background:#fff0cb;color:#302719;border:3px solid #aa7b40;border-radius:17px;padding:15px 5px;min-height:115px}
-.level span{display:block;font-size:40px}
-.level small{display:block}
-.level:disabled{filter:grayscale(1);opacity:.6}
-.paper{background:#fff0ce;color:#33271d;border:3px solid #dfb46e;border-radius:18px;padding:20px;margin:15px 0}
-.word{font-size:32px;font-weight:900;color:#90521f}
-.choices{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.choice{background:#b8e1fa;color:#15334c;border:2px solid white;border-radius:12px;padding:14px 8px;min-height:55px;font-weight:800}
-.selected{background:#79e9af!important;color:#133b29!important}
-input{width:100%;padding:15px;font-size:19px;border:3px solid #82c5f1;border-radius:12px}
-.bar{height:13px;background:#0c1b34;border-radius:20px;overflow:hidden}
-.fill{height:100%;background:linear-gradient(90deg,#5ce0a0,#ffe17e)}
-.feedback{background:#0c2343;border:2px solid #80c9f0;padding:15px;border-radius:13px;margin:12px 0}
-.hidden{display:none}
-#tiles{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
-.tile{background:#c2e7ff;color:#173653;padding:12px;border-radius:10px}
-#assembled{padding:16px;border:2px dashed #8cb5db;border-radius:12px;min-height:60px;margin:12px 0}
+.secondary{
+background:#315a86;color:white;
+border-color:#83b6e5;box-shadow:0 4px #183b63
+}
+.card{
+background:linear-gradient(145deg,#244671,#112540);
+border:2px solid #739ac5;border-radius:21px;
+padding:17px;margin:14px 0;overflow:hidden
+}
+.scene{
+height:265px;position:relative;overflow:hidden;
+border:3px solid #9cc5e5;border-radius:18px;
+background:linear-gradient(#3688b5,#93cde2 65%,#6caa75 66%);
+margin:15px 0
+}
+.scene *{user-select:none}
+.cloud{
+position:absolute;font-size:37px;top:15px;
+animation:cloud 13s linear infinite
+}
+.cloud.two{top:60px;animation-duration:20s;animation-delay:-8s}
+@keyframes cloud{
+from{left:-90px}to{left:110%}
+}
+.ground{
+position:absolute;bottom:0;width:100%;height:45px;
+background:#447b53
+}
+.actor{
+position:absolute;bottom:36px;left:8%;
+font-size:52px;z-index:5;
+transition:left .8s,bottom .7s,transform .7s
+}
+.float{animation:float 2s ease-in-out infinite alternate}
+@keyframes float{to{transform:translateY(-13px)}}
+.bob{animation:bob .7s ease-in-out infinite alternate}
+@keyframes bob{to{transform:translateY(-7px)}}
+.spin{animation:spin 3s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.shake{animation:shake .3s 3}
+@keyframes shake{
+25%{transform:rotate(12deg)}
+75%{transform:rotate(-12deg)}
+}
+.door{
+position:absolute;bottom:35px;font-size:48px;
+transition:transform .4s
+}
+.door:nth-of-type(1){left:23%}
+.door:nth-of-type(2){left:47%}
+.door:nth-of-type(3){left:73%}
+.train{
+position:absolute;bottom:42px;left:0;
+display:flex;gap:4px;font-size:57px;
+animation:train 5s ease-in-out infinite alternate
+}
+@keyframes train{
+from{transform:translateX(-8%)}
+to{transform:translateX(15%)}
+}
+.rail{
+position:absolute;bottom:35px;width:100%;
+height:8px;background:repeating-linear-gradient(
+90deg,#392d25 0 24px,#b4a6a0 24px 32px)
+}
+.building{
+position:absolute;bottom:40px;font-size:100px
+}
+.elevator{
+position:absolute;left:63%;bottom:40px;
+font-size:45px;transition:bottom 1s
+}
+.snow{
+background:linear-gradient(#265989,#8bb6e2 70%,#f3f8ff 71%)
+}
+.snow .ground{background:#edf7ff;height:55px}
+.snowman{
+position:absolute;right:16%;bottom:45px;
+font-size:85px;transition:transform .5s
+}
+.snowman.hit{animation:shake .3s 3}
+.snowflake{
+position:absolute;top:-25px;color:white;
+animation:snowfall 5s linear infinite
+}
+@keyframes snowfall{
+to{transform:translateY(300px) rotate(180deg)}
+}
+.ball{
+position:absolute;bottom:65px;left:20%;
+font-size:32px;z-index:8;
+animation:throw .75s ease-in forwards
+}
+@keyframes throw{
+0%{left:20%;bottom:65px}
+50%{left:50%;bottom:165px}
+100%{left:78%;bottom:85px}
+}
+.portal{
+background:radial-gradient(circle,#8956d5,#263e91 55%,#08142c)
+}
+.ring{
+position:absolute;left:50%;top:50%;
+width:190px;height:190px;border:12px dashed #80e8ff;
+border-radius:50%;transform:translate(-50%,-50%);
+animation:ring 5s linear infinite;
+box-shadow:0 0 35px #85e9ff
+}
+@keyframes ring{
+to{transform:translate(-50%,-50%) rotate(360deg)}
+}
+.ship{
+position:absolute;bottom:60px;left:45%;
+font-size:70px;z-index:4;
+transition:left .5s;animation:float 1s infinite alternate
+}
+.star{
+position:absolute;color:#ffdf77;font-size:28px;
+animation:twinkle 1s infinite alternate
+}
+@keyframes twinkle{to{opacity:.2;transform:scale(.6)}}
+.gear{
+position:absolute;font-size:85px;animation:spin 5s linear infinite
+}
+.gear.reverse{animation-direction:reverse}
+.machine{
+position:absolute;bottom:25px;left:40%;
+font-size:75px;animation:float 1.5s infinite alternate
+}
+.map{
+background:linear-gradient(145deg,#d7e8b7,#88b8a7);
+border:5px solid #d9b56f;border-radius:24px;
+display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:14px
+}
+.level{
+background:#fff0ca;color:#332718;
+border:3px solid #a77a42;border-radius:15px;
+padding:13px 5px;min-height:120px
+}
+.level .emoji{display:block;font-size:39px}
+.level small{display:block;font-size:11px}
+.paper{
+background:#fff0d0;color:#33251b;
+border:3px solid #d9aa63;border-radius:16px;
+padding:16px;margin:12px 0
+}
+.word{font-size:clamp(24px,6vw,36px);font-weight:900;color:#99551c}
+.answers{
+display:grid;grid-template-columns:1fr 1fr;gap:10px
+}
+.answer{
+background:linear-gradient(#d4efff,#8fc8f0);
+border:2px solid #f4fcff;border-radius:13px;
+color:#17344f;padding:13px 7px;min-height:60px;
+overflow-wrap:anywhere
+}
+.answer.selected{background:#80e6b0}
+.answer.correct{background:#72e4a2}
+.answer.wrong{background:#ffac9d}
+.progress{
+height:12px;background:#071a34;border-radius:15px;
+overflow:hidden;margin:12px 0
+}
+.fill{
+height:100%;background:linear-gradient(90deg,#5de5a1,#ffe17d);
+transition:width .4s
+}
+.notice{
+padding:13px;background:#0b2445;
+border:2px solid #6cb9e5;border-radius:13px;
+margin:12px 0;font-weight:800
+}
+.hidden{display:none!important}
+.tiles{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+.tile{
+padding:11px;background:#bfe6ff;border:2px solid white;
+border-radius:12px;color:#17344f
+}
+.tile.selected{background:#75e6aa}
+.line{
+min-height:56px;border:2px dashed #8abce4;
+border-radius:12px;padding:13px;margin:10px 0
+}
+input{
+padding:14px;border:3px solid #88c5f0;
+border-radius:12px;font-size:18px;width:100%
+}
+#dialog{
+background:#fff0d0;color:#392918;
+padding:12px;border-radius:13px;font-weight:800
+}
+@media(max-width:500px){
+.scene{height:235px}
+.train{font-size:43px}
+.building{font-size:78px}
+.answer{font-size:13px}
+}
 </style>
 </head>
 <body>
 <header>
 <div class="logo">⏳ ZEITREISE</div>
-<div id="score">⭐ 0</div>
+<div class="stats" id="stats">⭐ 0</div>
 </header>
 <main id="app"></main>
 <script>
-const data=[
+const verbs=[
 ["sein","war","ist gewesen","war gewesen"],
 ["haben","hatte","hat gehabt","hatte gehabt"],
 ["werden","wurde","ist geworden","war geworden"],
@@ -106,7 +302,7 @@ const data=[
 ["bitten","bat","hat gebeten","hatte gebeten"],
 ["bieten","bot","hat geboten","hatte geboten"],
 ["verbieten","verbot","hat verboten","hatte verboten"],
-["verglichen","verglich","hat verglichen","hatte verglichen"],
+["vergleichen","verglich","hat verglichen","hatte verglichen"],
 ["unterschreiben","unterschrieb","hat unterschrieben","hatte unterschrieben"],
 ["beschreiben","beschrieb","hat beschrieben","hatte beschrieben"],
 ["leihen","lieh","hat geliehen","hatte geliehen"],
@@ -137,24 +333,37 @@ const data=[
 ["nachdenken","dachte nach","hat nachgedacht","hatte nachgedacht"],
 ["vorlesen","las vor","hat vorgelesen","hatte vorgelesen"],
 ["aufgeben","gab auf","hat aufgegeben","hatte aufgegeben"],
-["einladen","lud ein","hat eingeladen","hatte eingeladen"]
+["einladen","lud ein","hat eingeladen","hatte eingeladen"],
+["aufnehmen","nahm auf","hat aufgenommen","hatte aufgenommen"],
+["abgeben","gab ab","hat abgegeben","hatte abgegeben"],
+["einsteigen","stieg ein","ist eingestiegen","war eingestiegen"],
+["aussteigen","stieg aus","ist ausgestiegen","war ausgestiegen"],
+["umziehen","zog um","ist umgezogen","war umgezogen"],
+["anfassen","fasste an","hat angefasst","hatte angefasst"],
+["schaffen","schaffte","hat geschafft","hatte geschafft"],
+["kaufen","kaufte","hat gekauft","hatte gekauft"],
+["arbeiten","arbeitete","hat gearbeitet","hatte gearbeitet"],
+["lernen","lernte","hat gelernt","hatte gelernt"],
+["besuchen","besuchte","hat besucht","hatte besucht"],
+["erzählen","erzählte","hat erzählt","hatte erzählt"],
+["bezahlen","bezahlte","hat bezahlt","hatte bezahlt"]
 ];
 const levels=[
-["🏰","Das Dorf der Verben","choice"],
-["🚂","Der Zeitexpress","tiles"],
-["🏙️","Die verlorene Stadt","identify"],
-["📜","Die Chroniken","write"],
-["🐉","Der Portalsturm","mixed"],
-["🛠️","Die Fehlerwerkstatt","review"]
+["🏰","Das Dorf der Türen"],
+["🚂","Der Zeitexpress"],
+["🏙️","Die schwebende Stadt"],
+["⛄","Die Schneeballschlacht"],
+["🌀","Der Portalflug"],
+["⚙️","Die Zeitwerkstatt"]
 ];
 const app=document.getElementById("app");
-let save;
-try{save=JSON.parse(localStorage.getItem("zeitreise3"))}catch{}
-save=save||{score:0,unlocked:1,errors:{}};
+let saved;
+try{saved=JSON.parse(localStorage.getItem("zeitreise-animated"))}catch(e){}
+saved=saved||{stars:0,unlocked:1,errors:{}};
 let game=null;
 function persist(){
-localStorage.setItem("zeitreise3",JSON.stringify(save));
-document.getElementById("score").textContent="⭐ "+save.score;
+try{localStorage.setItem("zeitreise-animated",JSON.stringify(saved))}catch(e){}
+document.getElementById("stats").textContent="⭐ "+saved.stars;
 }
 function shuffle(a){
 let b=[...a];
@@ -164,136 +373,297 @@ let j=Math.floor(Math.random()*(i+1));
 }
 return b;
 }
-function startScreen(){
+function safe(s){
+return String(s).replace(/[&<>"]/g,c=>({
+"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"
+}[c]));
+}
+function home(){
 app.innerHTML=`
 <h1>ZEITREISE</h1>
-<p>⚔️ Mission Vergangenheit</p>
-<div class="scene">🏰 🧙 🌀</div>
+<p>Mission Vergangenheit – Das animierte Abenteuer</p>
+<div class="scene">
+<div class="cloud">☁️</div>
+<div class="cloud two">☁️</div>
+<div class="ground"></div>
+<div class="actor bob" style="left:25%">🧙</div>
+<div style="position:absolute;right:14%;bottom:40px;font-size:105px" class="float">🌀</div>
+</div>
 <div class="card">
-<h2>Die Zeitmaschine ist kaputt!</h2>
-<p>Sechs Zeitportale sind außer Kontrolle geraten.
-Löse die Rätsel und rette die Vergangenheit!</p>
+<h2>Die Zeit ist durcheinander!</h2>
+<p>Sechs verrückte Welten warten auf dich.
+Reise durch die Vergangenheit, löse Rätsel und
+repariere die Zeitmaschine!</p>
 <button class="btn" onclick="world()">🗺️ Abenteuer starten</button>
 </div>`;
 }
 function world(){
 app.innerHTML=`
-<h2>🗺️ Die Welt der Zeitportale</h2>
-<p>Schalte neue Orte frei!</p>
+<h2>🗺️ Die sechs Zeitwelten</h2>
+<p>Jede Welt hat ihre eigene Herausforderung!</p>
 <div class="map">
 ${levels.map((l,i)=>`
-<button class="level" ${i>=save.unlocked&&i!==5?"disabled":""}
+<button class="level"
+${i>=saved.unlocked?"disabled":""}
 onclick="startLevel(${i})">
-<span>${i>=save.unlocked&&i!==5?"🔒":l[0]}</span>
+<span class="emoji">${i>=saved.unlocked?"🔒":l[0]}</span>
 ${i+1}. ${l[1]}
-<small>${i<save.unlocked?"Bereit":"Gesperrt"}</small>
+<small>${i<saved.unlocked?"Bereit":"Noch gesperrt"}</small>
 </button>`).join("")}
 </div>
-<button class="btn" onclick="startScreen()">← Zurück</button>`;
+<button class="btn secondary" onclick="home()">← Start</button>`;
 }
-function startLevel(n){
-let pool=n===5?data.filter(v=>save.errors[v[0]]):data;
-if(!pool.length)pool=data;
-game={level:n,deck:shuffle(pool).slice(0,8),step:0,points:0};
+function startLevel(i){
+let pool=i===5?
+verbs.filter(v=>saved.errors[v[0]]>0):verbs;
+if(pool.length<8)pool=verbs;
+game={
+level:i,
+deck:shuffle(pool).slice(0,8),
+step:0,points:0,locked:false,
+chosen:[],selection:-1
+};
 render();
+}
+function scenery(i){
+if(i===0)return `
+<div class="cloud">☁️</div>
+<div class="cloud two">☁️</div>
+<div class="ground"></div>
+<div class="door" style="left:26%">🚪</div>
+<div class="door" style="left:52%">🚪</div>
+<div class="door" style="left:76%">🚪</div>
+<div id="actor" class="actor bob">🧙</div>`;
+if(i===1)return `
+<div class="cloud">☁️</div>
+<div class="rail"></div>
+<div class="train" id="train">🚂🚃🚃🚃</div>`;
+if(i===2)return `
+<div class="cloud">☁️</div>
+<div class="building" style="left:8%">🏢</div>
+<div class="building" style="right:4%">🏛️</div>
+<div class="ground"></div>
+<div id="elevator" class="elevator">🛗</div>
+<div id="actor" class="actor bob">🧑‍🚀</div>`;
+if(i===3)return `
+<div class="ground"></div>
+<div class="snowflake" style="left:15%">❄</div>
+<div class="snowflake" style="left:40%;animation-delay:-2s">❄</div>
+<div class="snowflake" style="left:70%;animation-delay:-3s">❄</div>
+<div class="snowflake" style="left:90%;animation-delay:-1s">❄</div>
+<div id="actor" class="actor bob">🧒</div>
+<div id="snowman" class="snowman">⛄</div>`;
+if(i===4)return `
+<div class="ring"></div>
+<div class="star" style="left:15%;top:20%">⭐</div>
+<div class="star" style="left:75%;top:15%">✨</div>
+<div class="star" style="left:80%;top:75%">⭐</div>
+<div id="ship" class="ship">🚀</div>`;
+return `
+<div class="gear" style="left:10%;top:30px">⚙️</div>
+<div class="gear reverse" style="right:10%;top:85px">⚙️</div>
+<div class="gear" style="left:42%;top:0;font-size:55px">⚙️</div>
+<div class="machine">🕰️</div>`;
 }
 function render(){
 let v=game.deck[game.step];
-let mode=levels[game.level][2];
-if(mode==="mixed"||mode==="review")
-mode=shuffle(["choice","tiles","identify","write"])[0];
-let form=Math.floor(Math.random()*3)+1;
-if(mode==="tiles"&&form===1)form=2;
+let f=1+Math.floor(Math.random()*3);
+let mode=game.level===1||game.level===5?"tiles":
+game.level===2?"identify":
+game.level===4?"mixed":"choice";
+if(mode==="mixed")mode=shuffle(["choice","identify","tiles"])[0];
+if(mode==="tiles"&&f===1)f=2;
 let names=["","Präteritum","Perfekt","Plusquamperfekt"];
-let correct=mode==="identify"?names[form]:v[form];
-game.task={v,mode,form,correct,selection:"",locked:false};
-let scene=["🧙🏰","🚂💨","🏙️🦉","📜🕯️","🐉⚡","🛠️🦊"][game.level];
+let correct=mode==="identify"?names[f]:v[f];
+game.task={v,f,mode,correct};
+game.locked=false;
+game.selection=-1;
+game.chosen=[];
+let instruction={
+0:"Laufe zur richtigen Tür!",
+1:"Setze die Ladung für den Zug zusammen!",
+2:"Erkenne die Zeitform und starte den Aufzug!",
+3:"Wähle den richtigen Schneeball!",
+4:"Steuere die Rakete zur richtigen Lösung!",
+5:"Setze die Zahnräder der Zeit zusammen!"
+}[game.level];
 app.innerHTML=`
 <div class="card">
 <h2>${levels[game.level][0]} ${levels[game.level][1]}</h2>
-<p>Rätsel ${game.step+1} von ${game.deck.length}</p>
-<div class="bar"><div class="fill" style="width:${game.step/game.deck.length*100}%"></div></div>
-<div class="scene">${scene}</div>
-<div class="paper">
-<p>${mode==="identify"?"Welche Zeitform ist das?":"Bilde das "+names[form]+"!"}</p>
-<div class="word">${mode==="identify"?v[form]:v[0]}</div>
+<p>${instruction}</p>
+<div>Rätsel ${game.step+1} von ${game.deck.length}</div>
+<div class="progress">
+<div class="fill" style="width:${100*game.step/game.deck.length}%"></div>
 </div>
-<div id="task"></div>
+<div id="scene" class="scene ${game.level===3?"snow":""} ${game.level===4?"portal":""}">
+${scenery(game.level)}
+</div>
+<div id="dialog">
+${game.level===3?"⛄ Hihi! Du triffst mich sowieso nicht!":
+"✨ Die Zeit wartet auf deine Entscheidung!"}
+</div>
+<div class="paper">
+<div>${mode==="identify"?"Welche Zeitform ist das?":
+"Gesucht: "+names[f]}</div>
+<div class="word">${safe(mode==="identify"?v[f]:v[0])}</div>
+</div>
+<div id="answers"></div>
 <div id="feedback"></div>
-<button id="check" class="btn" onclick="check()">✨ Portal aktivieren</button>
-<button id="next" class="btn hidden" onclick="advance()">Weiter ➜</button>
-<button class="btn blue" onclick="world()">🗺️ Karte</button>
+<button class="btn" id="check" onclick="check()">✨ Aktion ausführen</button>
+<button class="btn hidden" id="next" onclick="advance()">Weiter ➜</button>
+<button class="btn secondary" onclick="world()">🗺️ Karte</button>
 </div>`;
-let area=document.getElementById("task");
-if(mode==="write"){
-area.innerHTML='<input id="typed" placeholder="Verbform eingeben …">';
-}else if(mode==="tiles"){
+let area=document.getElementById("answers");
+if(mode==="tiles"){
 let words=correct.split(" ");
-let extras=shuffle(["hat","ist","hatte","war","gehabt"]).filter(w=>!words.includes(w)).slice(0,2);
-let tiles=shuffle([...words,...extras]);
-game.task.tiles=tiles;
-game.task.chosen=[];
-area.innerHTML='<div id="assembled">Wörter antippen</div><div id="tiles">'+tiles.map((w,i)=>`<button class="tile" id="tile${i}" onclick="chooseTile(${i})">${w}</button>`).join("")+'</div>';
+let extras=shuffle(["hat","ist","hatte","war","gehabt"])
+.filter(x=>!words.includes(x)).slice(0,2);
+game.tiles=shuffle([...words,...extras]);
+area.innerHTML=`
+<div id="assembled" class="line">Wörter antippen</div>
+<div class="tiles">
+${game.tiles.map((x,i)=>`
+<button class="tile" id="tile${i}" onclick="chooseTile(${i})">${safe(x)}</button>
+`).join("")}
+</div>`;
 }else{
-let opts=mode==="identify"?shuffle(names.slice(1)):
-shuffle([correct,...shuffle(data.filter(x=>x!==v)).slice(0,3).map(x=>x[form])]);
-game.task.options=opts;
-area.innerHTML='<div class="choices">'+opts.map((o,i)=>`<button class="choice" id="opt${i}" onclick="choose(${i})">${o}</button>`).join("")+'</div>';
+let options=mode==="identify"?shuffle(names.slice(1)):
+shuffle([
+correct,
+...shuffle(verbs.filter(x=>x!==v))
+.slice(0,3).map(x=>x[f])
+]);
+game.options=options;
+area.innerHTML=`
+<div class="answers">
+${options.map((x,i)=>`
+<button class="answer" id="option${i}"
+onclick="choose(${i})">${safe(x)}</button>
+`).join("")}
+</div>`;
 }
 }
 function choose(i){
-if(game.task.locked)return;
-game.task.selection=game.task.options[i];
-document.querySelectorAll(".choice").forEach((b,j)=>b.classList.toggle("selected",i===j));
+if(game.locked)return;
+game.selection=i;
+document.querySelectorAll(".answer").forEach((b,j)=>
+b.classList.toggle("selected",i===j));
+if(game.level===4){
+let ship=document.getElementById("ship");
+if(ship)ship.style.left=i%2===0?"20%":"65%";
+}
 }
 function chooseTile(i){
-let t=game.task;
-if(t.locked)return;
-let pos=t.chosen.indexOf(i);
-if(pos>=0)t.chosen.splice(pos,1);
-else t.chosen.push(i);
-document.querySelectorAll(".tile").forEach((b,j)=>b.classList.toggle("selected",t.chosen.includes(j)));
-document.getElementById("assembled").textContent=t.chosen.map(j=>t.tiles[j]).join(" ")||"Wörter antippen";
+if(game.locked)return;
+let pos=game.chosen.indexOf(i);
+if(pos>=0)game.chosen.splice(pos,1);
+else game.chosen.push(i);
+document.querySelectorAll(".tile").forEach((b,j)=>
+b.classList.toggle("selected",game.chosen.includes(j)));
+document.getElementById("assembled").textContent=
+game.chosen.map(j=>game.tiles[j]).join(" ")||"Wörter antippen";
 }
 function check(){
+if(game.locked)return;
 let t=game.task;
-if(t.locked)return;
-let answer=t.mode==="write"?document.getElementById("typed").value:
-t.mode==="tiles"?t.chosen.map(i=>t.tiles[i]).join(" "):t.selection;
-if(!answer.trim())return;
-t.locked=true;
-let clean=s=>s.trim().toLowerCase().replace(/\s+/g," ");
-let ok=clean(answer)===clean(t.correct);
+let answer=t.mode==="tiles"?
+game.chosen.map(i=>game.tiles[i]).join(" "):
+game.options[game.selection];
+if(!answer)return;
+game.locked=true;
+let normalize=s=>s.trim().toLowerCase().replace(/\s+/g," ");
+let ok=normalize(answer)===normalize(t.correct);
 if(ok){
-save.score+=10;
 game.points+=10;
-if(save.errors[t.v[0]])save.errors[t.v[0]]--;
+saved.stars+=10;
+if(saved.errors[t.v[0]])saved.errors[t.v[0]]--;
 }else{
-save.errors[t.v[0]]=(save.errors[t.v[0]]||0)+1;
+saved.errors[t.v[0]]=(saved.errors[t.v[0]]||0)+1;
 }
 persist();
-document.getElementById("feedback").innerHTML=
-'<div class="feedback">'+(ok?"🌟 Richtig! +10 Sterne":"💥 Zeitriss! Richtig: "+t.correct)+'</div>';
+animateResult(ok);
+document.querySelectorAll(".answer,.tile").forEach(b=>b.disabled=true);
 document.getElementById("check").classList.add("hidden");
 document.getElementById("next").classList.remove("hidden");
+document.getElementById("feedback").innerHTML=`
+<div class="notice">
+${ok?"🌟 Richtig! +10 Sterne":
+"💫 Knapp daneben! Richtig ist: "+safe(t.correct)}
+</div>`;
+}
+function animateResult(ok){
+let i=game.level;
+let dialog=document.getElementById("dialog");
+if(i===0){
+let actor=document.getElementById("actor");
+actor.style.left=ok?"77%":"42%";
+dialog.textContent=ok?
+"🧙 Sesam, öffne dich!":"🚪 Ups! Falsche Tür!";
+}
+if(i===1){
+let train=document.getElementById("train");
+train.style.animationDuration=ok?".8s":"9s";
+dialog.textContent=ok?
+"🚂 Tuuut! Volle Fahrt voraus!":"🚂 Der Zug hat Verspätung!";
+}
+if(i===2){
+let lift=document.getElementById("elevator");
+lift.style.bottom=ok?"160px":"65px";
+dialog.textContent=ok?
+"🛗 Aufwärts!":"🛗 Bitte die Zeitform überprüfen!";
+}
+if(i===3){
+let scene=document.getElementById("scene");
+let ball=document.createElement("div");
+ball.className="ball";
+ball.textContent="❄️";
+scene.appendChild(ball);
+let snowman=document.getElementById("snowman");
+if(ok){
+snowman.classList.add("hit");
+dialog.textContent=shuffle([
+"⛄ Hey! Meine Karottennase!",
+"⛄ Das war grammatikalisch unfair!",
+"⛄ Ich verlange einen Schneeball-Anwalt!",
+"⛄ Nicht schon wieder mein Hut!"
+])[0];
+}else{
+dialog.textContent="⛄ Hahaha! Daneben, du Frostbeule!";
+}
+}
+if(i===4){
+let ship=document.getElementById("ship");
+ship.textContent=ok?"🚀":"🛸";
+dialog.textContent=ok?
+"🌀 Hyperantrieb aktiviert!":"🌀 Turbulenzen im Zeitportal!";
+}
+if(i===5){
+let gears=document.querySelectorAll(".gear");
+gears.forEach(g=>g.style.animationDuration=ok?".5s":"10s");
+dialog.textContent=ok?
+"⚙️ Die Maschine läuft wieder!":"🔧 Da klemmt noch ein Zahnrad!";
+}
 }
 function advance(){
 game.step++;
 if(game.step<game.deck.length){render();return;}
-if(game.level<4)save.unlocked=Math.max(save.unlocked,game.level+2);
+saved.unlocked=Math.max(saved.unlocked,Math.min(6,game.level+2));
 persist();
 app.innerHTML=`
 <div class="card">
-<div class="scene">🏆✨🎉</div>
+<div style="font-size:90px" class="float">🏆</div>
 <h1>Geschafft!</h1>
-<h2>Portal repariert!</h2>
+<h2>${levels[game.level][1]} abgeschlossen!</h2>
 <p>Du hast ${game.points} Sterne gesammelt.</p>
-<button class="btn" onclick="world()">🗺️ Weiter zur Weltkarte</button>
-<button class="btn blue" onclick="startLevel(${game.level})">🔁 Noch einmal</button>
+<p>${game.level===3?
+"⛄ Der Schneemann erklärt dich zum Schneeballmeister!":
+"✨ Ein weiteres Zeitportal wurde repariert!"}</p>
+<button class="btn" onclick="world()">🗺️ Nächste Welt</button>
+<button class="btn secondary" onclick="startLevel(${game.level})">🔁 Wiederholen</button>
 </div>`;
 }
 persist();
-startScreen();
+home();
 </script>
 </body>
 </html>
